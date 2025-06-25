@@ -220,6 +220,6 @@ export const ListaImoveisVenda = () => {
           </Link>
         ))}
       </div>
-    </section>
+    </section>   
   );
 };

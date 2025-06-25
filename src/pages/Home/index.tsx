@@ -11,6 +11,7 @@ import { FiltroBusca } from "@/components/FiltroBusca/FiltroBusca";
 
 export function Home() {
   const navigate = useNavigate(); // USO DO HOOK CORRETO
+  
 
   return (
     <SidebarProvider>

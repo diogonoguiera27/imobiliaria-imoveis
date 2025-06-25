@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { FaBath, FaBed, FaCar, FaRulerCombined } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+
+import { ContactModal } from "../ContactModal/ContactModal";
+import { Dialog } from "../ui/dialog";
 
 const imoveis = [
   {
@@ -97,16 +99,18 @@ const imoveis = [
     infoExtra: "Cond. R$ 320",
   },
 ];
+
 export const ImoveisPopulares = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerPage, setCardsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(0);
+  const [showContactModal, setShowContactModal] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       const container = containerRef.current;
       if (!container) return;
-      const cardWidth = 285 + 16; // largura do card + gap
+      const cardWidth = 285 + 16;
       const visibleCards = Math.floor(container.offsetWidth / cardWidth);
       setCardsPerPage(visibleCards);
     };
@@ -155,75 +159,85 @@ export const ImoveisPopulares = () => {
             }}
           >
             {imoveis.map((item) => (
-              <Link to={`/imovel/${item.id}`} key={item.id}>
-                <div className="w-[285px] flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden border border-gray-700 hover:scale-[1.01] transition">
-                  <img
-                    src={item.imagem}
-                    alt={item.titulo}
-                    className="w-full h-[180px] object-cover"
-                  />
+              <div
+                key={item.id}
+                onClick={() => (window.location.href = `/imovel/${item.id}`)}
+                className="w-[285px] flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden border border-gray-700 hover:scale-[1.01] transition cursor-pointer"
+              >
+                <img
+                  src={item.imagem}
+                  alt={item.titulo}
+                  className="w-full h-[180px] object-cover"
+                />
 
-                  {/* Aqui aplicamos padding lateral com Tailwind */}
-                  <div className="!p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl">
-                    {/* Título + Endereço */}
-                    <div className="flex flex-col gap-2 text-left">
-                      <h3 className="text-base font-semibold text-gray-900 leading-snug break-words">
-                        {item.titulo}
-                      </h3>
-                      <p className="text-sm text-gray-500 break-words">
-                        {item.endereco}
-                      </p>
+                <div className="!p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl">
+                  <div className="flex flex-col gap-2 text-left">
+                    <h3 className="text-base font-semibold text-gray-900 leading-snug break-words">
+                      {item.titulo}
+                    </h3>
+                    <p className="text-sm text-gray-500 break-words">
+                      {item.endereco}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-x-3 gap-y-2 text-gray-600 text-sm">
+                    <div className="flex items-center gap-2">
+                      <FaRulerCombined className="text-[15px]" />
+                      {item.metragem} m²
                     </div>
-
-                    {/* Ícones */}
-                    <div className="flex flex-wrap gap-x-3 gap-y-2 text-gray-600 text-sm">
-                      <div className="flex items-center gap-2">
-                        <FaRulerCombined className="text-[15px]" />
-                        {item.metragem} m²
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <FaBed className="text-[15px]" />
-                        {item.quartos}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <FaBath className="text-[15px]" />
-                        {item.banheiros}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <FaCar className="text-[15px]" />
-                        {item.vagas}
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <FaBed className="text-[15px]" />
+                      {item.quartos}
                     </div>
-
-                    {/* Preço e coração */}
-                    <div className="flex justify-between items-center mt-3">
-                      <div>
-                        <p className="text-base font-bold text-gray-900">
-                          Aluguel de {item.preco}
-                        </p>
-                        {item.infoExtra && (
-                          <p className="text-xs text-gray-500">
-                            {item.infoExtra}
-                          </p>
-                        )}
-                      </div>
-                      <button className="text-red-500 hover:text-red-600">
-                        <Heart strokeWidth={1.5} />
-                      </button>
+                    <div className="flex items-center gap-2">
+                      <FaBath className="text-[15px]" />
+                      {item.banheiros}
                     </div>
-
-                    {/* Botões */}
-                    <div className="flex justify-between gap-2 mt-4">
-                      <Button className="flex-1 !bg-red-500 text-white !text-sm !rounded hover:!bg-red-700 transition-colors duration-200">
-                        Mensagem
-                      </Button>
-                      <Button className="flex-1 !bg-transparent !text-red-600 text-sm rounded hover:bg-red-700">
-                        Telefone
-                      </Button>
+                    <div className="flex items-center gap-2">
+                      <FaCar className="text-[15px]" />
+                      {item.vagas}
                     </div>
                   </div>
+
+                  <div className="flex justify-between items-center mt-3">
+                    <div>
+                      <p className="text-base font-bold text-gray-900">
+                        {item.preco}
+                      </p>
+                      {item.infoExtra && (
+                        <p className="text-xs text-gray-500">
+                          {item.infoExtra}
+                        </p>
+                      )}
+                    </div>
+                    <button className="text-red-500 hover:text-red-600">
+                      <Heart strokeWidth={1.5} />
+                    </button>
+                  </div>
+
+                  <div className="flex justify-between gap-2 mt-4">
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation(); // 👉 impede o clique de propagar para o card
+                        setShowContactModal(true);
+                      }}
+                      className="flex-1 !bg-red-500 text-white !text-sm !rounded hover:!bg-red-700 transition-colors duration-200"
+                    >
+                      Mensagem
+                    </Button>
+
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation(); // impede o clique no card
+                        window.location.href = `/imovel/${item.id}`;
+                      }}
+                      className="flex-1 !bg-transparent !text-red-600 text-sm rounded hover:bg-red-700"
+                    >
+                      Telefone
+                    </Button>
+                  </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
 
@@ -237,6 +251,10 @@ export const ImoveisPopulares = () => {
           )}
         </div>
       </div>
+
+      <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
+        <ContactModal  />
+      </Dialog>
     </section>
   );
 };
