@@ -12,20 +12,20 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="bg-pink-700 py-12 px-6 border-t border-gray-200 mt-12 w-full">
-      <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center space-y-8">
+    <footer className="!bg-gray-300 !py-6 !px-4 !w-full !flex !justify-center">
+      <div className="!bg-gray-300 !w-full !max-w-xl !p-4 !rounded-xl !shadow-md !flex !flex-col !items-center !text-center !space-y-4 !border !border-gray-200">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
+          <h2 className="!text-lg !font-bold !text-white">
             Fique por dentro das novidades
           </h2>
-          <p className="text-gray-600 mt-2">
-            Cadastre seu e-mail e receba ofertas exclusivas!
+          <p className="!text-gray-600 !text-sm">
+            Receba ofertas exclusivas!
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="!w-full !flex !flex-col sm:!flex-row !justify-center !items-center !gap-2"
         >
           <input
             type="email"
@@ -33,30 +33,32 @@ export const Footer = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Seu melhor e-mail"
             required
-            className="px-4 py-2 rounded-md border border-gray-300 w-full sm:w-80 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="!px-3 !py-2 !rounded-md !border !border-gray-300 !shadow-sm !w-full sm:!w-64 focus:!outline-none focus:!ring-2 focus:!ring-red-500"
           />
           <button
             type="submit"
-            className="bg-purple-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-purple-700 transition"
+            className="!bg-red-600 !text-white !px-5 !py-2 !rounded-md !text-sm hover:!bg-red-700 !transition"
           >
             Enviar
           </button>
         </form>
 
-        <div className="pt-6 border-t border-gray-300 w-full flex flex-col items-center">
-          <p className="text-gray-600 mb-2">Atendimento via WhatsApp:</p>
-          <a
-            href="https://wa.me/5599999999999"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-green-600 font-medium hover:underline"
-          >
-            <FaWhatsapp className="text-xl" />
-            (99) 99999-9999
-          </a>
+        <div className="!text-sm !text-gray-700">
+          <p>
+            WhatsApp:{" "}
+            <a
+              href="https://wa.me/5599999999999"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="!inline-flex !items-center !gap-1 !text-green-600 !font-medium hover:!underline"
+            >
+              <FaWhatsapp className="!text-lg" />
+              (99) 99999-9999
+            </a>
+          </p>
         </div>
 
-        <p className="text-xs text-gray-500 mt-6">
+        <p className="!text-xs !text-gray-400">
           &copy; {new Date().getFullYear()} Sua Imobiliária. Todos os direitos reservados.
         </p>
       </div>
