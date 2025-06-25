@@ -128,8 +128,8 @@ export const ImoveisPopulares = () => {
   };
 
   return (
-    <section className="w-full px-4 py-12">
-      <div className="w-full flex justify-center mb-8">
+    <section className="w-full px-4 pt-0  !mt-0">
+      <div className="w-full flex justify-center mb-0">
         <h2 className="text-white text-xl font-bold text-center max-w-screen-lg">
           Apartamentos mais populares perto de você
         </h2>

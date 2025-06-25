@@ -12,7 +12,7 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-100 py-12 px-6 border-t border-gray-200 mt-12 w-full">
+    <footer className="bg-pink-700 py-12 px-6 border-t border-gray-200 mt-12 w-full">
       <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center space-y-8">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">

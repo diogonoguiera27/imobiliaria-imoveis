@@ -1,4 +1,4 @@
-import { Home } from "lucide-react";
+import { Home, Phone } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 import {
@@ -16,9 +16,14 @@ import logoImg from "@/assets/logo_cardapia.png";
 
 const items = [
   {
-    title: "Inicio",
+    title: "Início",
     url: "/",
     icon: Home,
+  },
+  {
+    title: "Contato",
+    url: "/contato",
+    icon: Phone,
   },
 ];
 
@@ -30,12 +35,17 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent className="pt-4">
         <SidebarGroup>
+          {/* LOGO CENTRALIZADA NO TOPO */}
           <div className="flex items-center justify-center mb-6">
             <img src={logoImg} alt={companyName} className="h-12 w-auto" />
           </div>
-          <SidebarGroupLabel className="text-cardapiaPrimaryColor font-bold text-lg">
+
+          {/* NOME DA EMPRESA */}
+          <SidebarGroupLabel className="text-cardapiaPrimaryColor font-bold text-lg text-center">
             {companyName}
           </SidebarGroupLabel>
+
+          {/* MENU LATERAL */}
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
