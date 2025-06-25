@@ -29,7 +29,7 @@ export function Home() {
           <div className="w-full !flex !justify-center !mt-12">
             <Button
               onClick={() => navigate("/imoveis-venda")}
-              className="!bg-red-600 !hover:bg-red-700 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md"
+              className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
             >
               Ver mais destaques
             </Button>

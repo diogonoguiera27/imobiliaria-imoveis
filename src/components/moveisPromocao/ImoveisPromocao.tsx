@@ -217,7 +217,7 @@ export const ImoveisPromocao = () => {
 
                     {/* Botões */}
                     <div className="flex justify-between gap-2 mt-4">
-                      <Button className="flex-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                      <Button className="flex-1 !bg-red-500 text-white !text-sm !rounded hover:!bg-red-700 transition-colors duration-200">
                         Mensagem
                       </Button>
                       <Button className="flex-1 !bg-transparent !text-red-600 text-sm rounded hover:bg-red-700">

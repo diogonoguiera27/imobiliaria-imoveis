@@ -48,7 +48,7 @@ export const FiltroBusca = () => {
         <div className="w-full !sm:w-auto !flex !justify-end !sm:items-end">
           <Button
             type="submit"
-            className="!bg-red-600 !hover:bg-red-700 !text-white !font-bold !px-6 !py-3 !rounded !w-full !sm:w-auto"
+            className="!bg-red-500 !text-white !font-bold !px-6 !py-3 !rounded !w-full !sm:w-auto hover:!bg-red-700 !transition-colors !duration-200"
           >
             Buscar
           </Button>

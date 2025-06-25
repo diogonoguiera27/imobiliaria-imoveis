@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { FaBed, FaCar, FaRulerCombined } from "react-icons/fa";
 
 import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 const imoveisDestaque = [
   {
@@ -85,6 +86,7 @@ const imoveisDestaque = [
 ];
 
 export const CarrosselDestaques: React.FC = () => {
+  const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const cardWidth = 460; // largura real do card
   const cardGap = 16; // gap entre os cards (gap-4)
@@ -172,7 +174,9 @@ export const CarrosselDestaques: React.FC = () => {
                 </div>
               </div>
               <div className="flex flex-col !gap-1 !px-4 !pb-3">
-                <Button className="text-sm font-semibold text-white bg-red-600 px-4 py-1 rounded hover:bg-red-700">
+                <Button 
+                onClick={()=>navigate("/imovel/:id")}
+                className="!text-sm !font-semibold !text-white !bg-red-500 !px-4 !py-1 !rounded hover:!bg-red-700 transition-colors duration-200 ">
                   Ver mais
                 </Button>
               </div>
