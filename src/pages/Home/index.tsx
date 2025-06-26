@@ -11,33 +11,38 @@ import { FiltroBusca } from "@/components/FiltroBusca/FiltroBusca";
 
 export function Home() {
   const navigate = useNavigate(); // USO DO HOOK CORRETO
-  
+
 
   return (
     <SidebarProvider>
-      <AppSidebar  />
-      <main>
-        <SidebarTrigger />
+  <div className="min-h-screen flex flex-col">
+    <AppSidebar />
 
-        <BannerInicial />
-        <FiltroBusca/>
-        <section className="!p-4 ">
-          <CarrosselDestaques />
-          <ImoveisPopulares />
-          <ImoveisPromocao />
+    <main className="flex-grow">
+      <SidebarTrigger />
 
-          {/* Botão centralizado com navegação */}
-          <div className="w-full !flex !justify-center !mt-12">
-            <Button
-              onClick={() => navigate("/imoveis-venda")}
-              className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
-            >
-              Ver mais destaques
-            </Button>
-          </div>
-        </section>
-        <Footer />
-      </main>
-    </SidebarProvider>
+      <BannerInicial />
+      <FiltroBusca />
+
+      <section className="!p-4">
+        <CarrosselDestaques />
+        <ImoveisPopulares />
+        <ImoveisPromocao />
+
+        {/* Botão centralizado com navegação */}
+        <div className="w-full !flex !justify-center !mt-12">
+          <Button
+            onClick={() => navigate("/imoveis-venda")}
+            className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
+          >
+            Ver mais destaques
+          </Button>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </div>
+</SidebarProvider>
   );
 }

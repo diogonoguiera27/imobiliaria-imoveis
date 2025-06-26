@@ -3,8 +3,10 @@ import { ContatoCard } from "../ContatoCard/ContatoCard";
 
 export function ContactModal() {
   return (
-    <DialogContent className="!max-w-md !p-0">
-      <ContatoCard />
+    <DialogContent className="!max-w-md !bg-transparent !shadow-none !p-0">
+      <div className="px-4">
+        <ContatoCard />
+      </div>
     </DialogContent>
   );
 }

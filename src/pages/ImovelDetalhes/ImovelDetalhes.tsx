@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ImoveisPopulares } from "@/components/ImoveisPopulares/ImoveisPopulares";
 import { DescricaoImovel } from "@/components/DescricaoImovel/DescricaoImovel";
 import { ContatoCard } from "@/components/ContatoCard/ContatoCard";
+import { Footer } from "@/components/Footer/Footer";
 
 export function ImovelDetalhes() {
   const imagens = [
@@ -45,6 +46,8 @@ export function ImovelDetalhes() {
   ];
 
   return (
+    <div className="min-h-screen flex flex-col">
+  <main className="flex-grow">
     <>
       <section className="w-screen overflow-hidden">
         <Carousel opts={{ align: "start" }} className="w-full">
@@ -80,7 +83,10 @@ export function ImovelDetalhes() {
           {/* Galeria de imagens inferior */}
           <div className="md:col-span-4 flex !gap-4 !overflow-x-auto !pb-2 !pl-4 !justify-center">
             {imagensInferiores.map((img, index) => (
-              <div key={index} className="min-w-[300px] overflow-hidden shadow-md rounded-xl">
+              <div
+                key={index}
+                className="min-w-[300px] overflow-hidden shadow-md rounded-xl"
+              >
                 <img
                   src={img.src}
                   alt={img.alt}
@@ -94,18 +100,18 @@ export function ImovelDetalhes() {
       </section>
 
       <section className="w-full px-4 mt-2">
-  <div className="max-w-[1280px] !mx-auto flex flex-col lg:flex-row !gap-6 items-start">
-    {/* Descrição */}
-    <div className="w-full lg:w-2/3">
-      <DescricaoImovel />
-    </div>
+        <div className="max-w-[1280px] !mx-auto flex flex-col lg:flex-row !gap-6 items-start">
+          {/* Descrição */}
+          <div className="w-full lg:w-2/3">
+            <DescricaoImovel />
+          </div>
 
-    {/* Card de Contato */}
-    <div className="w-full lg:w-1/3">
-      <ContatoCard />
-    </div>
-  </div>
-</section>
+          {/* Card de Contato */}
+          <div className="w-full lg:w-1/3">
+            <ContatoCard />
+          </div>
+        </div>
+      </section>
 
       <section className="w-full !px-4 !mt-16 !mb-6">
         <div className="!max-w-6xl !mx-auto !mt-4 text-center">
@@ -118,5 +124,9 @@ export function ImovelDetalhes() {
 
       <ImoveisPopulares />
     </>
+  </main>
+
+  <Footer />
+</div>
   );
 }

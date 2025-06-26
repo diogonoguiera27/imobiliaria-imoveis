@@ -4,6 +4,7 @@ import { Heart } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { ContactModal } from "@/components/ContactModal/ContactModal";
 import { useState } from "react";
+import { Footer } from "@/components/Footer/Footer";
 
 const imoveisVenda = [
   {
@@ -141,6 +142,8 @@ const imoveisVenda = [
 export const ListaImoveisVenda = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   return (
+    <div className="min-h-screen flex flex-col">
+  <main className="flex-grow">
     <section className="w-full px-4 pt-0 !mt-0">
       <div className="w-full flex justify-center mb-0">
         <h2 className="!text-white !text-xl !font-bold !text-center !max-w-screen-lg">
@@ -154,7 +157,7 @@ export const ListaImoveisVenda = () => {
             <div
               key={item.id}
               onClick={() => (window.location.href = `/imovel/${item.id}`)}
-              className="w-[285px] !h-[431px] !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer flex flex-col" //!
+              className="w-[285px] !h-[431px] !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer flex flex-col"
             >
               <div className="w-full !h-[180px] !overflow-hidden">
                 <img
@@ -165,8 +168,6 @@ export const ListaImoveisVenda = () => {
               </div>
 
               <div className="!p-4 !bg-gray-100 !border-t !border-gray-800 flex flex-col justify-between gap-4 !rounded-b-xl flex-1">
-                {" "}
-                {/* <- ESSENCIAL */}
                 <div className="flex flex-col gap-2 text-left">
                   <h3 className="!text-base !font-semibold !text-gray-900 !leading-snug break-words">
                     {item.titulo}
@@ -238,5 +239,9 @@ export const ListaImoveisVenda = () => {
         <ContactModal />
       </Dialog>
     </section>
+  </main>
+
+  <Footer />
+</div>
   );
 };

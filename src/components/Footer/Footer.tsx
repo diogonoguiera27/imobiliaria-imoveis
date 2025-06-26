@@ -1,13 +1,32 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { FaWhatsapp } from "react-icons/fa";
 
-export const Footer = () => {
-  const [email, setEmail] = useState("");
+// Schema de validação com zod
+const emailSchema = z.object({
+  email: z.string().email("E-mail inválido"),
+});
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Email:", email);
-    setEmail("");
+type EmailFormData = z.infer<typeof emailSchema>;
+
+export const Footer = () => {
+  const [formStatus, setFormStatus] = useState<"idle" | "success">("idle");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<EmailFormData>({
+    resolver: zodResolver(emailSchema),
+  });
+
+  const onSubmit = (data: EmailFormData) => {
+    console.log("Email:", data.email);
+    setFormStatus("success");
+    reset();
     alert("Contato salvo com sucesso!");
   };
 
@@ -18,21 +37,17 @@ export const Footer = () => {
           <h2 className="!text-lg !font-bold !text-white">
             Fique por dentro das novidades
           </h2>
-          <p className="!text-gray-600 !text-sm">
-            Receba ofertas exclusivas!
-          </p>
+          <p className="!text-gray-600 !text-sm">Receba ofertas exclusivas!</p>
         </div>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="!w-full !flex !flex-col sm:!flex-row !justify-center !items-center !gap-2"
         >
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             placeholder="Seu melhor e-mail"
-            required
+            {...register("email")}
             className="!px-3 !py-2 !rounded-md !border !border-gray-300 !shadow-sm !w-full sm:!w-64 focus:!outline-none focus:!ring-2 focus:!ring-red-500"
           />
           <button
@@ -42,6 +57,17 @@ export const Footer = () => {
             Enviar
           </button>
         </form>
+
+        {/* Exibe erro de validação */}
+        {errors.email && (
+          <p className="text-red-600 text-sm">{errors.email.message}</p>
+        )}
+
+        {formStatus === "success" && (
+          <p className="text-green-600 text-sm">
+            Mensagem enviada com sucesso!
+          </p>
+        )}
 
         <div className="!text-sm !text-gray-700">
           <p>
@@ -59,7 +85,8 @@ export const Footer = () => {
         </div>
 
         <p className="!text-xs !text-gray-400">
-          &copy; {new Date().getFullYear()} Sua Imobiliária. Todos os direitos reservados.
+          &copy; {new Date().getFullYear()} Sua Imobiliária. Todos os direitos
+          reservados.
         </p>
       </div>
     </footer>
