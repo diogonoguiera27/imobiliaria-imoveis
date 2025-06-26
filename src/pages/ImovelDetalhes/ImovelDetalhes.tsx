@@ -48,11 +48,11 @@ export function ImovelDetalhes() {
 
   return (
     <SidebarProvider>
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col ">
         <SidebarTrigger />
       <main className="flex-grow">
         <>
-          <section className="w-screen overflow-hidden">
+          <section className="w-full overflow-hidden">
             <Carousel opts={{ align: "start" }} className="w-full">
               <CarouselContent className="flex gap-x-2">
                 {imagens.map((img, index) => (
@@ -84,10 +84,10 @@ export function ImovelDetalhes() {
           </section>
 
           {/* Galeria inferior com espaçamento superior maior */}
-          <section className="w-screen mt-6 px-4">
-            <div className="grid md:grid-cols-4 gap-4 max-w-7xl !mx-auto !items-start">
+          <section className="!w-screen mt-6 px-4 ">
+            <div className="!grid !md:grid-cols-4 !gap-4 !max-w-7xl !mx-auto !items-start n">
               {/* Galeria de imagens inferior */}
-              <div className="md:col-span-4 flex !gap-4 !overflow-x-auto !pb-2 !pl-4 !justify-center">
+              <div className="flex gap-4 pb-2 pl-4 !justify-center !max-w-full">
                 {imagensInferiores.map((img, index) => (
                   <div
                     key={index}
