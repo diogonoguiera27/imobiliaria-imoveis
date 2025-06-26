@@ -121,7 +121,7 @@ export const CarrosselDestaques: React.FC = () => {
   return (
     <section className="w-full px-4 pt-2   !mt-0">
   <div className="w-full flex justify-center mb-0">
-    <h2 className="text-6xl font-extrabold text-black text-center max-w-screen-lg text-neutral-120">
+    <h2 className="text-6xl font-extrabold text-black !text-center !max-w-screen-lg !text-neutral-120 ">
       Imóveis em Destaque
     </h2>
   </div>

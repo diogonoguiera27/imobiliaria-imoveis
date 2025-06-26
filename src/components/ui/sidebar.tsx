@@ -1,8 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, VariantProps } from "class-variance-authority";
-import { PanelLeftIcon } from "lucide-react";
-import logoImg from "@/assets/logo_cardapia.png";
+import logoImg from "@/assets/luxuryy.png";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -218,30 +218,47 @@ function SidebarTrigger({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar();
+  const navigate = useNavigate();
 
   return (
-    <main className="fixed z-50 flex h-[60px] w-full items-center justify-between !p-4 bg-white shadow-xl">
+    <main className="fixed z-50 flex h-[60px] w-full items-center justify-between px-4 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
+      {/* Botão lateral */}
       <Button
         data-sidebar="trigger"
         data-slot="sidebar-trigger"
         variant="ghost"
         size="icon"
-        className={cn("!text-black-700 size-7 !bg-transparent", className)}
+        className={cn("!text-white size-7 !bg-transparent", className)}
         onClick={(event) => {
           onClick?.(event);
           toggleSidebar();
         }}
         {...props}
       >
-        <PanelLeftIcon />
+        
       </Button>
 
-      <div className="flex items-center cursor-pointer justify-center mb-6">
-        <img
-          src={logoImg}
-          alt={import.meta.env.VITE_COMPANY_NAME}
-          className="!h-12 w-auto"
-        />
+     
+      <div className="flex items-center gap-6">
+        
+        <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
+          <button onClick={() => navigate("/")} className="hover:underline">
+            Home
+          </button>
+          <button
+            onClick={() => navigate("/imoveis-venda")}
+            className="hover:underline"
+          >
+            Contato
+          </button>
+        </nav>
+        <div className="flex items-center cursor-pointer justify-center mb-6">
+          <img
+            src={logoImg}
+            alt={import.meta.env.VITE_COMPANY_NAME}
+            className="!h-18 w-auto"
+          />
+        </div>
       </div>
     </main>
   );

@@ -29,7 +29,7 @@ const imoveisPromocao = [
     quartos: 4,
     banheiros: 7,
     vagas: 4,
-    preco: "Aluguel de R$ 15.000/mês",
+    preco: " R$ 15.000/mês",
     infoExtra: "Cond. R$ 3.000",
   },
   {
@@ -163,7 +163,7 @@ export const ImoveisPromocao = () => {
               <div
                 key={item.id}
                 onClick={() => (window.location.href = `/imovel/${item.id}`)}
-                className="w-[285px] flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden border border-gray-700 hover:scale-[1.01] transition"
+                className="w-[285px] flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden border border-gray-700 hover:scale-[1.005] transition"
               >
                 <img
                   src={item.imagem}
@@ -172,7 +172,7 @@ export const ImoveisPromocao = () => {
                 />
 
                 {/* Aqui aplicamos padding lateral com Tailwind */}
-                <div className="!p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl">
+                <div className="!p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl !overflow-hidden">
                   {/* Título + Endereço */}
                   <div className="flex flex-col gap-2 text-left">
                     <h3 className="text-base font-semibold text-gray-900 leading-snug break-words">
@@ -207,7 +207,7 @@ export const ImoveisPromocao = () => {
                   <div className="flex justify-between items-center mt-3">
                     <div>
                       <p className="text-base font-bold text-gray-900">
-                        Aluguel de {item.preco}
+                        {item.preco}
                       </p>
                       {item.infoExtra && (
                         <p className="text-xs text-gray-500">

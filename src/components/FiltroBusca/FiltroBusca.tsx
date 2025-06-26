@@ -3,54 +3,75 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export const FiltroBusca = () => {
-  const [valor, setValor] = useState("");
+  const [valorMax, setValorMax] = useState(3000000);
+  const [valorMin] = useState(500000);
   const [tipo, setTipo] = useState("");
+  const [cidade, setCidade] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Buscar imóveis do tipo: ${tipo} com valor: ${valor}`);
+    alert(`Buscar imóveis tipo: ${tipo}, cidade: ${cidade}, entre R$${valorMin} e R$${valorMax}`);
   };
 
   return (
-    <div className="w-full !flex !justify-center !-mt-20 z-10 !relative">
+    <div className="w-full !flex !justify-start !-mt-[120px] z-10 !relative !px-10">
       <form
         onSubmit={handleSubmit}
-        className="!bg-white !rounded-xl !shadow-xl !px-6 !py-8 !flex !flex-col !sm:flex-row !sm:items-end !gap-6 !justify-between !max-w-5xl !w-full !min-h-[160px]"
+        className="!bg-white !rounded-xl !shadow-xl !px-6 !py-6 !flex !flex-col sm:!flex-row !flex-wrap !gap-6 !items-end !max-w-6xl !w-full border border-gray-200"
       >
-        {/* Campo Valor */}
-        <div className="flex !flex-col !w-full !sm:w-1/3">
-          <label className="!text-sm !font-semibold !mb-1 !text-black">Valor Máximo</label>
+        {/* Filtrar por Preço */}
+        <div className="flex !flex-col !w-full sm:!w-[400px]">
+          <label className="!text-gray-800 !text-sm !font-semibold mb-1">Filtrar por Preço</label>
           <Input
-            type="number"
-            placeholder="Ex: 500000"
-            value={valor}
-            onChange={e => setValor(e.target.value)}
-            className="!border !border-gray-300 !rounded !px-4 !py-2 !w-full"
+            type="range"
+            min={500000}
+            max={3000000}
+            step={50000}
+            value={valorMax}
+            onChange={(e) => setValorMax(Number(e.target.value))}
+            className="w-full accent-red-600"
           />
+          <div className="text-gray-700 text-sm font-semibold mt-1">
+            R${valorMin.toLocaleString("pt-BR")} — R${valorMax.toLocaleString("pt-BR")}
+          </div>
         </div>
 
-        {/* Campo Tipo */}
-        <div className="flex !flex-col !w-full !sm:w-1/3">
-          <label className="!text-sm !font-semibold !mb-1 !text-black">Tipo</label>
+        {/* Tipo de imóvel */}
+        <div className="flex !flex-col !w-[200px]">
+          <label className="!text-gray-800 !text-sm !font-semibold mb-1">Tipo de Imóvel</label>
           <select
             value={tipo}
-            onChange={e => setTipo(e.target.value)}
-            className="!border !border-gray-300 !rounded !px-4 !py-2 !w-full"
+            onChange={(e) => setTipo(e.target.value)}
+            className="!rounded !px-4 !py-2 !bg-white !text-black !border"
           >
-            <option value="">Todos</option>
+            <option value="">Selecionar</option>
             <option value="casa">Casa</option>
             <option value="apartamento">Apartamento</option>
             <option value="condominio">Condomínio</option>
           </select>
         </div>
 
-        {/* Botão */}
-        <div className="w-full !sm:w-auto !flex !justify-end !sm:items-end">
+        {/* Cidade */}
+        <div className="flex !flex-col !w-[220px]">
+          <label className="!text-gray-800 !text-sm !font-semibold mb-1">Cidade</label>
+          <select
+            value={cidade}
+            onChange={(e) => setCidade(e.target.value)}
+            className="!rounded !px-4 !py-2 !bg-white !text-black !border border-gray-300"
+          >
+            <option value="">Selecionar</option>
+            <option value="goiania">Goiânia</option>
+            <option value="aparecida">Aparecida de Goiânia</option>
+          </select>
+        </div>
+
+        {/* Botão vermelho */}
+        <div className="!flex !justify-end w-full sm:w-auto">
           <Button
             type="submit"
-            className="!bg-red-500 !text-white !font-bold !px-6 !py-3 !rounded !w-full !sm:w-auto hover:!bg-red-700 !transition-colors !duration-200"
+            className="!bg-red-600 !text-white !font-semibold !px-6 !py-3 !rounded hover:!bg-red-700"
           >
-            Buscar
+            Pesquisar
           </Button>
         </div>
       </form>

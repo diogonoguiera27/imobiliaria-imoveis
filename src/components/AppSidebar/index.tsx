@@ -22,7 +22,7 @@ const items = [
   },
   {
     title: "Contato",
-    url: "/contato",
+    url: "/",
     icon: Phone,
   },
 ];

@@ -1,11 +1,11 @@
-import { AppSidebar } from "@/components/AppSidebar";
+
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { CarrosselDestaques } from "@/components/CarrosselDestaques/CarrosselDestaques";
 import { ImoveisPopulares } from "@/components/ImoveisPopulares/ImoveisPopulares";
 import { ImoveisPromocao } from "@/components/moveisPromocao/ImoveisPromocao";
 import { Footer } from "@/components/Footer/Footer";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom"; // IMPORTAÇÃO CORRETA
+import { useNavigate } from "react-router-dom"; 
 import { BannerInicial } from "@/components/BannerInicial/BannerInicial";
 import { FiltroBusca } from "@/components/FiltroBusca/FiltroBusca";
 
@@ -16,7 +16,6 @@ export function Home() {
   return (
     <SidebarProvider>
   <div className="min-h-screen flex flex-col">
-    <AppSidebar />
 
     <main className="flex-grow">
       <SidebarTrigger />
