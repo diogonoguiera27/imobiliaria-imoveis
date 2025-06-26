@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 
 import { ContactModal } from "../ContactModal/ContactModal";
+import { ContactPhoneModal } from "@/components/ContactPhoneModal/ContactPhoneModal";
 import { Dialog } from "../ui/dialog";
 
 const imoveis = [
@@ -105,6 +106,7 @@ export const ImoveisPopulares = () => {
   const [cardsPerPage, setCardsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(0);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -228,8 +230,8 @@ export const ImoveisPopulares = () => {
 
                     <Button
                       onClick={(e) => {
-                        e.stopPropagation(); // impede o clique no card
-                        window.location.href = `/imovel/${item.id}`;
+                        e.stopPropagation();
+                        setShowPhoneModal(true);
                       }}
                       className="flex-1 !bg-transparent !text-red-600 text-sm rounded hover:bg-red-700"
                     >
@@ -253,7 +255,11 @@ export const ImoveisPopulares = () => {
       </div>
 
       <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
-        <ContactModal  />
+        <ContactModal />
+      </Dialog>
+
+      <Dialog open={showPhoneModal} onOpenChange={setShowPhoneModal}>
+        <ContactPhoneModal />
       </Dialog>
     </section>
   );

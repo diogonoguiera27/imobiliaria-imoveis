@@ -22,6 +22,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import {ContatoModal  } from "@/components/ContatoModal/ContatoModal"; // este é só o conteúdo, sem estrutura do Dialog
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -212,11 +219,7 @@ function Sidebar({
   );
 }
 
-function SidebarTrigger({
-  className,
-  onClick,
-  ...props
-}: React.ComponentProps<typeof Button>) {
+ function SidebarTrigger({ onClick, ...props }: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar();
   const navigate = useNavigate();
 
@@ -228,30 +231,34 @@ function SidebarTrigger({
         data-slot="sidebar-trigger"
         variant="ghost"
         size="icon"
-        className={cn("!text-white size-7 !bg-transparent", className)}
+        className="!text-white size-7 !bg-transparent"
         onClick={(event) => {
           onClick?.(event);
           toggleSidebar();
         }}
         {...props}
-      >
-        
-      </Button>
+      />
 
-     
+      {/* LOGO + Navegação */}
       <div className="flex items-center gap-6">
-        
         <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
+          {/* HOME */}
           <button onClick={() => navigate("/")} className="hover:underline">
             Home
           </button>
-          <button
-            onClick={() => navigate("/imoveis-venda")}
-            className="hover:underline"
-          >
-            Contato
-          </button>
+
+          {/* CONTATO com Modal */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="hover:underline">Contato</button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+              <ContatoModal />
+            </DialogContent>
+          </Dialog>
         </nav>
+
+        {/* LOGO */}
         <div className="flex items-center cursor-pointer justify-center mb-6">
           <img
             src={logoImg}

@@ -6,6 +6,7 @@ import { ContactModal } from "@/components/ContactModal/ContactModal";
 import { useState } from "react";
 import { Footer } from "@/components/Footer/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { ContactPhoneModal } from "@/components/ContactPhoneModal/ContactPhoneModal";
 
 const imoveisVenda = [
   {
@@ -142,6 +143,7 @@ const imoveisVenda = [
 
 export const ListaImoveisVenda = () => {
   const [showContactModal, setShowContactModal] = useState(false);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
   return (
     <SidebarProvider>
       <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden ">
@@ -161,7 +163,9 @@ export const ListaImoveisVenda = () => {
                 {imoveisVenda.map((item) => (
                   <div
                     key={item.id}
-                    onClick={() => (window.location.href = `/imovel/${item.id}`)}
+                    onClick={() =>
+                      (window.location.href = `/imovel/${item.id}`)
+                    }
                     className="w-[285px] !h-[431px] !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer flex flex-col"
                   >
                     <div className="w-full !h-[180px] !overflow-hidden">
@@ -231,7 +235,7 @@ export const ListaImoveisVenda = () => {
                         <Button
                           onClick={(e) => {
                             e.stopPropagation();
-                            window.location.href = `/imovel/${item.id}`;
+                            setShowPhoneModal(true);
                           }}
                           className="flex-1 !bg-transparent !text-red-600 text-sm rounded hover:bg-red-700"
                         >
@@ -246,6 +250,9 @@ export const ListaImoveisVenda = () => {
 
             <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
               <ContactModal />
+            </Dialog>
+            <Dialog open={showPhoneModal} onOpenChange={setShowPhoneModal}>
+              <ContactPhoneModal />
             </Dialog>
           </section>
         </main>
