@@ -2,7 +2,7 @@ import { Ruler, Layout, BedDouble, Bath, Car, Building2 } from "lucide-react";
 
 export function DescricaoImovel() {
   return (
-    <section className="w-full !flex !justify-start !px-4 !mt-10">
+    <section className="w-full !flex !justify-start !px-4 !mt-2">
       <div className="w-full !max-w-5xl !pl-8 !bg-white !rounded-xl !shadow-md border !border-gray-200 p-6 !text-gray-800 space-y-8">
         {/* Título e Endereço */}
         <div className="!space-y-1">

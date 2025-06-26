@@ -210,7 +210,7 @@ export const ImoveisPopulares = () => {
                         </p>
                       )}
                     </div>
-                    <button className="text-red-500 hover:text-red-600">
+                    <button className="!text-red-500 !hover:text-red-600">
                       <Heart strokeWidth={1.5} />
                     </button>
                   </div>
@@ -218,7 +218,7 @@ export const ImoveisPopulares = () => {
                   <div className="flex justify-between gap-2 mt-4">
                     <Button
                       onClick={(e) => {
-                        e.stopPropagation(); // 👉 impede o clique de propagar para o card
+                        e.stopPropagation();
                         setShowContactModal(true);
                       }}
                       className="flex-1 !bg-red-500 text-white !text-sm !rounded hover:!bg-red-700 transition-colors duration-200"

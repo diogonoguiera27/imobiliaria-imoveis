@@ -14,7 +14,6 @@ import { ImoveisPopulares } from "@/components/ImoveisPopulares/ImoveisPopulares
 import { DescricaoImovel } from "@/components/DescricaoImovel/DescricaoImovel";
 import { ContatoCard } from "@/components/ContatoCard/ContatoCard";
 
-
 export function ImovelDetalhes() {
   const imagens = [
     {
@@ -39,11 +38,15 @@ export function ImovelDetalhes() {
       src: img3,
       alt: "Quarto",
     },
+    {
+      src: img3,
+      alt: "Quarto",
+    },
   ];
 
   return (
     <>
-      <section className="w-screen overflow-hidden ">
+      <section className="w-screen overflow-hidden">
         <Carousel opts={{ align: "start" }} className="w-full">
           <CarouselContent className="flex gap-x-2">
             {imagens.map((img, index) => (
@@ -73,21 +76,15 @@ export function ImovelDetalhes() {
 
       {/* Galeria inferior com espaçamento superior maior */}
       <section className="w-screen mt-6 px-4">
-        <div className="grid md:grid-cols-4 gap-4 max-w-7xl mx-auto items-start">
+        <div className="grid md:grid-cols-4 gap-4 max-w-7xl !mx-auto !items-start">
           {/* Galeria de imagens inferior */}
-          <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="md:col-span-4 flex !gap-4 !overflow-x-auto !pb-2 !pl-4 !justify-center">
             {imagensInferiores.map((img, index) => (
-              <div key={index} className="overflow-hidden shadow-md rounded-xl">
+              <div key={index} className="min-w-[300px] overflow-hidden shadow-md rounded-xl">
                 <img
                   src={img.src}
                   alt={img.alt}
-                  style={{
-                    width: "100%",
-                    height: "250px",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    borderRadius: "12px",
-                  }}
+                  className="!w-full !h-[220px] !object-cover !object-center !rounded-xl"
                 />
               </div>
             ))}
@@ -96,17 +93,19 @@ export function ImovelDetalhes() {
         <div className="h-4 md:h-4" />
       </section>
 
-      {/* Descrição e Contato lado a lado */}
-      <section className="w-full px-4 mt-10">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-2/3">
-            <DescricaoImovel />
-          </div>
-          <div className="w-full lg:w-1/3">
-            <ContatoCard />
-          </div>
-        </div>
-      </section>
+      <section className="w-full px-4 mt-2">
+  <div className="max-w-[1280px] !mx-auto flex flex-col lg:flex-row !gap-6 items-start">
+    {/* Descrição */}
+    <div className="w-full lg:w-2/3">
+      <DescricaoImovel />
+    </div>
+
+    {/* Card de Contato */}
+    <div className="w-full lg:w-1/3">
+      <ContatoCard />
+    </div>
+  </div>
+</section>
 
       <section className="w-full !px-4 !mt-16 !mb-6">
         <div className="!max-w-6xl !mx-auto !mt-4 text-center">
@@ -116,7 +115,6 @@ export function ImovelDetalhes() {
           </h2>
         </div>
       </section>
-      
 
       <ImoveisPopulares />
     </>
