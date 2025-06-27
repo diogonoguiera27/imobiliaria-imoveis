@@ -2,9 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaBath, FaBed, FaCar, FaRulerCombined } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
-
-import { ContactModal } from "../ContactModal/ContactModal";
-import { ContactPhoneModal } from "@/components/ContactPhoneModal/ContactPhoneModal";
+import { ContactModal, ContactPhoneModal } from "@/components/modals";
 import { Dialog } from "../ui/dialog";
 
 const imoveis = [
@@ -135,13 +133,13 @@ export const ImoveisPopulares = () => {
 
   return (
     <section className="w-full px-4 pt-0  !mt-0">
-      <div className="w-full flex justify-center mb-0">
-        <h2 className="text-white text-xl font-bold text-center max-w-screen-lg">
+      <div className="w-full flex justify-center mb-0 !mt-8">
+        <h2 className="text-black text-xl font-bold text-center max-w-screen-lg ">
           Apartamentos mais populares perto de você
         </h2>
       </div>
 
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center !mt-4">
         <div className="relative max-w-[1200px] w-full">
           {currentPage > 0 && (
             <button

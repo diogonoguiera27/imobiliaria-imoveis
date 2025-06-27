@@ -3,8 +3,7 @@ import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { Dialog } from "../ui/dialog";
-import { ContactModal } from "../ContactModal/ContactModal";
-import { ContactPhoneModal } from "@/components/ContactPhoneModal/ContactPhoneModal";
+import { ContactModal, ContactPhoneModal } from "@/components/modals";
 
 const imoveisPromocao = [
   {
@@ -134,13 +133,13 @@ export const ImoveisPromocao = () => {
 
   return (
     <section className="w-full px-4 pt-0  !mt-0">
-      <div className="w-full flex justify-center mb-0">
-        <h2 className="text-white text-xl font-bold text-center max-w-screen-lg">
+      <div className="w-full flex justify-center mb-0 mt-8!">
+        <h2 className="text-black text-xl font-bold text-center max-w-screen-lg ">
           Imóveis que baixaram de preço em até 32% próximos a você
         </h2>
       </div>
 
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center !mt-4">
         <div className="relative max-w-[1200px] w-full">
           {/* Botão esquerdo */}
           {currentPage > 0 && (

@@ -28,7 +28,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import {ContatoModal  } from "@/components/ContatoModal/ContatoModal"; // este é só o conteúdo, sem estrutura do Dialog
+import { ContatoModal } from "@/components/modals"; 
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
