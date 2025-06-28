@@ -38,7 +38,7 @@ export const PropertyListSection: FC<PropertyListSectionProps> = ({
   return (
     <section className="w-full px-4 pt-0 !mt-0">
       <div className="w-full flex justify-center mb-0">
-        <h2 className="!text-white !text-xl !font-bold !text-center !max-w-screen-lg">
+        <h2 className="!text-black !text-xl !font-bold !text-center !max-w-screen-lg !mt-2 !mb-4">
           Imóveis à venda próximos a você
         </h2>
       </div>

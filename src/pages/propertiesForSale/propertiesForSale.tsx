@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog } from "@/components/ui/dialog";
 import { ContactModal, ContactPhoneModal } from "@/components/modals";
 import { PropertyListSection } from "@/components/propertiesForSale";
+import Pagination from "@/components/Pagination/Pagination";
 
 const imoveisVenda = [
   {
@@ -156,6 +157,10 @@ export const ListaImoveisVenda = () => {
             onOpenContactModal={() => setShowContactModal(true)}
             onOpenPhoneModal={() => setShowPhoneModal(true)}
           />
+
+          <div className="!w-full !flex  !mt-10 !justify-between">
+            <Pagination />
+          </div>
 
           <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
             <ContactModal />
