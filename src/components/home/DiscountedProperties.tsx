@@ -9,7 +9,7 @@ const imoveisPromocao = [
   {
     id: 1,
     imagem:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1717167398817-121e3c283dbb?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     titulo: "Jardins Marselha, Aparecida de Goiânia",
     endereco: "Avenida Notredame",
     metragem: 181,
@@ -22,7 +22,7 @@ const imoveisPromocao = [
   {
     id: 2,
     imagem:
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1682502524896-6d78b9e8413a?q=80&w=1183&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     titulo: "Vila Darcy Penteado, São Roque",
     endereco: "Estrada Darcy Penteado",
     metragem: 600,
@@ -35,7 +35,7 @@ const imoveisPromocao = [
   {
     id: 3,
     imagem:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTc2fHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
     titulo: "Guarajuba (Monte Gordo), Camaçari",
     endereco: "Rua Arraia",
     metragem: 450,
@@ -48,7 +48,7 @@ const imoveisPromocao = [
   {
     id: 4,
     imagem:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+      "https://plus.unsplash.com/premium_photo-1682377521630-8ca87f643f49?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTczfHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
     titulo: "Guarajuba (Monte Gordo), Camaçari",
     endereco: "Rua Arraia",
     metragem: 450,
@@ -61,7 +61,7 @@ const imoveisPromocao = [
   {
     id: 5,
     imagem:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1660797347557-4b100998d808?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjAwfHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
     titulo: "Guarajuba (Monte Gordo), Camaçari",
     endereco: "Rua Arraia",
     metragem: 450,
@@ -74,7 +74,7 @@ const imoveisPromocao = [
   {
     id: 6,
     imagem:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+      "https://plus.unsplash.com/premium_photo-1687960116506-f31f84371838?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjA5fHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
     titulo: "Guarajuba (Monte Gordo), Camaçari",
     endereco: "Rua Arraia",
     metragem: 450,
@@ -87,7 +87,7 @@ const imoveisPromocao = [
   {
     id: 7,
     imagem:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1698756523164-bd049ff8b166?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjYyfHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
     titulo: "Guarajuba (Monte Gordo), Camaçari",
     endereco: "Rua Arraia",
     metragem: 450,
@@ -141,7 +141,7 @@ export const ImoveisPromocao = () => {
 
       <div className="w-full flex justify-center !mt-4">
         <div className="relative max-w-[1200px] w-full">
-          {/* Botão esquerdo */}
+          
           {currentPage > 0 && (
             <button
               onClick={() => scrollToPage(currentPage - 1)}
@@ -155,10 +155,14 @@ export const ImoveisPromocao = () => {
             </button>
           )}
 
-          {/* Container de cards */}
+          
           <div
             ref={containerRef}
             className="flex gap-4 overflow-x-hidden scroll-smooth items-center w-full"
+            style={{
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
           >
             {imoveisPromocao.map((item) => (
               <div
@@ -172,9 +176,9 @@ export const ImoveisPromocao = () => {
                   className="w-full h-[180px] object-cover"
                 />
 
-                {/* Aqui aplicamos padding lateral com Tailwind */}
+                
                 <div className="!p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl !overflow-hidden">
-                  {/* Título + Endereço */}
+                  
                   <div className="flex flex-col gap-2 text-left">
                     <h3 className="text-base font-semibold text-gray-900 leading-snug break-words">
                       {item.titulo}
@@ -184,7 +188,7 @@ export const ImoveisPromocao = () => {
                     </p>
                   </div>
 
-                  {/* Ícones */}
+                  
                   <div className="flex flex-wrap gap-x-3 gap-y-2 text-gray-600 text-sm">
                     <div className="flex items-center gap-2">
                       <FaRulerCombined className="text-[15px]" />

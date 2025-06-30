@@ -58,7 +58,7 @@ export const Footer = () => {
       </button>
     </form>
 
-    {/* Exibe erro de validação */}
+    
     {errors.email && (
       <p className="text-red-100 text-sm">{errors.email.message}</p>
     )}

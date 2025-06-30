@@ -19,7 +19,7 @@ export const FiltroBusca = () => {
         onSubmit={handleSubmit}
         className="!bg-white !rounded-xl !shadow-xl !px-6 !py-6 !flex !flex-col sm:!flex-row !flex-wrap !gap-6 !items-end !max-w-6xl !w-full border border-gray-200"
       >
-        {/* Filtrar por Preço */}
+        
         <div className="flex !flex-col !w-full sm:!w-[400px]">
           <label className="!text-gray-800 !text-sm !font-semibold mb-1">Filtrar por Preço</label>
           <Input
@@ -36,7 +36,7 @@ export const FiltroBusca = () => {
           </div>
         </div>
 
-        {/* Tipo de imóvel */}
+        
         <div className="flex !flex-col !w-[200px]">
           <label className="!text-gray-800 !text-sm !font-semibold mb-1">Tipo de Imóvel</label>
           <select
@@ -51,7 +51,7 @@ export const FiltroBusca = () => {
           </select>
         </div>
 
-        {/* Cidade */}
+        
         <div className="flex !flex-col !w-[220px]">
           <label className="!text-gray-800 !text-sm !font-semibold mb-1">Cidade</label>
           <select
@@ -65,7 +65,7 @@ export const FiltroBusca = () => {
           </select>
         </div>
 
-        {/* Botão vermelho */}
+       
         <div className="!flex !justify-end w-full sm:w-auto">
           <Button
             type="submit"

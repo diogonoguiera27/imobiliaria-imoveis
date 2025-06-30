@@ -35,17 +35,17 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent className="pt-4">
         <SidebarGroup>
-          {/* LOGO CENTRALIZADA NO TOPO */}
+          
           <div className="flex items-center justify-center mb-6">
             <img src={logoImg} alt={companyName} className="h-12 w-auto" />
           </div>
 
-          {/* NOME DA EMPRESA */}
+          
           <SidebarGroupLabel className="text-cardapiaPrimaryColor font-bold text-lg text-center">
             {companyName}
           </SidebarGroupLabel>
 
-          {/* MENU LATERAL */}
+          
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {

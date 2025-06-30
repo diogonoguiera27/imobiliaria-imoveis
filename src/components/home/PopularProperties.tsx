@@ -9,7 +9,7 @@ const imoveis = [
   {
     id: 1,
     imagem:
-      "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1748063578185-3d68121b11ff?q=80&w=1946&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     titulo: "Parque Amazônia, Goiânia",
     endereco: "Rua Salvador",
     metragem: 75,
@@ -48,7 +48,7 @@ const imoveis = [
   {
     id: 4,
     imagem:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1531971589569-0d9370cbe1e5?q=80&w=1181&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     titulo: "Campeche, Florianópolis",
     endereco: "Rua Coruja Dourada",
     metragem: 75,
@@ -61,7 +61,7 @@ const imoveis = [
   {
     id: 5,
     imagem:
-      "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://plus.unsplash.com/premium_photo-1746246341978-f032a218d2e7?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     titulo: "Nova Esperança, Natal",
     endereco: "Rua do Sol",
     metragem: 90,
@@ -74,7 +74,7 @@ const imoveis = [
   {
     id: 6,
     imagem:
-      "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1704019389380-de15b712656b?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     titulo: "Santa Rosa",
     endereco: "Rua do Sol",
     metragem: 90,
@@ -87,7 +87,7 @@ const imoveis = [
   {
     id: 7,
     imagem:
-      "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1670589953882-b94c9cb380f5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     titulo: "Santa Rosa",
     endereco: "Rua do Sol",
     metragem: 90,

@@ -239,15 +239,15 @@ function Sidebar({
         {...props}
       />
 
-      {/* LOGO + Navegação */}
+      
       <div className="flex items-center gap-6">
         <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
-          {/* HOME */}
+          
           <button onClick={() => navigate("/")} className="hover:underline">
             Home
           </button>
 
-          {/* CONTATO com Modal */}
+         
           <Dialog>
             <DialogTrigger asChild>
               <button className="hover:underline">Contato</button>
@@ -258,7 +258,7 @@ function Sidebar({
           </Dialog>
         </nav>
 
-        {/* LOGO */}
+       
         <div className="flex items-center cursor-pointer justify-center mb-6">
           <img
             src={logoImg}

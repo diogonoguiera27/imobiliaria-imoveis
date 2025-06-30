@@ -88,9 +88,9 @@ const imoveisDestaque = [
 export const CarrosselDestaques: React.FC = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
-  const cardWidth = 460; // largura real do card
-  const cardGap = 16; // gap entre os cards (gap-4)
-  const scrollStep = cardWidth + cardGap; // scroll de 1 card por vez
+  const cardWidth = 460; 
+  const cardGap = 16; 
+  const scrollStep = cardWidth + cardGap; 
 
   useEffect(() => {
     const container = containerRef.current;
