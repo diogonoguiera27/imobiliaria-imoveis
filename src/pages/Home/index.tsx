@@ -1,8 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { BannerInicial } from "@/components/home/HeroBanner";
-import { FiltroBusca } from "@/components/home/SearchFilter";
-import { HighlightSection } from "@/components/home/HighlightSection";
-import { Footer } from "@/components/Footer/Footer";
+import { HeroBanner,SearchFilter,HighlightSection} from "@/components/Home/";
+import { Footer } from "@/components/Footer";
 
 export function Home() {
   return (
@@ -10,8 +8,8 @@ export function Home() {
       <div className="min-h-screen flex flex-col overflow-x-hidden">
         <main className="flex-grow">
           <SidebarTrigger />
-          <BannerInicial />
-          <FiltroBusca />
+          <HeroBanner />
+          <SearchFilter />
           <HighlightSection />
         </main>
         <Footer />

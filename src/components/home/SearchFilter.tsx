@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-export const FiltroBusca = () => {
+ const FiltroBusca = () => {
   const [valorMax, setValorMax] = useState(3000000);
   const [valorMin] = useState(500000);
   const [tipo, setTipo] = useState("");
@@ -78,3 +78,5 @@ export const FiltroBusca = () => {
     </div>
   );
 };
+
+export default FiltroBusca ;

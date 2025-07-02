@@ -85,7 +85,7 @@ const imoveisDestaque = [
   },
 ];
 
-export const CarrosselDestaques: React.FC = () => {
+ const CarrosselDestaques: React.FC = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const cardWidth = 460; 
@@ -189,3 +189,5 @@ export const CarrosselDestaques: React.FC = () => {
 </section>
   );
 };
+
+export default CarrosselDestaques;

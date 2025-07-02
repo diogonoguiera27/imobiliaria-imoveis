@@ -1,7 +1,7 @@
-import { ContatoCard } from "../ContactFormCard/ContactFormCard";
-import { DescricaoImovel } from "../PropertyDescriptionCard/PropertyDescriptionCard";
+import { ContatoCard } from "../ContactFormCard";
+import { DescricaoImovel } from "../PropertyDescriptionCard";
 
-export const DescricaoEContato = () => {
+ const DescricaoEContato = () => {
   return (
     <section className="w-full px-4 mt-2">
       <div className="max-w-[1280px] !mx-auto flex flex-col lg:flex-row !gap-6 items-start">
@@ -15,3 +15,5 @@ export const DescricaoEContato = () => {
     </section>
   );
 };
+
+export default DescricaoEContato;

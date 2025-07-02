@@ -1,7 +1,7 @@
 import { DialogContent } from "@/components/ui/dialog";
-import { ContatoCard } from "../ContactFormCard/ContactFormCard";
+import { ContatoCard } from "../ContactFormCard";
 
-export default function ContactModal() {
+ function ContactModal() {
   return (
     <DialogContent className="!max-w-md !bg-transparent !shadow-none !p-0">
       <div className="px-4">
@@ -10,3 +10,5 @@ export default function ContactModal() {
     </DialogContent>
   );
 }
+
+export default ContactModal;

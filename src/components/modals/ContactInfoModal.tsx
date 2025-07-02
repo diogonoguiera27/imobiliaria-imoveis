@@ -1,7 +1,7 @@
 import { DialogContent } from "@/components/ui/dialog";
 import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 
-export default function ContatoModal() {
+function ContatoModal() {
   return (
     <DialogContent className="!bg-white !rounded-xl !shadow-xl !max-w-md !mx-auto !p-6">
       <h2 className="!text-xl !font-bold !text-gray-800 mb-4">Entre em Contato</h2>
@@ -46,3 +46,5 @@ export default function ContatoModal() {
     </DialogContent>
   );
 }
+
+export default ContatoModal;

@@ -2,7 +2,7 @@ type GaleriaInferiorProps = {
   imagensInferiores: { src: string; alt: string }[];
 };
 
-export const GaleriaInferior = ({ imagensInferiores }: GaleriaInferiorProps) => {
+const GaleriaInferior = ({ imagensInferiores }: GaleriaInferiorProps) => {
   return (
     <section className="!w-screen mt-6 px-4 ">
       <div className="!grid !md:grid-cols-4 !gap-4 !max-w-7xl !mx-auto !items-start">
@@ -25,3 +25,5 @@ export const GaleriaInferior = ({ imagensInferiores }: GaleriaInferiorProps) => 
     </section>
   );
 };
+
+export default GaleriaInferior;

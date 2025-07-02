@@ -3,7 +3,7 @@ import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { Dialog } from "../ui/dialog";
-import { ContactModal, ContactPhoneModal } from "@/components/modals";
+import { MessageFormModal,PhoneContactModal} from "@/components/Modals";
 
 const imoveisPromocao = [
   {
@@ -99,7 +99,7 @@ const imoveisPromocao = [
   },
 ];
 
-export const ImoveisPromocao = () => {
+ const ImoveisPromocao = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerPage, setCardsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(0);
@@ -264,11 +264,13 @@ export const ImoveisPromocao = () => {
         </div>
       </div>
       <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
-        <ContactModal />
+        <MessageFormModal />
       </Dialog>
       <Dialog open={showPhoneModal} onOpenChange={setShowPhoneModal}>
-        <ContactPhoneModal />
+        <PhoneContactModal />
       </Dialog>
     </section>
   );
 };
+
+export default ImoveisPromocao;

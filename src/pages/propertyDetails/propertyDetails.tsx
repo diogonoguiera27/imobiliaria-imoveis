@@ -2,13 +2,15 @@ import img1 from "@/assets/a.jpg";
 import img2 from "@/assets/b.jpeg";
 import img3 from "@/assets/c.jpg";
 
-import { Footer } from "@/components/Footer/Footer";
+import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { ImoveisPopulares } from "@/components/home/PopularProperties";
-import { CarrosselPrincipal } from "@/components/propertyDetails/MainCarousel";
-import { GaleriaInferior } from "@/components/propertyDetails/ImageGallery";
-import { DescricaoEContato } from "@/components/propertyDetails/PropertyInfoAndContact";
-import { ImoveisSimilares } from "@/components/propertyDetails/SimilarProperties";
+import { PopularProperties} from "@/components/Home";
+import {
+  ImageGallery,
+  MainCarousel,
+  PropertyInfoAndContact,
+  SimilarProperties,
+} from "@/components/PropertyDetails/index";
 
 export function ImovelDetalhes() {
   const imagens = [
@@ -28,11 +30,11 @@ export function ImovelDetalhes() {
       <div className="min-h-screen flex flex-col">
         <SidebarTrigger />
         <main className="flex-grow">
-          <CarrosselPrincipal imagens={imagens} />
-          <GaleriaInferior imagensInferiores={imagensInferiores} />
-          <DescricaoEContato />
-          <ImoveisSimilares />
-          <ImoveisPopulares />
+          <MainCarousel imagens={imagens} />
+          <ImageGallery imagensInferiores={imagensInferiores} />
+          <PropertyInfoAndContact />
+          <SimilarProperties />
+          <PopularProperties/>
         </main>
         <Footer />
       </div>

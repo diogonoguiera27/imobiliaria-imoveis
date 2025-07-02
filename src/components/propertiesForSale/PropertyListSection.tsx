@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { PropertyCard } from "./PropertyCard";
-import { ContactModal, ContactPhoneModal } from "@/components/modals";
+import { PropertyCard } from "@/components/PropertiesForSale";
+import { MessageFormModal,PhoneContactModal} from "@/components/Modals";
 import { Dialog } from "@/components/ui/dialog";
 
 export type Imovel = {
@@ -26,7 +26,7 @@ type PropertyListSectionProps = {
   onOpenPhoneModal: () => void;
 };
 
-export const PropertyListSection: FC<PropertyListSectionProps> = ({
+ const PropertyListSection: FC<PropertyListSectionProps> = ({
   imoveisVenda,
   showContactModal,
   showPhoneModal,
@@ -57,12 +57,14 @@ export const PropertyListSection: FC<PropertyListSectionProps> = ({
       </div>
 
       <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
-        <ContactModal />
+        <MessageFormModal />
       </Dialog>
 
       <Dialog open={showPhoneModal} onOpenChange={setShowPhoneModal}>
-        <ContactPhoneModal />
+        <PhoneContactModal/>
       </Dialog>
     </section>
   );
 };
+
+export default PropertyListSection;

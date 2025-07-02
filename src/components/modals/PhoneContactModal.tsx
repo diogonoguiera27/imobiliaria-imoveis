@@ -2,7 +2,7 @@
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { FaPhoneAlt, FaWhatsapp, FaUserTie, FaClock } from "react-icons/fa";
 
-export default function ContactPhoneModal() {
+ function ContactPhoneModal() {
   return (
     <DialogContent className="!max-w-md !rounded-xl !p-6">
       <DialogHeader>
@@ -46,3 +46,5 @@ export default function ContactPhoneModal() {
     </DialogContent>
   );
 }
+
+export default ContactPhoneModal;

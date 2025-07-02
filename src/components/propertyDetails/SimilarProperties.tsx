@@ -1,4 +1,4 @@
-export const ImoveisSimilares = () => {
+ const ImoveisSimilares = () => {
   return (
     <section className="w-full !px-4 !mt-16 !mb-6">
       <div className="!max-w-6xl !mx-auto !mt-4 text-center">
@@ -10,3 +10,5 @@ export const ImoveisSimilares = () => {
     </section>
   );
 };
+
+export default ImoveisSimilares;

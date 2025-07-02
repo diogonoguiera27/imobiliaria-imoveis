@@ -1,17 +1,15 @@
-import { CarrosselDestaques } from "@/components/home/FeaturedCarousel";
-import { ImoveisPopulares } from "@/components/home/PopularProperties";
-import { ImoveisPromocao } from "@/components/home/DiscountedProperties";
+import { DiscountedProperties,FeaturedCarousel,PopularProperties,} from "@/components/Home";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-export function HighlightSection() {
+ function HighlightSection() {
   const navigate = useNavigate();
 
   return (
     <section className="!p-4">
-      <CarrosselDestaques />
-      <ImoveisPopulares />
-      <ImoveisPromocao />
+      <FeaturedCarousel />
+      <PopularProperties />
+      <DiscountedProperties />
 
       <div className="w-full !flex !justify-center !mt-12">
         <Button
@@ -24,3 +22,5 @@ export function HighlightSection() {
     </section>
   );
 }
+
+export default HighlightSection;

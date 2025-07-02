@@ -5,7 +5,7 @@ type CarrosselProps = {
   imagens: { src: string; alt: string }[];
 };
 
-export const CarrosselPrincipal = ({ imagens }: CarrosselProps) => {
+ const CarrosselPrincipal = ({ imagens }: CarrosselProps) => {
   return (
     <section className="w-full overflow-hidden">
       <Carousel opts={{ align: "start" }} className="w-full">
@@ -39,3 +39,5 @@ export const CarrosselPrincipal = ({ imagens }: CarrosselProps) => {
     </section>
   );
 };
+
+export default  CarrosselPrincipal;

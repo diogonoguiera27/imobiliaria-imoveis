@@ -20,7 +20,7 @@ interface PropertyCardProps {
   onOpenPhoneModal: () => void;
 }
 
-export const PropertyCard = ({ item, onOpenContactModal, onOpenPhoneModal }: PropertyCardProps) => {
+const PropertyCard = ({ item, onOpenContactModal, onOpenPhoneModal }: PropertyCardProps) => {
   return (
     <div
       key={item.id}
@@ -99,3 +99,5 @@ export const PropertyCard = ({ item, onOpenContactModal, onOpenPhoneModal }: Pro
     </div>
   );
 };
+
+export default PropertyCard;

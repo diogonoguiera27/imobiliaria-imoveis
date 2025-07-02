@@ -28,7 +28,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { ContatoModal } from "@/components/modals"; 
+import { ContactInfoModal } from "@/components/Modals"; 
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -253,7 +253,7 @@ function Sidebar({
               <button className="hover:underline">Contato</button>
             </DialogTrigger>
             <DialogContent className="max-w-lg">
-              <ContatoModal />
+              <ContactInfoModal />
             </DialogContent>
           </Dialog>
         </nav>

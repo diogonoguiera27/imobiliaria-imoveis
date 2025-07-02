@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Footer } from "@/components/Footer/Footer";
+import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog } from "@/components/ui/dialog";
-import { ContactModal, ContactPhoneModal } from "@/components/modals";
-import { PropertyListSection } from "@/components/propertiesForSale";
-import Pagination from "@/components/Pagination/Pagination";
+import { MessageFormModal,PhoneContactModal } from "@/components/Modals";
+import { PropertyListSection } from "@/components/PropertiesForSale";
+import Pagination from "@/components/Pagination";
 
 const imoveisVenda = [
   {
@@ -43,7 +43,7 @@ const imoveisVenda = [
     quartos: 7,
     banheiros: 5,
     vagas: 2,
-    preco: "R$ 3.000.000",
+    preco: "3000,60",
     infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
   },
   {
@@ -163,10 +163,10 @@ export const ListaImoveisVenda = () => {
           </div>
 
           <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
-            <ContactModal />
+            <MessageFormModal />
           </Dialog>
           <Dialog open={showPhoneModal} onOpenChange={setShowPhoneModal}>
-            <ContactPhoneModal />
+            <PhoneContactModal />
           </Dialog>
         </main>
 

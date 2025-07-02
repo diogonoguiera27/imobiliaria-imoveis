@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaBath, FaBed, FaCar, FaRulerCombined } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
-import { ContactModal, ContactPhoneModal } from "@/components/modals";
+import { MessageFormModal,PhoneContactModal } from "@/components/Modals";
 import { Dialog } from "../ui/dialog";
 
 const imoveis = [
@@ -99,7 +99,7 @@ const imoveis = [
   },
 ];
 
-export const ImoveisPopulares = () => {
+ const ImoveisPopulares = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerPage, setCardsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(0);
@@ -253,12 +253,14 @@ export const ImoveisPopulares = () => {
       </div>
 
       <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
-        <ContactModal />
+        <MessageFormModal />
       </Dialog>
 
       <Dialog open={showPhoneModal} onOpenChange={setShowPhoneModal}>
-        <ContactPhoneModal />
+        <PhoneContactModal />
       </Dialog>
     </section>
   );
 };
+
+export default ImoveisPopulares;
