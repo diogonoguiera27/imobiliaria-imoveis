@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog } from "@/components/ui/dialog";
-import { MessageFormModal,PhoneContactModal } from "@/components/Modals";
+import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 import { PropertyListSection } from "@/components/PropertiesForSale";
 import Pagination from "@/components/Pagination";
 
@@ -137,9 +137,161 @@ const imoveisVenda = [
     preco: "R$ 380.000",
     infoExtra: "Cond. R$ 250",
   },
+  {
+    id: 11,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 12,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 13,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 14,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 15,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 16,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 17,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 18,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 19,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 20,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
+  {
+    id: 21,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "R$ 380.000",
+    infoExtra: "Cond. R$ 250",
+  },
 ];
 
+const ITEMS_PER_PAGE = 12;
+
 export const ListaImoveisVenda = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(imoveisVenda.length / ITEMS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentImoveis = imoveisVenda.slice(startIndex, endIndex);
+
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   return (
@@ -149,7 +301,7 @@ export const ListaImoveisVenda = () => {
 
         <main className="flex-grow !pt-[60px]">
           <PropertyListSection
-            imoveisVenda={imoveisVenda}
+            imoveisVenda={currentImoveis}
             showContactModal={showContactModal}
             showPhoneModal={showPhoneModal}
             setShowContactModal={setShowContactModal}
@@ -159,7 +311,11 @@ export const ListaImoveisVenda = () => {
           />
 
           <div className="!w-full !flex  !mt-10 !justify-between">
-            <Pagination />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
 
           <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
