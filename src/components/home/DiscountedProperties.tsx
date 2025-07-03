@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { Dialog } from "../ui/dialog";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
-import { Imovel } from "@/types/imovel";
+import { Imovel } from "@/types";
 
 const imoveisPromocao: Imovel[] = [
   {

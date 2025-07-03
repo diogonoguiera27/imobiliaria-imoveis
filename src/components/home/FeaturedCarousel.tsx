@@ -3,7 +3,7 @@ import { FaBed, FaCar, FaRulerCombined } from "react-icons/fa";
 
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { ImovelCarrossel } from "@/types/imovel";
+import { ImovelCarrossel } from "@/types";
 const imoveisDestaque: ImovelCarrossel[] = [
   {
     id: 1,

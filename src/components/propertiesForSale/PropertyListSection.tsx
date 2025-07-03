@@ -2,7 +2,7 @@ import { FC } from "react";
 import { PropertyCard } from "@/components/PropertiesForSale";
 import { MessageFormModal,PhoneContactModal} from "@/components/Modals";
 import { Dialog } from "@/components/ui/dialog";
-import type { Imovel } from "@/types/imovel";
+import type { Imovel } from "@/types";
 
 type PropertyListSectionProps = {
   imoveisVenda: Imovel[];

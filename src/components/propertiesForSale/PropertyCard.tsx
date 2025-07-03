@@ -2,7 +2,7 @@
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Imovel } from "@/types/imovel";
+import { Imovel } from "@/types";
 
 interface PropertyCardProps {
   item: Imovel;

@@ -5,7 +5,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 import { PropertyListSection } from "@/components/PropertiesForSale";
 import Pagination from "@/components/Pagination";
-import { Imovel } from "@/types/imovel";
+import { Imovel } from "@/types";
 
 const imoveisVenda: Imovel[] = [
   {
