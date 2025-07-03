@@ -5,8 +5,9 @@ import { Dialog } from "@/components/ui/dialog";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 import { PropertyListSection } from "@/components/PropertiesForSale";
 import Pagination from "@/components/Pagination";
+import { Imovel } from "@/types/imovel";
 
-const imoveisVenda = [
+const imoveisVenda: Imovel[] = [
   {
     id: 1,
     imagem:
@@ -17,8 +18,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "15000,00",
     infoExtra: "",
+    tipoNegocio: "aluguel" ,
+    tipo: "Apartamento",
   },
   {
     id: 2,
@@ -30,8 +33,10 @@ const imoveisVenda = [
     quartos: 4,
     banheiros: 7,
     vagas: 4,
-    preco: "Aluguel de R$ 15.000/mês",
+    preco: "15000,00",
     infoExtra: "Cond. R$ 3.000",
+    tipoNegocio: "venda", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 3,
@@ -45,6 +50,8 @@ const imoveisVenda = [
     vagas: 2,
     preco: "3000,60",
     infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 4,
@@ -56,8 +63,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "15000,00",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 5,
@@ -69,8 +78,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "15000,00",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel" ,// <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 6,
@@ -82,8 +93,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "15000,00",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 7,
@@ -95,8 +108,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "15000,00",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 8,
@@ -108,8 +123,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "3000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 9,
@@ -121,8 +138,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "3000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 10,
@@ -134,8 +153,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "3000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 11,
@@ -147,8 +168,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "3000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 12,
@@ -160,8 +183,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel" ,// <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 13,
@@ -173,8 +198,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 14,
@@ -186,8 +213,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco:"2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 15,
@@ -199,8 +228,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel",// <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 16,
@@ -212,8 +243,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "1000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 17,
@@ -225,8 +258,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 18,
@@ -238,8 +273,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 19,
@@ -251,8 +288,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 20,
@@ -264,8 +303,10 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
   {
     id: 21,
@@ -277,8 +318,70 @@ const imoveisVenda = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "2000,60",
     infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
+  },
+  {
+    id: 22,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "2000,60",
+    infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
+  },
+  {
+    id: 23,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "2000,60",
+    infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel" ,// <-- adicionado aqui
+    tipo: "Apartamento",
+  },
+  {
+    id: 24,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "2000,60",
+    infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
+  },
+   {
+    id: 25,
+    imagem:
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    titulo: "Jardins Marselha, Aparecida de Goiânia",
+    endereco: "Avenida Notredame",
+    metragem: 181,
+    quartos: 3,
+    banheiros: 4,
+    vagas: 2,
+    preco: "2000,60",
+    infoExtra: "Cond. R$ 250",
+    tipoNegocio: "aluguel", // <-- adicionado aqui
+    tipo: "Apartamento",
   },
 ];
 

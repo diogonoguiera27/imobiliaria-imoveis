@@ -2,25 +2,19 @@
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Imovel } from "@/types/imovel";
 
 interface PropertyCardProps {
-  item: {
-    id: number;
-    imagem: string;
-    titulo: string;
-    endereco: string;
-    metragem: number;
-    quartos: number;
-    banheiros: number;
-    vagas: number;
-    preco: string;
-    infoExtra?: string;
-  };
+  item: Imovel;
   onOpenContactModal: () => void;
   onOpenPhoneModal: () => void;
 }
 
-const PropertyCard = ({ item, onOpenContactModal, onOpenPhoneModal }: PropertyCardProps) => {
+const PropertyCard = ({
+  item,
+  onOpenContactModal,
+  onOpenPhoneModal,
+}: PropertyCardProps) => {
   return (
     <div
       key={item.id}
@@ -41,6 +35,9 @@ const PropertyCard = ({ item, onOpenContactModal, onOpenPhoneModal }: PropertyCa
             {item.titulo}
           </h3>
           <p className="!text-sm !text-gray-500 break-words">{item.endereco}</p>
+          <p className="text-xs font-semibold uppercase text-red-600">
+            {item.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-x-3 gap-y-2 !text-gray-600 !text-sm">
@@ -64,6 +61,7 @@ const PropertyCard = ({ item, onOpenContactModal, onOpenPhoneModal }: PropertyCa
 
         <div className="flex justify-between items-center mt-3">
           <div>
+            <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
             <p className="!text-base !font-bold !text-gray-900">{item.preco}</p>
             {item.infoExtra && (
               <p className="!text-xs !text-gray-500">{item.infoExtra}</p>

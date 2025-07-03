@@ -4,8 +4,9 @@ import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 import { Dialog } from "../ui/dialog";
+import { Imovel } from "@/types/imovel";
 
-const imoveis = [
+const imoveis: Imovel[] = [
   {
     id: 1,
     imagem:
@@ -16,8 +17,10 @@ const imoveis = [
     quartos: 3,
     banheiros: 2,
     vagas: 2,
-    preco: "Aluguel de R$ 2.200/mês",
+    preco: "2200.00",
     infoExtra: "Cond. R$ 480",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 2,
@@ -29,8 +32,10 @@ const imoveis = [
     quartos: 1,
     banheiros: 1,
     vagas: 1,
-    preco: "R$ 600/mês",
+    preco: "2200.00",
     infoExtra: "",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 3,
@@ -42,8 +47,10 @@ const imoveis = [
     quartos: 3,
     banheiros: 2,
     vagas: 1,
-    preco: "R$ 350.000",
+    preco: "2200.00",
     infoExtra: "",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 4,
@@ -55,8 +62,10 @@ const imoveis = [
     quartos: 2,
     banheiros: 2,
     vagas: 1,
-    preco: "Aluguel de R$ 3.300/mês",
+    preco: "2200.00",
     infoExtra: "IPTU R$ 45",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 5,
@@ -68,8 +77,10 @@ const imoveis = [
     quartos: 2,
     banheiros: 1,
     vagas: 2,
-    preco: "R$ 280.000",
+    preco: "600.00",
     infoExtra: "Cond. R$ 320",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 6,
@@ -81,8 +92,10 @@ const imoveis = [
     quartos: 2,
     banheiros: 1,
     vagas: 2,
-    preco: "R$ 280.000",
+    preco: "600.00",
     infoExtra: "Cond. R$ 320",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 7,
@@ -94,8 +107,10 @@ const imoveis = [
     quartos: 2,
     banheiros: 1,
     vagas: 2,
-    preco: "R$ 280.000",
+    preco: "600.00",
     infoExtra: "Cond. R$ 320",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
 ];
 
@@ -179,6 +194,9 @@ const ImoveisPopulares = () => {
                       <p className="text-sm text-gray-500 break-words">
                         {item.endereco}
                       </p>
+                      <p className="text-xs font-semibold uppercase text-red-600">
+                        {item.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
+                      </p>
                     </div>
 
                     <div className="flex flex-wrap gap-x-3 gap-y-2 text-gray-600 text-sm">
@@ -202,6 +220,7 @@ const ImoveisPopulares = () => {
 
                     <div className="flex justify-between items-center mt-3">
                       <div>
+                        <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
                         <p className="text-base font-bold text-gray-900">
                           {item.preco}
                         </p>

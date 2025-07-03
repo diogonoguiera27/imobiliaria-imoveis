@@ -2,19 +2,7 @@ import { FC } from "react";
 import { PropertyCard } from "@/components/PropertiesForSale";
 import { MessageFormModal,PhoneContactModal} from "@/components/Modals";
 import { Dialog } from "@/components/ui/dialog";
-
-export type Imovel = {
-  id: number;
-  imagem: string;
-  titulo: string;
-  endereco: string;
-  metragem: number;
-  quartos: number;
-  banheiros: number;
-  vagas: number;
-  preco: string;
-  infoExtra: string;
-};
+import type { Imovel } from "@/types/imovel";
 
 type PropertyListSectionProps = {
   imoveisVenda: Imovel[];

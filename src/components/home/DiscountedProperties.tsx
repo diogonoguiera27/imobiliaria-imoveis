@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { Dialog } from "../ui/dialog";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
+import { Imovel } from "@/types/imovel";
 
-const imoveisPromocao = [
+const imoveisPromocao: Imovel[] = [
   {
     id: 1,
     imagem:
@@ -16,8 +17,10 @@ const imoveisPromocao = [
     quartos: 3,
     banheiros: 4,
     vagas: 2,
-    preco: "R$ 380.000",
+    preco: "65000,00",
     infoExtra: "",
+    tipoNegocio: "venda",
+    tipo: "Apartamento",
   },
   {
     id: 2,
@@ -29,8 +32,10 @@ const imoveisPromocao = [
     quartos: 4,
     banheiros: 7,
     vagas: 4,
-    preco: " R$ 15.000/mês",
+    preco: "15000,00",
     infoExtra: "Cond. R$ 3.000",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 3,
@@ -42,8 +47,10 @@ const imoveisPromocao = [
     quartos: 7,
     banheiros: 5,
     vagas: 2,
-    preco: "R$ 3.000.000",
+    preco: "70000,00",
     infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 4,
@@ -55,8 +62,10 @@ const imoveisPromocao = [
     quartos: 7,
     banheiros: 5,
     vagas: 2,
-    preco: "R$ 3.000.000",
+    preco: "55000,00",
     infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 5,
@@ -68,8 +77,10 @@ const imoveisPromocao = [
     quartos: 7,
     banheiros: 5,
     vagas: 2,
-    preco: "R$ 3.000.000",
+    preco: "45000,00",
     infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 6,
@@ -81,8 +92,10 @@ const imoveisPromocao = [
     quartos: 7,
     banheiros: 5,
     vagas: 2,
-    preco: "R$ 3.000.000",
+    preco: "25000,00",
     infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
   {
     id: 7,
@@ -94,8 +107,10 @@ const imoveisPromocao = [
     quartos: 7,
     banheiros: 5,
     vagas: 2,
-    preco: "R$ 3.000.000",
+    preco: "15000,00",
     infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
+    tipoNegocio: "aluguel",
+    tipo: "Apartamento",
   },
 ];
 
@@ -163,7 +178,6 @@ const ImoveisPromocao = () => {
                 msOverflowStyle: "none",
               }}
             >
-              
               {imoveisPromocao.map((item) => (
                 <div
                   key={item.id}
@@ -183,6 +197,9 @@ const ImoveisPromocao = () => {
                       </h3>
                       <p className="text-sm text-gray-500 break-words">
                         {item.endereco}
+                      </p>
+                      <p className="text-xs font-semibold uppercase text-red-600">
+                        {item.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
                       </p>
                     </div>
 
@@ -208,6 +225,7 @@ const ImoveisPromocao = () => {
                     {/* Preço e coração */}
                     <div className="flex justify-between items-center mt-3">
                       <div>
+                        <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
                         <p className="text-base font-bold text-gray-900">
                           {item.preco}
                         </p>

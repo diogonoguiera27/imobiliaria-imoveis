@@ -3,8 +3,8 @@ import { FaBed, FaCar, FaRulerCombined } from "react-icons/fa";
 
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-
-const imoveisDestaque = [
+import { ImovelCarrossel } from "@/types/imovel";
+const imoveisDestaque: ImovelCarrossel[] = [
   {
     id: 1,
     imagem:
@@ -17,6 +17,7 @@ const imoveisDestaque = [
     quartos: 3,
     vagas: 1,
     preco: "R$ 900.000",
+    tipoNegocio: "venda",
   },
   {
     id: 2,
@@ -30,6 +31,7 @@ const imoveisDestaque = [
     quartos: 3,
     vagas: 2,
     preco: "R$ 3.100.000",
+    tipoNegocio: "venda",
   },
   {
     id: 3,
@@ -43,6 +45,7 @@ const imoveisDestaque = [
     quartos: 2,
     vagas: 1,
     preco: "R$ 750.000",
+    tipoNegocio: "venda",
   },
   {
     id: 4,
@@ -56,12 +59,13 @@ const imoveisDestaque = [
     quartos: 2,
     vagas: 1,
     preco: "R$ 690.000",
+    tipoNegocio: "venda",
   },
   {
     id: 5,
     imagem:
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
-    tipo: "Casa",
+    tipo: "Casa Residencial",
     bairro: "Barra da Tijuca",
     cidade: "Rio de Janeiro",
     endereco: "Av. das Américas",
@@ -69,12 +73,13 @@ const imoveisDestaque = [
     quartos: 4,
     vagas: 3,
     preco: "R$ 2.700.000",
+    tipoNegocio: "venda",
   },
   {
     id: 6,
     imagem:
       "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
-    tipo: "Casa",
+    tipo: "Casa Residencial",
     bairro: "Barra da Tijuca",
     cidade: "Rio de Janeiro",
     endereco: "Av. das Américas",
@@ -82,15 +87,16 @@ const imoveisDestaque = [
     quartos: 4,
     vagas: 3,
     preco: "R$ 2.700.000",
+    tipoNegocio: "venda",
   },
 ];
 
- const CarrosselDestaques: React.FC = () => {
+const CarrosselDestaques: React.FC = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
-  const cardWidth = 460; 
-  const cardGap = 16; 
-  const scrollStep = cardWidth + cardGap; 
+  const cardWidth = 460;
+  const cardGap = 16;
+  const scrollStep = cardWidth + cardGap;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -121,74 +127,78 @@ const imoveisDestaque = [
   return (
     <section className="w-full px-4 pt-2   !mt-0">
       <div className="!w-full !max-w-[80%] !mx-auto">
-  <div className="w-full flex justify-center mb-0">
-    <h2 className="text-6xl font-extrabold text-black !text-center !max-w-screen-lg !text-neutral-120 ">
-      Imóveis em Destaque
-    </h2>
-  </div>
+        <div className="w-full flex justify-center mb-0">
+          <h2 className="text-6xl font-extrabold text-black !text-center !max-w-screen-lg !text-neutral-120 ">
+            Imóveis em Destaque
+          </h2>
+        </div>
 
-  <div className="w-full flex justify-center">
-    <div className="relative max-w-[1412px] w-full">
-      <div
-        ref={containerRef}
-        className="flex gap-4 overflow-x-hidden scroll-smooth items-center w-full hide-scrollbar"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        {imoveisDestaque.map((imovel) => (
-          <div
-            key={imovel.id}
-            className="w-[460px] flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden border border-gray-700 hover:scale-[1.01] transition"
-          >
-            <img
-              src={imovel.imagem}
-              alt={imovel.bairro}
-              className="w-full !h-[200px] object-cover"
-            />
-            <div className="h-[190px] !p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl">
-              <div className="flex flex-col gap-2 text-left">
-                <p className="text-xs text-black font-semibold uppercase">
-                  {imovel.tipo}
-                </p>
-                <h3 className="text-base font-bold text-gray-800 leading-snug">
-                  {imovel.bairro}, {imovel.cidade}
-                </h3>
-                <p className="text-sm text-gray-500">{imovel.endereco}</p>
-              </div>
+        <div className="w-full flex justify-center">
+          <div className="relative max-w-[1412px] w-full">
+            <div
+              ref={containerRef}
+              className="flex gap-4 overflow-x-hidden scroll-smooth items-center w-full hide-scrollbar"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {imoveisDestaque.map((imovel) => (
+                <div
+                  key={imovel.id}
+                  className="w-[460px] flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden border border-gray-700 hover:scale-[1.01] transition"
+                >
+                  <img
+                    src={imovel.imagem}
+                    alt={imovel.bairro}
+                    className="w-full !h-[200px] object-cover"
+                  />
+                  <div className="h-[220px] !p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl">
+                    <div className="flex flex-col gap-2 text-left">
+                      <p className="text-xs text-black font-semibold uppercase">
+                        {imovel.tipo}
+                      </p>
+                      <h3 className="text-base font-bold text-gray-800 leading-snug">
+                        {imovel.bairro}, {imovel.cidade}
+                      </h3>
+                      <p className="text-sm text-gray-500">{imovel.endereco}</p>
+                      <p className="text-xs font-semibold uppercase text-red-600">
+                        {imovel.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
+                      </p>
+                    </div>
 
-              <div className="flex flex-wrap gap-x-3 gap-y-2 text-gray-700 text-sm mt-1">
-                <div className="flex items-center gap-1">
-                  <FaRulerCombined className="text-[15px]" />
-                  {imovel.metragem} m²
+                    <div className="flex flex-wrap gap-x-3 gap-y-2 text-gray-700 text-sm mt-1">
+                      <div className="flex items-center gap-1">
+                        <FaRulerCombined className="text-[15px]" />
+                        {imovel.metragem} m²
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <FaBed className="text-[15px]" />
+                        {imovel.quartos}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <FaCar className="text-[15px]" />
+                        {imovel.vagas}
+                      </div>
+                      <div className="ml-auto flex items-center gap-1">
+                        <p className="text-base font-bold text-green-600 mt-1">
+                          {imovel.preco}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col !gap-1 !px-4 !pb-3">
+                      <Button
+                        onClick={() => navigate("/imovel/:id")}
+                        className="!text-sm !font-semibold !text-white !bg-red-500 !px-4 !py-1 !rounded hover:!bg-red-700 transition-colors duration-200 "
+                      >
+                        Ver mais
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <FaBed className="text-[15px]" />
-                  {imovel.quartos}
-                </div>
-                <div className="flex items-center gap-1">
-                  <FaCar className="text-[15px]" />
-                  {imovel.vagas}
-                </div>
-                <div className="ml-auto flex items-center gap-1">
-                  <p className="text-base font-bold text-green-600 mt-1">
-                    {imovel.preco}
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col !gap-1 !px-4 !pb-3">
-                <Button 
-                onClick={()=>navigate("/imovel/:id")}
-                className="!text-sm !font-semibold !text-white !bg-red-500 !px-4 !py-1 !rounded hover:!bg-red-700 transition-colors duration-200 ">
-                  Ver mais
-                </Button>
-              </div>
+              ))}
             </div>
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-</section>
+    </section>
   );
 };
 
