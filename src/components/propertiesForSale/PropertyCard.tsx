@@ -24,7 +24,7 @@ const PropertyCard = ({
       <div className="w-full !h-[180px] !overflow-hidden">
         <img
           src={item.imagem}
-          alt={item.titulo}
+          alt={`${item.tipo} em ${item.bairro}, ${item.cidade}`}
           className="w-full h-full !object-cover !block"
         />
       </div>
@@ -32,7 +32,7 @@ const PropertyCard = ({
       <div className="!p-4 !bg-gray-100 !border-t !border-gray-800 flex flex-col justify-between gap-4 !rounded-b-xl flex-1">
         <div className="flex flex-col gap-2 text-left">
           <h3 className="!text-base !font-semibold !text-gray-900 !leading-snug break-words">
-            {item.titulo}
+            {item.bairro}, {item.cidade}
           </h3>
           <p className="!text-sm !text-gray-500 break-words">{item.endereco}</p>
           <p className="text-xs font-semibold uppercase text-red-600">
@@ -62,7 +62,7 @@ const PropertyCard = ({
         <div className="flex justify-between items-center mt-3">
           <div>
             <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
-            <p className="!text-base !font-bold !text-gray-900">{item.preco}</p>
+            <p className="!text-base !font-bold !text-gray-900"> R$ {item.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
             {item.infoExtra && (
               <p className="!text-xs !text-gray-500">{item.infoExtra}</p>
             )}

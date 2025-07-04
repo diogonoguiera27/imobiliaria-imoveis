@@ -118,7 +118,7 @@ const ImoveisPopulares = () => {
                       <div>
                         <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
                         <p className="text-base font-bold text-gray-900">
-                          {item.preco}
+                          R$ {item.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                         </p>
                         {item.infoExtra && (
                           <p className="text-xs text-gray-500">

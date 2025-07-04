@@ -97,7 +97,7 @@ const CarrosselDestaques: React.FC = () => {
                       </div>
                       <div className="ml-auto flex items-center gap-1">
                         <p className="text-base font-bold text-green-600 mt-1">
-                          {imovel.preco}
+                           R$ {imovel.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                         </p>
                       </div>
                     </div>
