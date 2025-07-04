@@ -30,7 +30,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo}: Props) => {
   };
 
   return (
-    <div className="w-full !flex !justify-start !-mt-[120px] z-10 !relative !px-10">
+    <div className="w-full !flex !justify-center !-mt-[120px] z-10 !relative !px-10">
       <form
         onSubmit={handleSubmit}
         className="!bg-white !rounded-xl !shadow-xl !px-6 !py-6 !flex !flex-col sm:!flex-row !flex-wrap !gap-6 !items-end !max-w-6xl !w-full border border-gray-200"
