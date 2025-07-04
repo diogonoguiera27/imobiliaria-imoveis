@@ -5,116 +5,12 @@ import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { Dialog } from "../ui/dialog";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 import { Imovel } from "@/types";
+import { imoveis as todosImoveis } from "@/data/imovel";
 
-const imoveisPromocao: Imovel[] = [
-  {
-    id: 1,
-    imagem:
-      "https://images.unsplash.com/photo-1717167398817-121e3c283dbb?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    titulo: "Jardins Marselha, Aparecida de Goiânia",
-    endereco: "Avenida Notredame",
-    metragem: 181,
-    quartos: 3,
-    banheiros: 4,
-    vagas: 2,
-    preco: "65000,00",
-    infoExtra: "",
-    tipoNegocio: "venda",
-    tipo: "Apartamento",
-  },
-  {
-    id: 2,
-    imagem:
-      "https://images.unsplash.com/photo-1682502524896-6d78b9e8413a?q=80&w=1183&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    titulo: "Vila Darcy Penteado, São Roque",
-    endereco: "Estrada Darcy Penteado",
-    metragem: 600,
-    quartos: 4,
-    banheiros: 7,
-    vagas: 4,
-    preco: "15000,00",
-    infoExtra: "Cond. R$ 3.000",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 3,
-    imagem:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTc2fHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
-    titulo: "Guarajuba (Monte Gordo), Camaçari",
-    endereco: "Rua Arraia",
-    metragem: 450,
-    quartos: 7,
-    banheiros: 5,
-    vagas: 2,
-    preco: "70000,00",
-    infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 4,
-    imagem:
-      "https://plus.unsplash.com/premium_photo-1682377521630-8ca87f643f49?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTczfHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
-    titulo: "Guarajuba (Monte Gordo), Camaçari",
-    endereco: "Rua Arraia",
-    metragem: 450,
-    quartos: 7,
-    banheiros: 5,
-    vagas: 2,
-    preco: "55000,00",
-    infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 5,
-    imagem:
-      "https://images.unsplash.com/photo-1660797347557-4b100998d808?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjAwfHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
-    titulo: "Guarajuba (Monte Gordo), Camaçari",
-    endereco: "Rua Arraia",
-    metragem: 450,
-    quartos: 7,
-    banheiros: 5,
-    vagas: 2,
-    preco: "45000,00",
-    infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 6,
-    imagem:
-      "https://plus.unsplash.com/premium_photo-1687960116506-f31f84371838?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjA5fHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
-    titulo: "Guarajuba (Monte Gordo), Camaçari",
-    endereco: "Rua Arraia",
-    metragem: 450,
-    quartos: 7,
-    banheiros: 5,
-    vagas: 2,
-    preco: "25000,00",
-    infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 7,
-    imagem:
-      "https://images.unsplash.com/photo-1698756523164-bd049ff8b166?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjYyfHxjYXNhJTIwZGUlMjBsdXhvJTIwZnJlbnRlfGVufDB8fDB8fHww",
-    titulo: "Guarajuba (Monte Gordo), Camaçari",
-    endereco: "Rua Arraia",
-    metragem: 450,
-    quartos: 7,
-    banheiros: 5,
-    vagas: 2,
-    preco: "15000,00",
-    infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-];
+
 
 const ImoveisPromocao = () => {
+  const imoveisPromocao: Imovel[] = todosImoveis.filter(imovel => imovel.categoria === "promocao");
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerPage, setCardsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(0);
@@ -186,14 +82,14 @@ const ImoveisPromocao = () => {
                 >
                   <img
                     src={item.imagem}
-                    alt={item.titulo}
+                    alt={`${item.tipo} em ${item.bairro}, ${item.cidade}`}
                     className="w-full h-[180px] object-cover"
                   />
 
                   <div className="!p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl !overflow-hidden">
                     <div className="flex flex-col gap-2 text-left">
                       <h3 className="text-base font-semibold text-gray-900 leading-snug break-words">
-                        {item.titulo}
+                        {item.bairro}, {item.cidade}
                       </h3>
                       <p className="text-sm text-gray-500 break-words">
                         {item.endereco}

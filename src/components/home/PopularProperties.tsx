@@ -5,116 +5,12 @@ import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 import { Dialog } from "../ui/dialog";
 import { Imovel } from "@/types";
+import { imoveis as todosImoveis } from "@/data/imovel";
 
-const imoveis: Imovel[] = [
-  {
-    id: 1,
-    imagem:
-      "https://images.unsplash.com/photo-1748063578185-3d68121b11ff?q=80&w=1946&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    titulo: "Parque Amazônia, Goiânia",
-    endereco: "Rua Salvador",
-    metragem: 75,
-    quartos: 3,
-    banheiros: 2,
-    vagas: 2,
-    preco: "2200.00",
-    infoExtra: "Cond. R$ 480",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 2,
-    imagem:
-      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80",
-    titulo: "Setor Garavelo I, Trindade",
-    endereco: "Rua José Braz",
-    metragem: 30,
-    quartos: 1,
-    banheiros: 1,
-    vagas: 1,
-    preco: "2200.00",
-    infoExtra: "",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 3,
-    imagem:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    titulo: "Parque Verde, Alagoinhas",
-    endereco: "Rua Gregório de Mattos",
-    metragem: 68,
-    quartos: 3,
-    banheiros: 2,
-    vagas: 1,
-    preco: "2200.00",
-    infoExtra: "",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 4,
-    imagem:
-      "https://images.unsplash.com/photo-1531971589569-0d9370cbe1e5?q=80&w=1181&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    titulo: "Campeche, Florianópolis",
-    endereco: "Rua Coruja Dourada",
-    metragem: 75,
-    quartos: 2,
-    banheiros: 2,
-    vagas: 1,
-    preco: "2200.00",
-    infoExtra: "IPTU R$ 45",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 5,
-    imagem:
-      "https://plus.unsplash.com/premium_photo-1746246341978-f032a218d2e7?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    titulo: "Nova Esperança, Natal",
-    endereco: "Rua do Sol",
-    metragem: 90,
-    quartos: 2,
-    banheiros: 1,
-    vagas: 2,
-    preco: "600.00",
-    infoExtra: "Cond. R$ 320",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 6,
-    imagem:
-      "https://images.unsplash.com/photo-1704019389380-de15b712656b?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    titulo: "Santa Rosa",
-    endereco: "Rua do Sol",
-    metragem: 90,
-    quartos: 2,
-    banheiros: 1,
-    vagas: 2,
-    preco: "600.00",
-    infoExtra: "Cond. R$ 320",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-  {
-    id: 7,
-    imagem:
-      "https://images.unsplash.com/photo-1670589953882-b94c9cb380f5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    titulo: "Santa Rosa",
-    endereco: "Rua do Sol",
-    metragem: 90,
-    quartos: 2,
-    banheiros: 1,
-    vagas: 2,
-    preco: "600.00",
-    infoExtra: "Cond. R$ 320",
-    tipoNegocio: "aluguel",
-    tipo: "Apartamento",
-  },
-];
 
 const ImoveisPopulares = () => {
+  const imoveis: Imovel[] = todosImoveis.filter(imovel => imovel.categoria === "popular");
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerPage, setCardsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(0);
@@ -182,14 +78,14 @@ const ImoveisPopulares = () => {
                 >
                   <img
                     src={item.imagem}
-                    alt={item.titulo}
+                    alt={`${item.tipo} em ${item.bairro}, ${item.cidade}`}
                     className="w-full h-[180px] object-cover"
                   />
 
                   <div className="!p-4 !bg-gray-100 !border !border-gray-800 flex flex-col gap-4 !rounded-b-xl">
                     <div className="flex flex-col gap-2 text-left">
                       <h3 className="text-base font-semibold text-gray-900 leading-snug break-words">
-                        {item.titulo}
+                        {item.bairro},{item.cidade}
                       </h3>
                       <p className="text-sm text-gray-500 break-words">
                         {item.endereco}

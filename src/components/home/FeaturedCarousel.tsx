@@ -3,95 +3,13 @@ import { FaBed, FaCar, FaRulerCombined } from "react-icons/fa";
 
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { ImovelCarrossel } from "@/types";
-const imoveisDestaque: ImovelCarrossel[] = [
-  {
-    id: 1,
-    imagem:
-      "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80",
-    tipo: "Apartamento",
-    bairro: "Copacabana",
-    cidade: "Rio de Janeiro",
-    endereco: "Rua Constante Ramos",
-    metragem: 118,
-    quartos: 3,
-    vagas: 1,
-    preco: "R$ 900.000",
-    tipoNegocio: "venda",
-  },
-  {
-    id: 2,
-    imagem:
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80",
-    tipo: "Apartamento",
-    bairro: "Ipanema",
-    cidade: "Rio de Janeiro",
-    endereco: "Rua Almirante Saddock de Sá",
-    metragem: 160,
-    quartos: 3,
-    vagas: 2,
-    preco: "R$ 3.100.000",
-    tipoNegocio: "venda",
-  },
-  {
-    id: 3,
-    imagem:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    tipo: "Apartamento",
-    bairro: "Botafogo",
-    cidade: "Rio de Janeiro",
-    endereco: "Rua Voluntários da Pátria",
-    metragem: 95,
-    quartos: 2,
-    vagas: 1,
-    preco: "R$ 750.000",
-    tipoNegocio: "venda",
-  },
-  {
-    id: 4,
-    imagem:
-      "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?auto=format&fit=crop&w=800&q=80",
-    tipo: "Apartamento",
-    bairro: "Laranjeiras",
-    cidade: "Rio de Janeiro",
-    endereco: "Rua das Laranjeiras",
-    metragem: 82,
-    quartos: 2,
-    vagas: 1,
-    preco: "R$ 690.000",
-    tipoNegocio: "venda",
-  },
-  {
-    id: 5,
-    imagem:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
-    tipo: "Casa Residencial",
-    bairro: "Barra da Tijuca",
-    cidade: "Rio de Janeiro",
-    endereco: "Av. das Américas",
-    metragem: 300,
-    quartos: 4,
-    vagas: 3,
-    preco: "R$ 2.700.000",
-    tipoNegocio: "venda",
-  },
-  {
-    id: 6,
-    imagem:
-      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
-    tipo: "Casa Residencial",
-    bairro: "Barra da Tijuca",
-    cidade: "Rio de Janeiro",
-    endereco: "Av. das Américas",
-    metragem: 300,
-    quartos: 4,
-    vagas: 3,
-    preco: "R$ 2.700.000",
-    tipoNegocio: "venda",
-  },
-];
+import { Imovel } from "@/types";
+import { imoveis as todosImoveis } from "@/data/imovel";
+
+
 
 const CarrosselDestaques: React.FC = () => {
+  const imoveisDestaque: Imovel[] = todosImoveis.filter(imovel => imovel.categoria === "popular");
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const cardWidth = 460;
@@ -122,7 +40,7 @@ const CarrosselDestaques: React.FC = () => {
     }, 4000); // rola a cada 4s
 
     return () => clearInterval(interval);
-  }, [scrollStep]);
+  }, [scrollStep,imoveisDestaque.length]);
 
   return (
     <section className="w-full px-4 pt-2   !mt-0">

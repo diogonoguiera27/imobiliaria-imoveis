@@ -2,16 +2,23 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
- const FiltroBusca = () => {
+type Props = {
+  onFiltrar: (filtro: { tipo: string; cidade: string; valorMax: number }) => void;
+  onLimparFiltro: () => void;
+};
+
+const FiltroBusca = ({ onFiltrar, onLimparFiltro }: Props) => {
   const [valorMax, setValorMax] = useState(3000000);
-  const [valorMin] = useState(500000);
   const [tipo, setTipo] = useState("");
   const [cidade, setCidade] = useState("");
 
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Buscar imóveis tipo: ${tipo}, cidade: ${cidade}, entre R$${valorMin} e R$${valorMax}`);
+    onFiltrar({ tipo, cidade, valorMax });
   };
+
+  
 
   return (
     <div className="w-full !flex !justify-start !-mt-[120px] z-10 !relative !px-10">
@@ -24,15 +31,15 @@ import { Input } from "../ui/input";
           <label className="!text-gray-800 !text-sm !font-semibold mb-1">Filtrar por Preço</label>
           <Input
             type="range"
-            min={500000}
+            min={50000}
             max={3000000}
-            step={50000}
+            step={10000}
             value={valorMax}
             onChange={(e) => setValorMax(Number(e.target.value))}
             className="w-full accent-red-600"
           />
           <div className="text-gray-700 text-sm font-semibold mt-1">
-            R${valorMin.toLocaleString("pt-BR")} — R${valorMax.toLocaleString("pt-BR")}
+             Até R${valorMax.toLocaleString("pt-BR")}
           </div>
         </div>
 
@@ -44,10 +51,10 @@ import { Input } from "../ui/input";
             onChange={(e) => setTipo(e.target.value)}
             className="!rounded !px-4 !py-2 !bg-white !text-black !border"
           >
-            <option value="">Selecionar</option>
-            <option value="casa">Casa</option>
-            <option value="apartamento">Apartamento</option>
-            <option value="condominio">Condomínio</option>
+             <option value="">Selecionar</option>
+            <option value="Apartamento">Apartamento</option>
+            <option value="Condomínio">Condomínio</option>
+            <option value="Casa Residencial">Casa Residencial</option>
           </select>
         </div>
 
@@ -60,20 +67,30 @@ import { Input } from "../ui/input";
             className="!rounded !px-4 !py-2 !bg-white !text-black !border border-gray-300"
           >
             <option value="">Selecionar</option>
-            <option value="goiania">Goiânia</option>
-            <option value="aparecida">Aparecida de Goiânia</option>
+            <option value="Senador Canedo">Senador Canedo</option>
+            <option value="Aparecida de Goiânia">Aparecida de Goiânia</option>
+            <option value="Goiania">Goiania</option>
+            <option value="Rio de Janeiro">Rio de Janeiro</option>
           </select>
         </div>
 
        
-        <div className="!flex !justify-end w-full sm:w-auto">
+        <div className="!flex !justify-end w-full sm:w-auto !space-x-4">
           <Button
             type="submit"
             className="!bg-red-600 !text-white !font-semibold !px-6 !py-3 !rounded hover:!bg-red-700"
           >
             Pesquisar
           </Button>
+          <Button
+            type="button"
+            onClick={onLimparFiltro}
+            className="!bg-gray-200 !text-gray-700 !font-semibold !px-6 !py-3 !rounded hover:!bg-gray-300"
+          >
+            Limpar filtro
+          </Button>
         </div>
+        
       </form>
     </div>
   );
