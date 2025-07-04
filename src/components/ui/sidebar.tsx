@@ -243,7 +243,7 @@ function Sidebar({
       <div className="flex items-center gap-6">
         <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
           
-          <button onClick={() => navigate("/")} className="hover:underline">
+          <button onClick={() => navigate("/?reset=true")} className="hover:underline">
             Home
           </button>
 
