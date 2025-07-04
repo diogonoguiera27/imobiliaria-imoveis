@@ -18,6 +18,13 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro }: Props) => {
     onFiltrar({ tipo, cidade, valorMax });
   };
 
+  const handleLimpar = () =>{
+    setValorMax(3000000);
+    setTipo("");
+    setCidade("");
+    onLimparFiltro();
+  }
+
   
 
   return (
@@ -84,7 +91,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro }: Props) => {
           </Button>
           <Button
             type="button"
-            onClick={onLimparFiltro}
+            onClick={handleLimpar}
             className="!bg-gray-200 !text-gray-700 !font-semibold !px-6 !py-3 !rounded hover:!bg-gray-300"
           >
             Limpar filtro
