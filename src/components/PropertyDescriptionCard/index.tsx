@@ -4,7 +4,7 @@ export function DescricaoImovel() {
   return (
     <section className="w-full !flex !justify-start !px-4 !mt-2">
       <div className="w-full !max-w-5xl !pl-4 !bg-white !rounded-xl !shadow-md border !border-gray-200 p-6 !text-gray-800 space-y-8">
-        {/* Título e Endereço */}
+        
         <div className="!space-y-1">
           <h2 className="!text-lg !font-semibold">
             Apartamento com 3 quartos à venda em Vila Nova Conceição - SP
@@ -14,7 +14,7 @@ export function DescricaoImovel() {
           </p>
         </div>
 
-        {/* Preço e valores */}
+        
         <div className="!mt-4">
           <h3 className="!text-2xl !font-bold !text-gray-900">R$ 2.700.000</h3>
           <p className="!text-xs !text-gray-500">R$ 26.377 preço do m²</p>
@@ -25,7 +25,7 @@ export function DescricaoImovel() {
           </p>
         </div>
 
-        {/* Características com ícones Lucide */}
+        
         <div className="grid !grid-cols-3 !sm:grid-cols-3 !md:grid-cols-4 !gap-4 !text-sm !text-gray-700 !mt-4">
           <div className="flex items-center gap-2">
             <Ruler className="text-pink-600 w-4 h-4" />
@@ -63,7 +63,7 @@ export function DescricaoImovel() {
             <span className="!text-gray-500">Andar</span>
           </div>
         </div>
-        {/* SOBRE O IMÓVEL */}
+       
         <div className="!space-y-3">
           <hr className="w-full !border-t !border-gray-300 !my-4 !mt-4" />
           <h4 className="!text-base !font-semibold">Sobre o imóvel</h4>
@@ -82,7 +82,7 @@ export function DescricaoImovel() {
 
         <hr className="!w-full !border-t !border-gray-300 !my-4 !mt-4" />
 
-        {/* INSTALAÇÕES */}
+        
         <div className="!space-y-3">
           <h4 className="!text-base !font-semibold !mt-4">
             Instalações do condomínio
@@ -108,13 +108,13 @@ export function DescricaoImovel() {
 
         <hr className="w-full !border-t !border-gray-300 !my-4 !mt-4" />
 
-        {/* NAS PROXIMIDADES */}
+        
         <div className="!space-y-4">
           <h4 className="!text-base !font-semibold !mt-4">
             Nas proximidades do imóvel
           </h4>
           <div className="grid md:grid-cols-2 !gap-6 text-sm !text-gray-700">
-            {/* Gastronomia */}
+            
             <div className="!space-y-2">
               <h5 className="!font-semibold !text-black">🍽️ Gastronomia</h5>
               <div className="flex flex-col">
@@ -127,7 +127,7 @@ export function DescricaoImovel() {
               </div>
             </div>
 
-            {/* Educação */}
+            
             <div className="space-y-2">
               <h5 className="!font-semibold !text-black">🎓 Educação</h5>
               <div className="flex flex-col">
@@ -140,7 +140,7 @@ export function DescricaoImovel() {
               </div>
             </div>
 
-            {/* Saúde */}
+            
             <div className="!space-y-2">
               <h5 className="!font-semibold !text-black">
                 🩺 Saúde e Bem-estar
@@ -155,7 +155,7 @@ export function DescricaoImovel() {
               </div>
             </div>
 
-            {/* Lazer */}
+            
             <div className="!space-y-2">
               <h5 className="!font-semibold !text-black">🎯 Lazer</h5>
               <div className="flex flex-col">
