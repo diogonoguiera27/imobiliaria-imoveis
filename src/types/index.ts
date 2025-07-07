@@ -20,6 +20,6 @@ export type Imovel = {
   infoExtra: string;
   tipoNegocio: TipoNegocio;
   tipo: TipoImovel;
-  categoria: CategoriaImovel; // ← campo novo incluído
+  categoria: CategoriaImovel; 
   
 };

@@ -3,10 +3,12 @@ import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog } from "@/components/ui/dialog";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
-import { PropertyListSection } from "@/components/PropertiesForSale";
+
 import Pagination from "@/components/Pagination";
 import { Imovel } from "@/types";
 import { imoveis as todosImoveis } from "@/data/imovel";
+import  PropertyListSection  from "@/components/PropertiesForSale";
+
 
 
 

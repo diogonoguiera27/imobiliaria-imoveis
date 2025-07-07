@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { PropertyCard } from "@/components/PropertiesForSale";
+import { CardProperties } from "@/components/PropertyCard";
 import { MessageFormModal,PhoneContactModal} from "@/components/Modals";
 import { Dialog } from "@/components/ui/dialog";
 import type { Imovel } from "@/types";
@@ -34,7 +34,7 @@ type PropertyListSectionProps = {
       <div className="w-full flex justify-center">
         <div className="max-w-[1300px] w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center mx-auto">
           {imoveisVenda.map((item) => (
-            <PropertyCard
+            <CardProperties
               key={item.id}
               item={item}
               onOpenContactModal={onOpenContactModal}

@@ -1,4 +1,3 @@
-// src/components/imoveisVenda/PropertyCard.tsx
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,18 +7,24 @@ interface PropertyCardProps {
   item: Imovel;
   onOpenContactModal: () => void;
   onOpenPhoneModal: () => void;
+  variant?: "default" | "featured";
 }
 
 const PropertyCard = ({
   item,
   onOpenContactModal,
   onOpenPhoneModal,
+  variant = "default",
 }: PropertyCardProps) => {
+  const isFeatured = variant === "featured";
+
   return (
     <div
       key={item.id}
       onClick={() => (window.location.href = `/imovel/${item.id}`)}
-      className="w-[285px] !h-[431px] !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer flex flex-col"
+      className={`${
+        isFeatured ? "w-[460px]" : "w-[285px]"
+      } !h-[431px] flex-shrink-0 flex flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer`}
     >
       <div className="w-full !h-[180px] !overflow-hidden">
         <img
@@ -35,7 +40,7 @@ const PropertyCard = ({
             {item.bairro}, {item.cidade}
           </h3>
           <p className="!text-sm !text-gray-500 break-words">{item.endereco}</p>
-          <p className="text-xs font-semibold uppercase text-red-600">
+          <p className="!text-xs !font-semibold !uppercase !text-red-600">
             {item.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
           </p>
         </div>
@@ -62,7 +67,9 @@ const PropertyCard = ({
         <div className="flex justify-between items-center mt-3">
           <div>
             <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
-            <p className="!text-base !font-bold !text-gray-900"> R$ {item.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+            <p className="!text-base !font-bold !text-gray-900">
+              R$ {item.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </p>
             {item.infoExtra && (
               <p className="!text-xs !text-gray-500">{item.infoExtra}</p>
             )}
@@ -78,7 +85,7 @@ const PropertyCard = ({
               e.stopPropagation();
               onOpenContactModal();
             }}
-            className="flex-1 !bg-red-500 text-white !text-sm !rounded hover:!bg-red-700 transition-colors duration-200"
+            className="flex-1 !bg-red-500 !text-white !text-sm !rounded hover:!bg-red-700 transition-colors duration-200"
           >
             Mensagem
           </Button>
@@ -88,7 +95,7 @@ const PropertyCard = ({
               e.stopPropagation();
               onOpenPhoneModal();
             }}
-            className="flex-1 !bg-transparent !text-red-600 text-sm rounded hover:bg-red-700"
+            className="flex-1 !bg-transparent !text-red-600 !text-sm !rounded hover:!bg-white"
           >
             Telefone
           </Button>
