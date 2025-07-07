@@ -1,16 +1,18 @@
+import { useEffect } from "react";
 import img1 from "@/assets/a.jpg";
 import img2 from "@/assets/b.jpeg";
 import img3 from "@/assets/c.jpg";
 
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { PopularProperties} from "@/components/Home";
+import { imoveis } from "@/data/imovel";
+
 import {
   ImageGallery,
   MainCarousel,
   PropertyInfoAndContact,
   SimilarProperties,
-} from "@/components/PropertyDetails/index";
+} from "@/components/PropertyDetails/";
 
 export function ImovelDetalhes() {
   const imagens = [
@@ -25,16 +27,41 @@ export function ImovelDetalhes() {
     { src: img3, alt: "Quarto 2" },
   ];
 
+  const imovelAtual = imoveis.find((imovel) => imovel.id === 1)!;
+
+  // 🔍 Diagnóstico de desalinhamento
+  useEffect(() => {
+    const bodyWidth = document.body.clientWidth;
+    const htmlWidth = document.documentElement.clientWidth;
+    const windowWidth = window.innerWidth;
+    const scrollX = window.scrollX;
+
+    console.log("🧪 Diagnóstico de Centralização:");
+    console.log("window.innerWidth:", windowWidth);
+    console.log("document.body.clientWidth:", bodyWidth);
+    console.log("document.documentElement.clientWidth:", htmlWidth);
+    console.log("window.scrollX (scroll horizontal):", scrollX);
+
+    const all = document.body.querySelectorAll("*");
+    all.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width > windowWidth) {
+        console.warn("🚨 Elemento maior que a tela:", el, rect.width);
+      }
+    });
+  }, []);
+
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex flex-col">
+      <div className="flex !flex-col !w-screen !overflow-x-hidden">
         <SidebarTrigger />
         <main className="flex-grow">
-          <MainCarousel imagens={imagens} />
-          <ImageGallery imagensInferiores={imagensInferiores} />
-          <PropertyInfoAndContact />
-          <SimilarProperties />
-          <PopularProperties/>
+          <div className="w-full !max-w-[80%] !mx-auto px-4 !mt-6">
+            <MainCarousel imagens={imagens} />
+            <ImageGallery imagensInferiores={imagensInferiores} />
+            <PropertyInfoAndContact />
+            <SimilarProperties imovelAtual={imovelAtual} />
+          </div>
         </main>
         <Footer />
       </div>

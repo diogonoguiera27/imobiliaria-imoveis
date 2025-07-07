@@ -3,10 +3,10 @@ import { Ruler, Layout, BedDouble, Bath, Car, Building2 } from "lucide-react";
 export function DescricaoImovel() {
   return (
     <section className="w-full !flex !justify-start !px-4 !mt-2">
-      <div className="w-full !max-w-5xl !pl-8 !bg-white !rounded-xl !shadow-md border !border-gray-200 p-6 !text-gray-800 space-y-8">
+      <div className="w-full !max-w-5xl !pl-4 !bg-white !rounded-xl !shadow-md border !border-gray-200 p-6 !text-gray-800 space-y-8">
         {/* Título e Endereço */}
         <div className="!space-y-1">
-          <h2 className="!text-lg !font-semibold ">
+          <h2 className="!text-lg !font-semibold">
             Apartamento com 3 quartos à venda em Vila Nova Conceição - SP
           </h2>
           <p className="!text-sm !text-gray-600 ">

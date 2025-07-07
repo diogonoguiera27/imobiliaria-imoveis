@@ -1,18 +1,19 @@
+// src/components/PropertyDetails/DescricaoEContato.tsx
 import { ContatoCard } from "../ContactFormCard";
 import { DescricaoImovel } from "../PropertyDescriptionCard";
 
- const DescricaoEContato = () => {
+const DescricaoEContato = () => {
   return (
-    <section className="w-full px-4 mt-2">
-      <div className="max-w-[1280px] !mx-auto flex flex-col lg:flex-row !gap-6 items-start">
-        <div className="w-full lg:w-2/3">
-          <DescricaoImovel />
-        </div>
-        <div className="w-full lg:w-1/3">
-          <ContatoCard />
-        </div>
+    <div className="w-full flex justify-center">
+      <div className="w-full !max-w-[1280px] flex flex-col lg:flex-row lg:items-start gap-6 px-4">
+      <div className="w-full lg:w-2/3">
+        <DescricaoImovel />
       </div>
-    </section>
+      <div className="w-full lg:w-1/3">
+        <ContatoCard />
+      </div>
+    </div>
+    </div>
   );
 };
 
