@@ -2,8 +2,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import NoMatch from "@/pages/NoMatch";
 import { Home } from "@/pages/Home";
-import { ListaImoveisVenda } from "@/pages/propertiesForSale/propertiesForSale";
-import { ImovelDetalhes } from "@/pages/propertyDetails/propertyDetails"; // IMPORTA a nova página
+import { ListaImoveisVenda } from "@/pages/PropertiesForSale";
+import { ImovelDetalhes } from "@/pages/propertyDetails"; // IMPORTA a nova página
 
 
 export const Rotas: React.FC = () => (

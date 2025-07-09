@@ -15,9 +15,11 @@ export type Imovel = {
   metragem: number;
   quartos: number;
   banheiros: number;
+  suites?: number;
   vagas: number;
   preco: number;
   infoExtra: string;
+  descricao?: string;
   tipoNegocio: TipoNegocio;
   tipo: TipoImovel;
   categoria: CategoriaImovel; 

@@ -3,13 +3,12 @@ import { ChevronLeft, ChevronRight,  } from "lucide-react";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 import { Dialog } from "../ui/dialog";
 import { Imovel } from "@/types";
-import { imoveis as todosImoveis } from "@/data/imovel";
+
 import { CardProperties } from "@/components/PropertyCard";
+import { buscarImoveis } from "@/service/propertyService";
 
 const ImoveisPopulares = () => {
-  const imoveis: Imovel[] = todosImoveis.filter(
-    (imovel) => imovel.categoria === "popular"
-  );
+  const [imoveis, setImoveis] = useState<Imovel[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerPage, setCardsPerPage] = useState(4);
@@ -17,6 +16,14 @@ const ImoveisPopulares = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
+   useEffect(() => {
+    async function carregarImoveis() {
+      const todos = await buscarImoveis();
+      const populares = todos.filter((i) => i.categoria === "popular");
+      setImoveis(populares);
+    }
+    carregarImoveis();
+  }, []);
   useEffect(() => {
     const handleResize = () => {
       const container = containerRef.current;
