@@ -5,6 +5,7 @@ import { Home } from "@/pages/Home";
 import { ListaImoveisVenda } from "@/pages/PropertiesForSale";
 import { ImovelDetalhes } from "@/pages/propertyDetails"; // IMPORTA a nova página
 import Login from "@/pages/Login";
+import RegisterPage from "@/pages/Register";
 
 
 
@@ -15,5 +16,6 @@ export const Rotas: React.FC = () => (
     <Route path="/imovel/:id" element={<ImovelDetalhes />} /> 
     <Route path="/Login" element={<Login/>} /> 
     <Route path="*" element={<NoMatch />} />
+    <Route path="/register" element={<RegisterPage />} />
   </Routes>
 );

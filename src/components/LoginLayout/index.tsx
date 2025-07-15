@@ -10,8 +10,8 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({ children }) => {
     <div className="!min-h-screen !bg-red-600 !flex !items-center !justify-center">
       <div className="!max-w-6xl w-full !bg-white !rounded-3xl !shadow-lg flex !overflow-hidden">
 
-        {/* Ilustração lateral */}
-        <div className="!w-full lg:!w-1/2 !h-full">
+        
+        <div className="!w-full lg:!w-1/2 flex">
           <img
             src={ImoFamilia}
             alt="Family holding key in front of house"
@@ -19,7 +19,6 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({ children }) => {
           />
           
         </div>
-        {/* Conteúdo do formulário */}
         <div className="w-1/2 !bg-[#94141d] !text-white !p-10 !lex !flex-col !justify-center">
           {children}
         </div>

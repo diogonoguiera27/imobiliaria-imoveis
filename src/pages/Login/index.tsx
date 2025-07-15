@@ -25,7 +25,6 @@ const LoginPage: React.FC = () => {
 
   const onSubmit = (data: FormData) => {
     console.log('Login data:', data);
-    // Aqui vai a lógica de autenticação
   };
 
   return (
@@ -74,7 +73,7 @@ const LoginPage: React.FC = () => {
 
         <div className="!text-sm !text-center !mt-4">
           Don’t have an account?{' '}
-          <a href="#" className="!text-red-200 !underline">Register Now</a>
+          <a href="/register" className="!text-red-200 !underline">Register Now</a>
         </div>
       </form>
     </LoginLayout>
