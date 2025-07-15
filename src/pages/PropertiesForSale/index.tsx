@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog } from "@/components/ui/dialog";
@@ -6,8 +6,9 @@ import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 
 import Pagination from "@/components/Pagination";
 import { Imovel } from "@/types";
-import { imoveis as todosImoveis } from "@/data/imovel";
+
 import  PropertyListSection  from "@/components/PropertiesForSale";
+import { buscarImoveis } from "@/service/propertyService";
 
 
 
@@ -15,16 +16,26 @@ import  PropertyListSection  from "@/components/PropertiesForSale";
 const ITEMS_PER_PAGE = 12;
 
 export const ListaImoveisVenda = () => {
-  const imoveisVenda: Imovel[] = todosImoveis.filter(imovel => imovel.categoria === "venda");
+  const [imoveis, setImoveis] = useState<Imovel[]>([]); 
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(imoveisVenda.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(imoveis.length / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentImoveis = imoveisVenda.slice(startIndex, endIndex);
+  const currentImoveis = imoveis.slice(startIndex, endIndex);
 
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
+
+  useEffect(() => {
+      async function carregarImoveis() {
+        const todos = await buscarImoveis();
+        const venda = todos.filter((i) => i.categoria === "venda");
+        setImoveis(venda);
+      }
+      carregarImoveis();
+    }, []);
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden ">

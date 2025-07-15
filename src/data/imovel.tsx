@@ -202,7 +202,7 @@ export const imoveis: ImovelComCategoria[] = [
     preco: 50000.00,
     infoExtra: "Cond. R$ 950 · IPTU R$ 3.000",
     tipoNegocio: "aluguel",
-    tipo: "Apartamento",
+    tipo: "Condomínio",
     categoria: "promocao",
   },
   {

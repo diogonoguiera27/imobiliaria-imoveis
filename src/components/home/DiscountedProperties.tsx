@@ -3,18 +3,28 @@ import { ChevronLeft, ChevronRight, } from "lucide-react";
 import { Dialog } from "../ui/dialog";
 import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
 import { Imovel } from "@/types";
-import { imoveis as todosImoveis } from "@/data/imovel";
 import { CardProperties } from "@/components/PropertyCard";
+import { buscarImoveis } from "@/service/propertyService";
 
 
-
+//"promocao"
 const ImoveisPromocao = () => {
-  const imoveisPromocao: Imovel[] = todosImoveis.filter(imovel => imovel.categoria === "promocao");
+
+  const [imoveis, setImoveis] = useState<Imovel[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerPage, setCardsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(0);
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
+
+   useEffect(() => {
+    async function carregarImoveis() {
+      const todos = await buscarImoveis();
+      const promocao = todos.filter((i) => i.categoria === "promocao");
+      setImoveis(promocao);
+    }
+    carregarImoveis();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,7 +40,7 @@ const ImoveisPromocao = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const totalPages = Math.ceil(imoveisPromocao.length / cardsPerPage);
+  const totalPages = Math.ceil(imoveis.length / cardsPerPage);
 
   const scrollToPage = (page: number) => {
     const container = containerRef.current;
@@ -73,7 +83,7 @@ const ImoveisPromocao = () => {
                 msOverflowStyle: "none",
               }}
             >
-              {imoveisPromocao.map((item) => (
+              {imoveis.map((item) => (
                  <CardProperties
                   key={item.id}
                   item={item}

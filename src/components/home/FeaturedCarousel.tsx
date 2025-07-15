@@ -1,13 +1,22 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Imovel } from "@/types";
-import { imoveis as todosImoveis } from "@/data/imovel";
-import MainCarouselPropertyCard from "../PropertyCard/MainCarouselPropertyCard";
 
+import MainCarouselPropertyCard from "../PropertyCard/MainCarouselPropertyCard";
+import { buscarImoveis } from "@/service/propertyService";
 
 
 const CarrosselDestaques: React.FC = () => {
-  const imoveisDestaque: Imovel[] = todosImoveis.filter(imovel => imovel.categoria === "popular");
+  const [imoveis, setImoveis] = useState<Imovel[]>([]);
   
+  useEffect(() => {
+    async function carregarImoveis() {
+      const todos = await buscarImoveis();
+      const destaque = todos.filter((i) => i.categoria === "destaque");
+      setImoveis(destaque);
+    }
+    carregarImoveis();
+  }, []);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const cardWidth = 460;
   const cardGap = 16;
@@ -18,7 +27,7 @@ const CarrosselDestaques: React.FC = () => {
     if (!container) return;
 
     const visibleCards = 3;
-    const totalCards = imoveisDestaque.length;
+    const totalCards = imoveis.length;
     const maxScrollIndex = totalCards - visibleCards;
 
     let currentIndex = 0;
@@ -37,7 +46,7 @@ const CarrosselDestaques: React.FC = () => {
     }, 4000); // rola a cada 4s
 
     return () => clearInterval(interval);
-  }, [scrollStep,imoveisDestaque.length]);
+  }, [scrollStep,imoveis.length]);
 
   return (
     <section className="w-full px-4 pt-2   !mt-0">
@@ -55,7 +64,7 @@ const CarrosselDestaques: React.FC = () => {
               className="flex gap-4 overflow-x-hidden scroll-smooth items-center w-full hide-scrollbar"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-              {imoveisDestaque.map((imovel) => (
+              {imoveis.map((imovel) => (
                 <MainCarouselPropertyCard imovel={imovel}/>
               ))}
             </div>
