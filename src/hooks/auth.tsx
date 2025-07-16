@@ -13,32 +13,28 @@ interface AuthState {
 
 interface SignInCredentials {
   email: string;
-  password: string;
+  senha: string;
   keepConnected: boolean;
 }
 
 interface AuthContextData {
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  token: string | null;
 }
+
 interface AppProviderProps {
   children: ReactNode;
 }
 
-interface IProps {
-  email: string;
-  password: string;
-  keepConnected: boolean;
-}
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem("@LocaVibe:token");
+  const [data, setData] = useState<AuthState>(() => {
+    const token = localStorage.getItem("@Imobiliaria:token");
 
     if (token) {
       api.defaults.headers.authorization = `Bearer ${token}`;
-
       return { token };
     }
 
@@ -46,32 +42,31 @@ const AuthProvider: React.FC<AppProviderProps> = ({ children }) => {
   });
 
   const signIn = useCallback(
-    async ({ email, password, keepConnected }: IProps) => {
-      const response = await api.post("session", {
+    async ({ email, senha, keepConnected }: SignInCredentials) => {
+      const response = await api.post("/users/login", {
         email,
-        password,
-        keepConnected,
+        senha,
       });
 
       const { token } = response.data;
 
-      localStorage.setItem("@LocaVibe:token", token);
+      if (keepConnected) {
+        localStorage.setItem("@Imobiliaria:token", token);
+      }
 
       api.defaults.headers.authorization = `Bearer ${token}`;
-
       setData({ token });
     },
-    [],
+    []
   );
 
   const signOut = useCallback(() => {
-    localStorage.removeItem("@LocaVibe:token");
-
+    localStorage.removeItem("@Imobiliaria:token");
     setData({} as AuthState);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut }}>
+    <AuthContext.Provider value={{ signIn, signOut, token: data.token }}>
       {children}
     </AuthContext.Provider>
   );
@@ -86,5 +81,6 @@ function useAuth(): AuthContextData {
 
   return context;
 }
+
 // eslint-disable-next-line react-refresh/only-export-components
-export { AuthProvider, useAuth };
+export { AuthProvider, useAuth, AuthContext };
