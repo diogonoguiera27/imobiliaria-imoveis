@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import PerfilUsuarioModal from "@/components/ProfileUsers";
 import {
   Sheet,
   SheetContent,
@@ -22,13 +23,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-import { ContactInfoModal } from "@/components/Modals"; 
+import { ContactInfoModal } from "@/components/Modals";
+
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -219,35 +217,44 @@ function Sidebar({
   );
 }
 
- function SidebarTrigger({ onClick, ...props }: React.ComponentProps<typeof Button>) {
+export default function SidebarTrigger({
+  onClick,
+  ...props
+}: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar();
   const navigate = useNavigate();
 
   return (
-    <main className="fixed z-50 flex h-[60px] w-full items-center justify-between px-4 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
-      {/* Botão lateral */}
-      <Button
-        data-sidebar="trigger"
-        data-slot="sidebar-trigger"
-        variant="ghost"
-        size="icon"
-        className="!text-white size-7 !bg-transparent"
-        onClick={(event) => {
-          onClick?.(event);
-          toggleSidebar();
-        }}
-        {...props}
-      />
-
+    <main className="fixed z-50 flex h-[60px] w-full items-center justify-between !px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
       
+      {/* Esquerda: logo + botão sidebar */}
+      <div className="flex items-center gap-4">
+        <img
+          src={logoImg}
+          alt={import.meta.env.VITE_COMPANY_NAME}
+          className="!h-18 w-auto"
+        />
+        <Button
+          data-sidebar="trigger"
+          data-slot="sidebar-trigger"
+          variant="ghost"
+          size="icon"
+          className="!text-white size-7 !bg-transparent"
+          onClick={(event) => {
+            onClick?.(event);
+            toggleSidebar();
+          }}
+          {...props}
+        />
+      </div>
+
+      {/* Direita: navegação + perfil */}
       <div className="flex items-center gap-6">
         <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
-          
           <button onClick={() => navigate("/?reset=true")} className="hover:underline">
             Home
           </button>
 
-         
           <Dialog>
             <DialogTrigger asChild>
               <button className="hover:underline">Contato</button>
@@ -258,19 +265,11 @@ function Sidebar({
           </Dialog>
         </nav>
 
-       
-        <div className="flex items-center cursor-pointer justify-center mb-6">
-          <img
-            src={logoImg}
-            alt={import.meta.env.VITE_COMPANY_NAME}
-            className="!h-18 w-auto"
-          />
-        </div>
+        <PerfilUsuarioModal />
       </div>
     </main>
   );
 }
-
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar();
 
