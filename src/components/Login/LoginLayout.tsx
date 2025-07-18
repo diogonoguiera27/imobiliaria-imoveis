@@ -1,5 +1,5 @@
 import React from 'react'
-import ImoFamilia from '@/assets/imofamilia.png.png';
+import ImoFamilia from '@/assets/imofamilia.png';
 
 interface LoginLayoutProps {
   children: React.ReactNode;
@@ -7,7 +7,7 @@ interface LoginLayoutProps {
 
 const LoginLayout: React.FC<LoginLayoutProps> = ({ children }) => {
   return (
-    <div className="!min-h-screen !bg-red-600 !flex !items-center !justify-center">
+     <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="!max-w-6xl w-full !bg-white !rounded-3xl !shadow-lg flex !overflow-hidden">
 
         
@@ -19,7 +19,7 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({ children }) => {
           />
           
         </div>
-        <div className="w-1/2 !bg-[#94141d] !text-white !p-10 !lex !flex-col !justify-center">
+        <div className="w-1/2 !bg-[#f33235]  !text-white !p-10 !lex !flex-col !justify-center">
           {children}
         </div>
       </div>

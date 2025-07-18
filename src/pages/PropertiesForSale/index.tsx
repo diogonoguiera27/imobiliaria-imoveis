@@ -11,8 +11,6 @@ import  PropertyListSection  from "@/components/PropertiesForSale";
 import { buscarImoveis } from "@/service/propertyService";
 
 
-
-
 const ITEMS_PER_PAGE = 12;
 
 export const ListaImoveisVenda = () => {
