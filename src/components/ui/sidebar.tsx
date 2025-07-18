@@ -25,7 +25,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-import { ContactInfoModal } from "@/components/Modals";
+import  ContactInfoModal  from "@/components/ContactInfoModal";
 
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";

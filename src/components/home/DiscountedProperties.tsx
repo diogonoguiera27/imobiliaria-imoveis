@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, } from "lucide-react";
 import { Dialog } from "../ui/dialog";
-import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
+import MessageFormModal from "@/components/MessageFormModal";
+import PhoneContactModal from "@/components/PhoneContactModal";
 import { Imovel } from "@/types";
 import { CardProperties } from "@/components/PropertyCard";
 import { buscarImoveis } from "@/service/propertyService";

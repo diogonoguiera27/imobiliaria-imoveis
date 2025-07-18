@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight,  } from "lucide-react";
-import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
+import MessageFormModal from "@/components/MessageFormModal";
+import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "../ui/dialog";
 import { Imovel } from "@/types";
 

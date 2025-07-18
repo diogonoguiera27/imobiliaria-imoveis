@@ -7,7 +7,7 @@ import { ListaImoveisVenda } from "@/pages/PropertiesForSale";
 import { ImovelDetalhes } from "@/pages/propertyDetails";
 import Login from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
-import ProfilePreview from "@/pages/Profile/ProfilePreview";
+import ProfilePreview from "@/pages/Profile";
 import MinhaConta from "@/pages/MinhaConta";
 
 export const Rotas: React.FC = () => (

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog } from "@/components/ui/dialog";
-import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
+import MessageFormModal from "@/components/MessageFormModal";
+import PhoneContactModal from "@/components/PhoneContactModal";
 
 import Pagination from "@/components/Pagination";
 import { Imovel } from "@/types";

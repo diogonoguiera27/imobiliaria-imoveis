@@ -6,7 +6,8 @@ import { imoveis as todosImoveis } from "@/data/imovel";
 import { Imovel } from "@/types";
 import Pagination from "@/components/Pagination";
 import { Dialog } from "@/components/ui/dialog";
-import { MessageFormModal, PhoneContactModal } from "@/components/Modals";
+import MessageFormModal from "@/components/MessageFormModal";
+import PhoneContactModal from "@/components/PhoneContactModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import   { CardProperties } from "@/components/PropertyCard";
 

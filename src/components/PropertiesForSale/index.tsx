@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { CardProperties } from "@/components/PropertyCard";
-import { MessageFormModal,PhoneContactModal} from "@/components/Modals";
+import MessageFormModal from "@/components/MessageFormModal";
+import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "@/components/ui/dialog";
 import type { Imovel } from "@/types";
 

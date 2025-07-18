@@ -4,7 +4,8 @@ import { imoveis } from "@/data/imovel";
 import { ImovelComCategoria } from "@/data/imovel";
 import { CardProperties } from "../PropertyCard";
 import { Dialog } from "../ui/dialog";
-import { MessageFormModal, PhoneContactModal } from "../Modals";
+import MessageFormModal from "@/components/MessageFormModal";
+import PhoneContactModal from "@/components/PhoneContactModal";
 
 type SimilarPropertiesProps = {
   imovelAtual: ImovelComCategoria;
