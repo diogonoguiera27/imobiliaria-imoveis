@@ -251,7 +251,7 @@ export default function SidebarTrigger({
       {/* Direita: navegação + perfil */}
       <div className="flex items-center gap-6">
         <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
-          <button onClick={() => navigate("/?reset=true")} className="hover:underline">
+          <button onClick={() => navigate("/home")} className="hover:underline">
             Home
           </button>
 

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   FavoriteProperties,
   ProfileEditForm,
@@ -6,6 +8,8 @@ import {
   ScheduledVisits,
   SearchPreferences,
 } from "@/components/Profile";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Footer } from "@/components/Footer";
 
 const user = {
   nome: "Gilberto Bessa",
@@ -59,25 +63,37 @@ const searchPreferences = {
 
 export default function ProfilePage() {
   return (
-    <div className="!min-h-screen !bg-neutral-900 !text-white !px-6 !py-10">
-      <div className="!max-w-7xl !mx-auto !flex !flex-col md:!flex-row !gap-8">
-        <div className="!w-full md:!w-[320px] !flex !flex-col !gap-6">
-          <ProfileSidebar user={user} />
-        </div>
+    <SidebarProvider>
+      <div className="flex flex-col min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-white via-red-50 to-red-100 text-gray-900">
+        {/* Header */}
+        <SidebarTrigger />
 
-        <div className="!flex-1 !flex !flex-col !gap-6">
-          <ProfileProgressCard />
-          <ProfileEditForm user={user} />
-          <FavoriteProperties favoritos={favoritos} />
-          <ScheduledVisits visits={visitas} />
-          <SearchPreferences
-            type={searchPreferences.type}
-            cities={searchPreferences.cities}
-            priceRange={searchPreferences.priceRange}
-            purpose={searchPreferences.purpose}
-          />
-        </div>
+        {/* Main centralizado com largura 80% */}
+        <main className="flex-grow flex justify-center !px-4 !pt-12">
+          <div className="w-[80%] flex flex-col md:flex-row gap-8 !mb-10">
+            {/* Sidebar */}
+            <div className="w-full md:w-[320px] flex flex-col gap-6">
+              <ProfileSidebar user={user} />
+            </div>
+
+            {/* Conteúdo principal */}
+            <div className="flex-1 flex flex-col gap-6">
+              <ProfileProgressCard />
+              <ProfileEditForm user={user} />
+              <FavoriteProperties favoritos={favoritos} />
+              <ScheduledVisits visits={visitas} />
+              <SearchPreferences
+                type={searchPreferences.type}
+                cities={searchPreferences.cities}
+                priceRange={searchPreferences.priceRange}
+                purpose={searchPreferences.purpose}
+              />
+            </div>
+          </div>
+        </main>
+
+        <Footer />
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

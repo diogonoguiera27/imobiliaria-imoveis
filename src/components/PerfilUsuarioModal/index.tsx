@@ -18,7 +18,7 @@ export default function PerfilUsuarioModal() {
         />
       </DialogTrigger>
 
-      <DialogContent className="!max-w-sm !p-6 !bg-neutral-100 !text-white !rounded-xl">
+      <DialogContent className="!max-w-sm !p-6 !bg-gradient-to-br !from-white !via-red-50 !to-red-100 !text-gray-900 !rounded-xl">
         <div className="!flex !items-center !gap-4 !mb-4">
           <img
             src="https://randomuser.me/api/portraits/men/32.jpg"
@@ -29,11 +29,11 @@ export default function PerfilUsuarioModal() {
             <h3 className="!text-lg !font-bold !leading-tight">
               GILBERTO BESSA
             </h3>
-            <p className="!text-sm !text-neutral-400">@gilberto-bessa</p>
+            <p className="!text-sm !text-neutral-500">@gilberto-bessa</p>
           </div>
           <Button
             size="sm"
-            className="!ml-auto !px-3 !py-1 !text-xs !text-white !bg-neutral-800 !hover:bg-neutral-500"
+            className="!ml-auto !px-3 !py-1 !text-xs !text-white !bg-red-600 !hover:bg-red-500"
             onClick={() => navigate("/profile")}
           >
             VER PERFIL
@@ -43,37 +43,39 @@ export default function PerfilUsuarioModal() {
         <div className="!space-y-4">
           <div
             onClick={() => navigate("/minha-conta")}
-            className="!flex !items-center !gap-4 !cursor-pointer hover:!bg-neutral-800 !p-2 !rounded-md"
+            className="!flex !items-center !gap-4 !cursor-pointer hover:!bg-red-100 !p-2 !rounded-md"
           >
-            <User className="!text-cyan-400" size={20} />
+            <User className="!text-red-600" size={20} />
             <div>
               <p className="!font-semibold">Minha conta</p>
-              <p className="!text-sm !text-neutral-400">
+              <p className="!text-sm !text-neutral-500">
                 Gerencie dados e preferências
               </p>
             </div>
           </div>
 
-          <div className="!flex !items-center !gap-4">
-            <Home className="!text-cyan-400" size={20} />
+          <div
+            onClick={() => navigate("/meus-imoveis")}
+            className="!flex !items-center !gap-4 !cursor-pointer hover:!bg-red-100 !p-2 !rounded-md"
+          >
+            <Home className="!text-red-600" size={20} />
             <div>
               <p className="!font-semibold">Imóveis</p>
-              <p className="!text-sm !text-neutral-400">
+              <p className="!text-sm !text-neutral-500">
                 Veja todos os seus imóveis
               </p>
             </div>
           </div>
-
         </div>
 
-        <hr className="!my-4 !border-neutral-700" />
+        <hr className="!my-4 !border-neutral-300" />
 
         <button
           onClick={() => {
             signOut();
             navigate("/login");
           }}
-          className="!flex !items-center !gap-2 !text-red-500 !font-semibold !hover:underline"
+          className="!flex !items-center !gap-2 !text-red-600 !font-semibold !hover:underline"
         >
           <LogOut size={18} />
           Sair da conta
