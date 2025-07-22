@@ -17,7 +17,7 @@ export default function MyAccountSidebar({
   tabs,
 }: MyAccountSidebarProps) {
   return (
-    <div className="!bg-gradient-to-br !from-neutral-800 !via-neutral-900 !to-neutral-800 !rounded-xl !p-4 !shadow-xl !h-fit">
+    <div className="!bg-gradient-to-br !from-white !via-red-50 !to-red-100 !rounded-xl !p-4 !shadow-xl !border !border-red-100">
       <ul className="!space-y-1">
         {tabs.map(({ label, icon: Icon }) => (
           <li key={label}>
@@ -25,8 +25,8 @@ export default function MyAccountSidebar({
               onClick={() => onTabChange(label)}
               className={`!w-full !flex !items-center !gap-3 !py-3 !px-4 !rounded-lg !transition ${
                 activeTab === label
-                  ? "!bg-purple-600 !text-white"
-                  : "hover:!bg-neutral-700 !text-neutral-300"
+                  ? "!bg-red-500 !text-white"
+                  : "hover:!bg-purple-50 !text-gray-700"
               }`}
             >
               <Icon size={18} />

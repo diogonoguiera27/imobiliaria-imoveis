@@ -20,19 +20,19 @@ export default function MyAccountSimulations() {
 
   return (
     <div>
-      <h3 className="!text-2xl !font-bold !mb-6 !flex !items-center !gap-2 !text-white">
-        <Calculator size={20} /> Simulações
+      <h3 className="!text-2xl !font-bold !mb-6 !flex !items-center !gap-2 !text-gray-800">
+        <Calculator size={20} className="!text-red-500" /> Simulações
       </h3>
 
       <div className="!space-y-4">
         {simulations.map((sim) => (
           <div
             key={sim.id}
-            className="!bg-neutral-800 !rounded-xl !p-4 !shadow !text-white"
+            className="!bg-gradient-to-br !from-white !via-red-50 !to-red-100 !rounded-xl !p-4 !shadow-sm !border !border-red-100"
           >
-            <p className="!font-semibold">{sim.title}</p>
-            <p className="!text-sm !text-neutral-400">
-              Simulado em {sim.date} - Entrada: {sim.entry} - Parcelas: {sim.installment}
+            <p className="!font-semibold !text-gray-800">{sim.title}</p>
+            <p className="!text-sm !text-gray-600">
+              Simulado em {sim.date} — Entrada: {sim.entry} — Parcelas: {sim.installment}
             </p>
           </div>
         ))}
