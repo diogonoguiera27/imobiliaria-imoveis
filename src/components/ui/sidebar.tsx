@@ -227,7 +227,7 @@ export default function SidebarTrigger({
   return (
     <main className="fixed z-50 flex h-[60px] w-full items-center justify-between !px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
       
-      {/* Esquerda: logo + botão sidebar */}
+      
       <div className="flex items-center gap-4">
         <img
           src={logoImg}

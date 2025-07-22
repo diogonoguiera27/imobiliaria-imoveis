@@ -3,33 +3,44 @@ import { useAuth } from "@/hooks/auth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, Home } from "lucide-react";
+import defaultAvatar from "@/assets/defaultAvatar.jpg";
 
 export default function PerfilUsuarioModal() {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const navigate = useNavigate();
+
+  if (!user) return null;
+
+  const avatar = user.avatarUrl
+  ? `http://localhost:3333${user.avatarUrl}`
+  : defaultAvatar;
+
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <img
-          src="https://randomuser.me/api/portraits/men/32.jpg"
+          src={avatar}
           alt="Foto do usuário"
-          className="!w-10 !h-10 !rounded-full !border-2 !border-white !cursor-pointer"
+          className="!w-10 !h-10 !rounded-full !border-2 !border-white !cursor-pointer object-cover"
         />
       </DialogTrigger>
 
       <DialogContent className="!max-w-sm !p-6 !bg-gradient-to-br !from-white !via-red-50 !to-red-100 !text-gray-900 !rounded-xl">
+        {/* Cabeçalho com imagem e nome */}
         <div className="!flex !items-center !gap-4 !mb-4">
           <img
-            src="https://randomuser.me/api/portraits/men/32.jpg"
-            alt="Gilberto Bessa"
-            className="!w-14 !h-14 !rounded-full"
+            src={avatar}
+            alt={user.nome}
+            className="!w-14 !h-14 !rounded-full !object-cover"
           />
           <div>
             <h3 className="!text-lg !font-bold !leading-tight">
-              GILBERTO BESSA
+              {user.nome}
             </h3>
-            <p className="!text-sm !text-neutral-500">@gilberto-bessa</p>
+            <p className="!text-sm !text-neutral-500">
+              @{user.username || user.email}
+            </p>
           </div>
           <Button
             size="sm"
@@ -40,6 +51,7 @@ export default function PerfilUsuarioModal() {
           </Button>
         </div>
 
+        {/* Links rápidos */}
         <div className="!space-y-4">
           <div
             onClick={() => navigate("/minha-conta")}
@@ -70,6 +82,7 @@ export default function PerfilUsuarioModal() {
 
         <hr className="!my-4 !border-neutral-300" />
 
+        {/* Botão sair */}
         <button
           onClick={() => {
             signOut();

@@ -1,4 +1,3 @@
-// src/service/authService.ts
 import api from "./api";
 
 interface LoginResponse {
@@ -8,6 +7,8 @@ interface LoginResponse {
     nome: string;
     email: string;
     cidade: string;
+    telefone?: string;
+    avatarUrl?: string;
   };
 }
 
@@ -19,14 +20,40 @@ interface RegisterData {
   cidade: string;
 }
 
-// Função de login
+interface UpdateUserData {
+  nome: string;
+  telefone?: string;
+  email: string;
+  cidade: string;
+  avatarUrl?: string; // ✅ adicione isso
+}
+
+// 🔑 Login
 export async function login(email: string, senha: string): Promise<LoginResponse> {
   const response = await api.post<LoginResponse>("/users/login", { email, senha });
   return response.data;
 }
 
-// Função de cadastro
+// 📝 Cadastro
 export async function registerUser(data: RegisterData) {
   const response = await api.post("/users/register", data);
   return response.data;
+}
+
+// 🔄 Atualizar perfil
+export async function updateUser(id: number, data: UpdateUserData) {
+  const response = await api.put(`/users/${id}`, data);
+  return response.data;
+}
+
+// 📤 Upload de avatar
+export async function uploadAvatar(userId: number, file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const response = await api.post(`/users/upload/avatar/${userId}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return response.data.avatarUrl;
 }
