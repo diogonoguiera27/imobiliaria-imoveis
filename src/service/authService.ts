@@ -28,6 +28,23 @@ interface UpdateUserData {
   avatarUrl?: string; // ✅ adicione isso
 }
 
+
+export interface UpdateEmailPayload {
+  newEmail: string;
+  motivo: string;
+}
+
+export interface UpdateEmailResponse {
+  message: string;
+  user: {
+    id: number;
+    nome: string;
+    email: string;
+    cidade: string;
+    telefone?: string;
+    avatarUrl?: string;
+  };
+}
 // 🔑 Login
 export async function login(email: string, senha: string): Promise<LoginResponse> {
   const response = await api.post<LoginResponse>("/users/login", { email, senha });
@@ -57,3 +74,42 @@ export async function uploadAvatar(userId: number, file: File): Promise<string> 
 
   return response.data.avatarUrl;
 }
+
+
+// ✅ Funções no topo do escopo (fora de objetos, fora de outros métodos)
+
+export async function updateEmail(
+  userId: number,
+  data: UpdateEmailPayload,
+  token: string
+): Promise<UpdateEmailResponse> {
+  const response = await api.put<UpdateEmailResponse>(
+    `/users/${userId}/email`,
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+}
+
+
+
+export async function updatePassword(
+  userId: number,
+  data: { currentPassword: string; newPassword: string },
+  token: string
+) {
+  const response = await api.put(`/users/${userId}/password`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
+
+

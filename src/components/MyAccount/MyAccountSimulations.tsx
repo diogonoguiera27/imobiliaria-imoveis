@@ -1,28 +1,54 @@
+import { useCallback, useEffect, useState } from "react";
 import { Calculator } from "lucide-react";
+import { NovaSimulacaoModal } from "../NewModalSimulation";
+import { useAuth } from "@/hooks/auth";
+import { getSimulationsByUser } from "../../service/simulationService";
+
+interface Simulation {
+  id: number;
+  title: string;
+  entry: number;
+  installments: number;
+  installmentValue: number;
+  date: string;
+}
 
 export default function MyAccountSimulations() {
-  const simulations = [
-    {
-      id: 1,
-      title: "Apartamento - Setor Bueno",
-      date: "20/06/2025",
-      entry: "R$ 40.000",
-      installment: "240x R$ 1.200",
-    },
-    {
-      id: 2,
-      title: "Casa - Jardim América",
-      date: "05/07/2025",
-      entry: "R$ 80.000",
-      installment: "300x R$ 1.500",
-    },
-  ];
+  const [open, setOpen] = useState(false);
+  const [simulations, setSimulations] = useState<Simulation[]>([]);
+  const { user } = useAuth();
+
+  const carregarSimulacoes = useCallback(async () => {
+    if (!user?.id) return;
+
+    try {
+      const data = await getSimulationsByUser(user.id);
+      setSimulations(data);
+    } catch (error) {
+      console.error("Erro ao carregar simulações:", error);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    carregarSimulacoes();
+  }, [carregarSimulacoes]);
 
   return (
     <div>
-      <h3 className="!text-2xl !font-bold !mb-6 !flex !items-center !gap-2 !text-gray-800">
-        <Calculator size={20} className="!text-red-500" /> Simulações
-      </h3>
+      <div className="!flex !items-center !justify-between !mb-6">
+        <h3 className="!text-2xl !font-bold !flex !items-center !gap-2 !text-gray-800">
+          <Calculator size={20} className="!text-red-500" /> Simulações
+        </h3>
+
+        {user?.id && (
+          <NovaSimulacaoModal
+            open={open}
+            setOpen={setOpen}
+            userId={user.id}
+            onSimulacaoSalva={carregarSimulacoes}
+          />
+        )}
+      </div>
 
       <div className="!space-y-4">
         {simulations.map((sim) => (
@@ -32,7 +58,9 @@ export default function MyAccountSimulations() {
           >
             <p className="!font-semibold !text-gray-800">{sim.title}</p>
             <p className="!text-sm !text-gray-600">
-              Simulado em {sim.date} — Entrada: {sim.entry} — Parcelas: {sim.installment}
+              Simulado em {new Date(sim.date).toLocaleDateString("pt-BR")} — Entrada: R${" "}
+              {sim.entry.toLocaleString()} — Parcelas: {sim.installments}x R${" "}
+              {sim.installmentValue.toLocaleString()}
             </p>
           </div>
         ))}

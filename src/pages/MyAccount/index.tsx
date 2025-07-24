@@ -12,8 +12,10 @@ import {
   Calculator,
   KeyRound,
   User,
-  Bell
+  Bell,
 } from "lucide-react";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Footer } from "@/components/Footer";
 
 const tabs = [
   { label: "Overview", icon: LayoutDashboard },
@@ -27,24 +29,36 @@ export default function MyAccountPage() {
   const [activeTab, setActiveTab] = useState("Overview");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-red-50 to-red-100 text-gray-900 flex px-6 py-10">
-      {/* Sidebar */}
-      <aside className="w-72">
-        <MyAccountSidebar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          tabs={tabs}
-        />
-      </aside>
+    <SidebarProvider>
+      <div className="flex flex-col min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-white via-red-50 to-red-100 text-gray-900">
+        {/* Sidebar Trigger */}
+        <SidebarTrigger />
 
-      {/* Content */}
-      <main className="flex-1 px-8">
-        {activeTab === "Overview" && <MyAccountOverview />}
-        {activeTab === "Simulations" && <MyAccountSimulations />}
-        {activeTab === "Access Data" && <MyAccountAccessData />}
-        {activeTab === "Personal Data" && <MyAccountPersonalData />}
-        {activeTab === "Preferences" && <MyAccountPreferences />}
-      </main>
-    </div>
+        <main className="flex-grow flex justify-center !px-4 !pt-20 !mb-10">
+          <div className="w-[80%] flex flex-col md:flex-row gap-8 mb-10">
+            {/* Sidebar */}
+            <aside className="w-full md:w-[320px] flex-shrink-0">
+              <MyAccountSidebar
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                tabs={tabs}
+              />
+            </aside>
+
+            {/* Conteúdo principal */}
+            <section className="flex-1 flex flex-col gap-6">
+              {activeTab === "Overview" && <MyAccountOverview />}
+              {activeTab === "Simulations" && <MyAccountSimulations />}
+              {activeTab === "Access Data" && <MyAccountAccessData />}
+              {activeTab === "Personal Data" && <MyAccountPersonalData />}
+              {activeTab === "Preferences" && <MyAccountPreferences />}
+            </section>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    </SidebarProvider>
   );
 }

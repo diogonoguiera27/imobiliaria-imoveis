@@ -73,7 +73,7 @@ export default function ProfilePage() {
         <SidebarTrigger />
 
         {/* Main centralizado */}
-        <main className="flex-grow flex justify-center px-4 pt-12">
+        <main className="flex-grow flex justify-center px-4 !pt-20 !mb-10 ">
           <div className="w-[80%] flex flex-col md:flex-row gap-8 mb-10">
             {/* Sidebar */}
             <div className="w-full md:w-[320px] flex flex-col gap-6">
