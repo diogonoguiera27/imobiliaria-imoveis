@@ -1,15 +1,18 @@
 import api from "./api";
 
+// Interfaces principais
+export interface User {
+  id: number;
+  nome: string;
+  email: string;
+  cidade: string;
+  telefone?: string;
+  avatarUrl?: string;
+}
+
 interface LoginResponse {
   token: string;
-  user: {
-    id: number;
-    nome: string;
-    email: string;
-    cidade: string;
-    telefone?: string;
-    avatarUrl?: string;
-  };
+  user: User;
 }
 
 interface RegisterData {
@@ -20,14 +23,13 @@ interface RegisterData {
   cidade: string;
 }
 
-interface UpdateUserData {
+export interface UpdateUserData {
   nome: string;
   telefone?: string;
-  email: string;
   cidade: string;
-  avatarUrl?: string; // ✅ adicione isso
+  email: string;
+  avatarUrl?: string;
 }
-
 
 export interface UpdateEmailPayload {
   newEmail: string;
@@ -36,16 +38,25 @@ export interface UpdateEmailPayload {
 
 export interface UpdateEmailResponse {
   message: string;
-  user: {
-    id: number;
-    nome: string;
-    email: string;
-    cidade: string;
-    telefone?: string;
-    avatarUrl?: string;
-  };
+  user: User;
 }
-// 🔑 Login
+
+// 📊 Tipos para overview
+export interface Simulation {
+  id: number;
+  title: string;
+  entry: number;
+  installments: number;
+  installmentValue: number;
+  date: string;
+}
+
+export interface UserOverview {
+  user: User;
+  simulations: Simulation[];
+}
+
+// 🔐 Login
 export async function login(email: string, senha: string): Promise<LoginResponse> {
   const response = await api.post<LoginResponse>("/users/login", { email, senha });
   return response.data;
@@ -57,10 +68,19 @@ export async function registerUser(data: RegisterData) {
   return response.data;
 }
 
-// 🔄 Atualizar perfil
-export async function updateUser(id: number, data: UpdateUserData) {
-  const response = await api.put(`/users/${id}`, data);
-  return response.data;
+// 🔄 Atualizar dados do usuário
+export async function updateUser(
+  id: number,
+  data: UpdateUserData,
+  token: string
+): Promise<User> {
+  const response = await api.put<{ message: string; user: User }>(`/users/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data.user;
 }
 
 // 📤 Upload de avatar
@@ -68,16 +88,18 @@ export async function uploadAvatar(userId: number, file: File): Promise<string> 
   const formData = new FormData();
   formData.append("avatar", file);
 
-  const response = await api.post(`/users/upload/avatar/${userId}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const response = await api.post<{ avatarUrl: string }>(
+    `/users/upload/avatar/${userId}`,
+    formData,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
 
   return response.data.avatarUrl;
 }
 
-
-// ✅ Funções no topo do escopo (fora de objetos, fora de outros métodos)
-
+// ✉️ Atualizar e-mail
 export async function updateEmail(
   userId: number,
   data: UpdateEmailPayload,
@@ -96,14 +118,13 @@ export async function updateEmail(
   return response.data;
 }
 
-
-
+// 🔒 Atualizar senha
 export async function updatePassword(
   userId: number,
   data: { currentPassword: string; newPassword: string },
   token: string
-) {
-  const response = await api.put(`/users/${userId}/password`, data, {
+): Promise<{ message: string }> {
+  const response = await api.put<{ message: string }>(`/users/${userId}/password`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -112,4 +133,13 @@ export async function updatePassword(
   return response.data;
 }
 
+// 📊 Obter visão geral do usuário (dados + simulações)
+export async function getUserOverview(userId: number, token: string): Promise<UserOverview> {
+  const response = await api.get<UserOverview>(`/users/${userId}/overview`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
+  return response.data;
+}

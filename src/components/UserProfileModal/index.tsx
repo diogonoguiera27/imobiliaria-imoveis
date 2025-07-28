@@ -11,9 +11,12 @@ export default function PerfilUsuarioModal() {
 
   if (!user) return null;
 
+  // ✅ Avatar com fallback seguro
   const avatar = user.avatarUrl
-  ? `http://localhost:3333${user.avatarUrl}`
-  : defaultAvatar;
+    ? user.avatarUrl.startsWith("http")
+      ? user.avatarUrl // caso seja uma URL completa (ex: S3, Cloudinary)
+      : `http://localhost:3333${user.avatarUrl}` // servidor local
+    : defaultAvatar;
 
 
   return (
