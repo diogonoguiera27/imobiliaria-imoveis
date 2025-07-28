@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/auth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Home } from "lucide-react";
+import { LogOut, User, Heart } from "lucide-react";
 import defaultAvatar from "@/assets/defaultAvatar.jpg";
 
 export default function PerfilUsuarioModal() {
@@ -69,15 +69,16 @@ export default function PerfilUsuarioModal() {
             </div>
           </div>
 
+          {/* ✅ Novo item: Imóveis Favoritos */}
           <div
-            onClick={() => navigate("/meus-imoveis")}
+            onClick={() => navigate("/favoritos")}
             className="!flex !items-center !gap-4 !cursor-pointer hover:!bg-red-100 !p-2 !rounded-md"
           >
-            <Home className="!text-red-600" size={20} />
+            <Heart className="!text-red-600" size={20} />
             <div>
-              <p className="!font-semibold">Imóveis</p>
+              <p className="!font-semibold">Imóveis favoritos</p>
               <p className="!text-sm !text-neutral-500">
-                Veja todos os seus imóveis
+                Veja os imóveis que você curtiu
               </p>
             </div>
           </div>
