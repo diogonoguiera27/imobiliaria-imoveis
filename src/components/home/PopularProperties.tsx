@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight,  } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "../ui/dialog";
 import { Imovel } from "@/types";
-
 import { CardProperties } from "@/components/PropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
 
+import { useAuth } from "@/hooks/auth";
+import { getUserFavorites } from "@/service/favoriteService";
+
 const ImoveisPopulares = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
+  const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardsPerPage, setCardsPerPage] = useState(4);
@@ -17,14 +20,28 @@ const ImoveisPopulares = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
-   useEffect(() => {
+  const { token } = useAuth();
+
+  useEffect(() => {
     async function carregarImoveis() {
       const todos = await buscarImoveis();
-      const populares = todos.filter((i) => i.categoria === "popular");
+      const populares = todos
+        .filter((i) => i.categoria === "popular" && typeof i.id === "number");
       setImoveis(populares);
+
+      if (token) {
+        try {
+          const favoritos = await getUserFavorites(token);
+          setFavoritedIds(favoritos); // array de propertyId
+        } catch (err) {
+          console.error("Erro ao buscar favoritos:", err);
+        }
+      }
     }
+
     carregarImoveis();
-  }, []);
+  }, [token]);
+
   useEffect(() => {
     const handleResize = () => {
       const container = containerRef.current;
@@ -54,7 +71,7 @@ const ImoveisPopulares = () => {
     <section className="w-full px-4 pt-0">
       <div className="w-full !max-w-[80%] !mx-auto">
         <div className="w-full flex justify-center mb-0 !mt-8">
-          <h2 className="text-black text-xl font-bold text-center max-w-screen-lg ">
+          <h2 className="text-black text-xl font-bold text-center max-w-screen-lg">
             Apartamentos mais populares perto de você
           </h2>
         </div>
@@ -82,6 +99,7 @@ const ImoveisPopulares = () => {
                 <CardProperties
                   key={item.id}
                   item={item}
+                  isFavoritedInitially={favoritedIds.includes(item.id)}
                   onOpenContactModal={() => setShowContactModal(true)}
                   onOpenPhoneModal={() => setShowPhoneModal(true)}
                 />

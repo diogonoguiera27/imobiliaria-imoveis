@@ -1,13 +1,17 @@
+import { useState, useEffect } from "react";
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Imovel } from "@/types";
+import { useAuth } from "@/hooks/auth";
+import { toggleFavorite } from "@/service/favoriteService";
 
 interface PropertyCardProps {
   item: Imovel;
   onOpenContactModal: () => void;
   onOpenPhoneModal: () => void;
   variant?: "default" | "featured";
+  isFavoritedInitially?: boolean;
 }
 
 const PropertyCard = ({
@@ -15,12 +19,36 @@ const PropertyCard = ({
   onOpenContactModal,
   onOpenPhoneModal,
   variant = "default",
+  isFavoritedInitially = false,
 }: PropertyCardProps) => {
   const isFeatured = variant === "featured";
+  const { token } = useAuth();
+
+  const [isFavorited, setIsFavorited] = useState(isFavoritedInitially);
+
+  // 🔁 Sincroniza favorito com o prop quando mudar
+  useEffect(() => {
+    setIsFavorited(isFavoritedInitially);
+  }, [isFavoritedInitially]);
+
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!token) {
+      console.warn("⚠️ Usuário não autenticado — não é possível favoritar.");
+      return;
+    }
+
+    try {
+      await toggleFavorite(item.id, isFavorited, token);
+      setIsFavorited(!isFavorited);
+    } catch (err) {
+      console.error("Erro ao favoritar imóvel:", err);
+    }
+  };
 
   return (
     <div
-      key={item.id}
       onClick={() => (window.location.href = `/imovel/${item.id}`)}
       className={`${
         isFeatured ? "w-[460px]" : "w-[285px]"
@@ -74,8 +102,14 @@ const PropertyCard = ({
               <p className="!text-xs !text-gray-500">{item.infoExtra}</p>
             )}
           </div>
-          <button className="!text-red-500 hover:!text-red-600">
-            <Heart strokeWidth={1.5} />
+          <button
+            onClick={handleToggleFavorite}
+            className="!text-red-500 hover:!text-red-600 !cursor-pointer"
+          >
+            <Heart
+              strokeWidth={1.5}
+              className={isFavorited ? "fill-red-500" : ""}
+            />
           </button>
         </div>
 

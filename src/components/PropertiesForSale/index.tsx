@@ -1,9 +1,11 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { CardProperties } from "@/components/PropertyCard";
 import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "@/components/ui/dialog";
 import type { Imovel } from "@/types";
+import { useAuth } from "@/hooks/auth";
+import { getUserFavorites } from "@/service/favoriteService";
 
 type PropertyListSectionProps = {
   imoveisVenda: Imovel[];
@@ -15,7 +17,7 @@ type PropertyListSectionProps = {
   onOpenPhoneModal: () => void;
 };
 
- const PropertyListSection: FC<PropertyListSectionProps> = ({
+const PropertyListSection: FC<PropertyListSectionProps> = ({
   imoveisVenda,
   showContactModal,
   showPhoneModal,
@@ -24,6 +26,23 @@ type PropertyListSectionProps = {
   onOpenContactModal,
   onOpenPhoneModal,
 }) => {
+  const { token } = useAuth();
+  const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    async function carregarFavoritos() {
+      if (!token) return;
+      try {
+        const favoritos = await getUserFavorites(token);
+        setFavoritedIds(favoritos);
+      } catch (error) {
+        console.error("Erro ao buscar favoritos:", error);
+      }
+    }
+
+    carregarFavoritos();
+  }, [token]);
+
   return (
     <section className="w-full px-4 pt-0 !mt-0">
       <div className="w-full flex justify-center mb-0">
@@ -38,6 +57,7 @@ type PropertyListSectionProps = {
             <CardProperties
               key={item.id}
               item={item}
+              isFavoritedInitially={favoritedIds.includes(item.id)}
               onOpenContactModal={onOpenContactModal}
               onOpenPhoneModal={onOpenPhoneModal}
             />
@@ -50,7 +70,7 @@ type PropertyListSectionProps = {
       </Dialog>
 
       <Dialog open={showPhoneModal} onOpenChange={setShowPhoneModal}>
-        <PhoneContactModal/>
+        <PhoneContactModal />
       </Dialog>
     </section>
   );

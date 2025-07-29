@@ -9,6 +9,7 @@ import Login from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
 import ProfilePreview from "@/pages/Profile";
 import MinhaConta from "@/pages/MyAccount";
+import Favorites from "@/pages/Favorites";
 
 export const Rotas: React.FC = () => (
   <Routes>
@@ -20,6 +21,7 @@ export const Rotas: React.FC = () => (
     <Route path="/imovel/:id" element={<ImovelDetalhes />} />
     <Route path="/profile" element={<ProfilePreview />} />
     <Route path="/minha-conta" element={<MinhaConta />} />
+    <Route path="/favoritos" element={<Favorites/>} />
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

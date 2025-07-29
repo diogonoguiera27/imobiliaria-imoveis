@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/auth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Heart } from "lucide-react";
+import { LogOut, User,  HeartIcon } from "lucide-react";
 import defaultAvatar from "@/assets/defaultAvatar.jpg";
 
 export default function PerfilUsuarioModal() {
@@ -74,7 +74,7 @@ export default function PerfilUsuarioModal() {
             onClick={() => navigate("/favoritos")}
             className="!flex !items-center !gap-4 !cursor-pointer hover:!bg-red-100 !p-2 !rounded-md"
           >
-            <Heart className="!text-red-600" size={20} />
+            <HeartIcon className="!text-red-600 fill-red-600" size={20} />
             <div>
               <p className="!font-semibold">Imóveis favoritos</p>
               <p className="!text-sm !text-neutral-500">
