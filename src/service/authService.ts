@@ -8,6 +8,8 @@ export interface User {
   cidade: string;
   telefone?: string;
   avatarUrl?: string;
+  createdAt: string;       // ✅ novo campo
+  ultimoAcesso: string;    // ✅ novo campo
 }
 
 interface LoginResponse {
@@ -51,10 +53,14 @@ export interface Simulation {
   date: string;
 }
 
+// authService.ts
 export interface UserOverview {
   user: User;
-  simulations: Simulation[];
+  simulations: Simulation[]; // ✅ Adicionado
+  favoritosCount: number;
 }
+
+
 
 // 🔐 Login
 export async function login(email: string, senha: string): Promise<LoginResponse> {
@@ -133,7 +139,7 @@ export async function updatePassword(
   return response.data;
 }
 
-// 📊 Obter visão geral do usuário (dados + simulações)
+// 📊 Obter visão geral do usuário (dados + simulações + favoritos)
 export async function getUserOverview(userId: number, token: string): Promise<UserOverview> {
   const response = await api.get<UserOverview>(`/users/${userId}/overview`, {
     headers: {

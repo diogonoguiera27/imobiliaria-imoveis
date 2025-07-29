@@ -1,10 +1,10 @@
 import api from "@/service/api";
-import React, {
+import {
   createContext,
-  ReactNode,
   useCallback,
   useContext,
   useState,
+  type ReactNode,
 } from "react";
 
 // 🔐 Interface do usuário
@@ -43,9 +43,9 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
-const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+const AuthContext = createContext<AuthContextData | undefined>(undefined);
 
-const AuthProvider: React.FC<AppProviderProps> = ({ children }) => {
+function AuthProvider({ children }: AppProviderProps) {
   const [data, setData] = useState<AuthState | null>(() => {
     try {
       const token = localStorage.getItem("@Imobiliaria:token");
@@ -128,14 +128,13 @@ const AuthProvider: React.FC<AppProviderProps> = ({ children }) => {
   );
 };
 
+
 // Hook de acesso ao contexto
 function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
-
   if (!context) {
     throw new Error("useAuth deve ser usado dentro de um AuthProvider");
   }
-
   return context;
 }
 
