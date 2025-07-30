@@ -8,6 +8,7 @@ import { CardProperties } from "@/components/PropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
 import { getUserFavorites } from "@/service/favoriteService";
 import { useAuth } from "@/hooks/auth";
+import { priorizarImoveisDaCidade } from "@/lib/utils"; // ✅
 
 const ImoveisPromocao = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
@@ -18,18 +19,26 @@ const ImoveisPromocao = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
-  const { token } = useAuth();
+  const { token, user } = useAuth(); // ✅ pega cidade do usuário
 
   useEffect(() => {
     async function carregarImoveis() {
       const todos = await buscarImoveis();
-      const promocao = todos.filter((i) => i.categoria === "promocao");
+
+      // ✅ Ordena priorizando cidade do usuário
+      const ordenados = user?.cidade
+        ? priorizarImoveisDaCidade(todos, user.cidade)
+        : todos;
+
+      // ✅ Filtra apenas os imóveis com categoria "promocao"
+      const promocao = ordenados.filter((i) => i.categoria === "promocao");
+
       setImoveis(promocao);
 
       if (token) {
         try {
           const favoritos = await getUserFavorites(token);
-          setFavoritedIds(favoritos); // array de propertyId
+          setFavoritedIds(favoritos);
         } catch (err) {
           console.error("Erro ao buscar favoritos:", err);
         }
@@ -37,7 +46,7 @@ const ImoveisPromocao = () => {
     }
 
     carregarImoveis();
-  }, [token]);
+  }, [token, user]);
 
   useEffect(() => {
     const handleResize = () => {

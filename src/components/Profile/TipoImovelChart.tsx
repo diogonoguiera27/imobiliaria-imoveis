@@ -10,12 +10,9 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
-
-const tipoData = [
-  { name: "Casas", value: 60 },
-  { name: "Apartamentos", value: 30 },
-  { name: "Chácaras", value: 10 },
-];
+import { useEffect, useState } from "react";
+import { getPropertyTypeStats } from "@/service/propertyService";
+import { useAuth } from "@/hooks/auth";
 
 const visualizacaoData = [
   { name: "Imóvel 1", value: 300 },
@@ -23,9 +20,29 @@ const visualizacaoData = [
   { name: "Imóvel 3", value: 100 },
 ];
 
-const COLORS = ["#EF4444", "#F97316", "#22C55E"];
+const COLORS = ["#EF4444", "#F97316", "#22C55E", "#3B82F6", "#A855F7"];
 
 export default function TipoImovelChart() {
+  const [tipoData, setTipoData] = useState<{ name: string; value: number }[]>(
+    []
+  );
+  const { token } = useAuth();
+
+  useEffect(() => {
+  async function fetchStats() {
+    if (!token) return; // evita chamar a API se não houver token
+
+    try {
+      const stats = await getPropertyTypeStats(token);
+      setTipoData(stats);
+    } catch (err) {
+      console.error("Erro ao carregar dados do gráfico de tipos de imóveis:", err);
+    }
+  }
+
+  fetchStats();
+}, [token]);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
       {/* Gráfico 1 - Tipo de Imóveis (Pizza) */}

@@ -42,7 +42,7 @@ export default function PerfilUsuarioModal() {
               {user.nome}
             </h3>
             <p className="!text-sm !text-neutral-500">
-              @{user.username || user.email}
+              {user.username || user.email}
             </p>
           </div>
           <Button

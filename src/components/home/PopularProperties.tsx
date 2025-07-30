@@ -9,6 +9,7 @@ import { buscarImoveis } from "@/service/propertyService";
 
 import { useAuth } from "@/hooks/auth";
 import { getUserFavorites } from "@/service/favoriteService";
+import { priorizarImoveisDaCidade } from "@/lib/utils"; // ✅ função de ordenação por cidade
 
 const ImoveisPopulares = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
@@ -20,13 +21,22 @@ const ImoveisPopulares = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
-  const { token } = useAuth();
+  const { token, user } = useAuth(); // ✅ pega cidade
 
   useEffect(() => {
     async function carregarImoveis() {
       const todos = await buscarImoveis();
-      const populares = todos
-        .filter((i) => i.categoria === "popular" && typeof i.id === "number");
+
+      // ✅ Prioriza os da cidade do usuário (se houver)
+      const ordenados = user?.cidade
+        ? priorizarImoveisDaCidade(todos, user.cidade)
+        : todos;
+
+      // ✅ Filtra por categoria "popular"
+      const populares = ordenados.filter(
+        (i) => i.categoria === "popular" && typeof i.id === "number"
+      );
+
       setImoveis(populares);
 
       if (token) {
@@ -40,7 +50,7 @@ const ImoveisPopulares = () => {
     }
 
     carregarImoveis();
-  }, [token]);
+  }, [token, user]);
 
   useEffect(() => {
     const handleResize = () => {
