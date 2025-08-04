@@ -10,19 +10,7 @@ export async function buscarImoveis(): Promise<Imovel[]> {
 // 🔹 Buscar imóveis com prioridade para a cidade do usuário
 export async function buscarImoveisPorCidade(cidade: string): Promise<Imovel[]> {
   const response = await api.get<Imovel[]>("/property", {
-    params: {
-      cidade,
-    },
-  });
-  return response.data;
-}
-
-// 🔹 Obter estatísticas de tipos de imóveis
-export async function getPropertyTypeStats(token: string) {
-  const response = await api.get("/property/stats/property-types", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    params: { cidade },
   });
   return response.data;
 }

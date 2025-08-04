@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/auth";
 import { toast } from "react-toastify";
 import { uploadAvatar } from "@/service/authService";
@@ -13,14 +13,18 @@ interface UploadAvatarModalProps {
 export default function UploadAvatarModal({ open, onClose }: UploadAvatarModalProps) {
   const { user, updateUser } = useAuth();
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setFile(null);
+    }
+  }, [open]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0];
     if (selected) {
       setFile(selected);
-      setPreview(URL.createObjectURL(selected));
     }
   }
 
@@ -29,8 +33,8 @@ export default function UploadAvatarModal({ open, onClose }: UploadAvatarModalPr
 
     setLoading(true);
     try {
-      const avatarUrl = await uploadAvatar(user.id, file); // ✅ serviço separado
-      updateUser({ ...user, avatarUrl }); // ✅ contexto atualizado
+      const avatarUrl = await uploadAvatar(user.id, file);
+      updateUser({ ...user, avatarUrl });
       toast.success("Foto de perfil atualizada com sucesso!");
       onClose();
     } catch (error) {
@@ -43,29 +47,36 @@ export default function UploadAvatarModal({ open, onClose }: UploadAvatarModalPr
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="!max-w-sm !p-6 !bg-white !rounded-xl">
-        <h2 className="!text-lg !font-bold mb-4">Atualizar Foto de Perfil</h2>
+      <DialogContent className="!max-w-sm !bg-white !rounded-xl !p-6 !flex !flex-col !items-center">
+        <h2 className="!text-lg !font-bold !text-center !mb-4">Atualizar Foto de Perfil</h2>
 
-        <div className="!mb-4 text-center">
-          {preview ? (
-            <img src={preview} alt="Prévia" className="!w-24 !h-24 !rounded-full !mx-auto" />
+        <label className="!bg-red-50 !text-red-700 !py-2 !px-4 !rounded-md !cursor-pointer !text-sm !font-medium !hover:bg-blue-100">
+          Selecionar imagem
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="!hidden"
+          />
+        </label>
+
+        <div className="!mt-3 !text-center !text-sm !text-gray-600">
+          {file ? (
+            <span>Arquivo selecionado: <strong>{file.name}</strong></span>
           ) : (
-            <p className="!text-sm !text-neutral-500">Selecione uma imagem</p>
+            <span>Nenhum arquivo selecionado</span>
           )}
         </div>
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="!mb-4"
-        />
-
-        <div className="!flex !justify-end !gap-2">
-          <Button onClick={onClose} variant="ghost">
+        <div className="!flex !justify-center !gap-4 !mt-6">
+          <Button onClick={onClose} variant="ghost" className="!px-4">
             Cancelar
           </Button>
-          <Button onClick={handleUpload} disabled={loading || !file}>
+          <Button
+            onClick={handleUpload}
+            disabled={loading || !file}
+            className="!bg-red-600 !hover:bg-red-700 !text-white !px-6"
+          >
             {loading ? "Salvando..." : "Salvar"}
           </Button>
         </div>

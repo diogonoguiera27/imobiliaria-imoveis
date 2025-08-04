@@ -1,6 +1,6 @@
 // components/Profile/ProfileSidebar.tsx
 import { useState } from "react";
-import { Plus, Pencil } from "lucide-react";
+import {  Pencil } from "lucide-react";
 import defaultAvatar from "@/assets/defaultAvatar.jpg";
 import UploadAvatarModal from "../UploadAvatarModal";
 import { useAuth } from "@/hooks/auth"; // ← importante para manter dados atualizados
@@ -53,25 +53,8 @@ export default function ProfileSidebar() {
         </div>
       </div>
 
-      {/* Card de Links */}
-      <div className="!bg-gradient-to-br !from-white !via-red-50 !to-red-100 !rounded-xl !p-4 !shadow-xl">
-        <div className="!flex !items-center !justify-between !mb-3">
-          <h3 className="!text-sm !font-semibold !text-gray-800">Links</h3>
-          <button className="!text-gray-400 hover:!text-purple-600 transition">
-            <Plus size={18} />
-          </button>
-        </div>
-        <div className="!grid !grid-cols-5 gap-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div
-              key={i}
-              className="!w-10 !h-10 !flex !items-center !justify-center !bg-white !border !border-red-100 !rounded-md !text-purple-500 hover:!bg-purple-600 hover:!text-white transition"
-            >
-              <Plus size={18} />
-            </div>
-          ))}
-        </div>
-      </div>
+      
+  
 
       {/* Modal de Upload */}
       <UploadAvatarModal open={modalOpen} onClose={() => setModalOpen(false)} />

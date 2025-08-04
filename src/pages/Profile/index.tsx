@@ -2,7 +2,7 @@ import {
   ProfileSidebar,
   ProfileEditForm,
   UserActivitySummary,
-  TipoImovelChart,
+  
 } from "@/components/Profile";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -111,9 +111,7 @@ export default function ProfilePage() {
                 }}
               />
 
-              <div className="!p-4">
-                <TipoImovelChart />
-              </div>
+              
             </div>
           </div>
         </main>

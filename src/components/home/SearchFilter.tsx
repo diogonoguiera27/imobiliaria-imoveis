@@ -1,25 +1,41 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import api from "@/service/api"; // ✅ import do seu client
 
 type Props = {
   onFiltrar: (filtro: {
     tipo: string;
     cidade: string;
-    valorMax: number;
+    precoMax: number;
   }) => void;
   onLimparFiltro: () => void;
   filtroAtivo: boolean;
 };
 
-const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo}: Props) => {
+const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   const [valorMax, setValorMax] = useState(3000000);
   const [tipo, setTipo] = useState("");
   const [cidade, setCidade] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onFiltrar({ tipo, cidade, valorMax });
+
+    // ✅ Envia a busca para o backend
+    if (tipo) {
+      try {
+        await api.post("/property/busca", {
+          tipo,
+          cidade,
+        });
+      } catch (error) {
+        console.error("Erro ao registrar busca:", error);
+      }
+    }
+
+    // 🔁 Executa filtro normal
+    onFiltrar({ tipo, cidade, precoMax: valorMax });
+
   };
 
   const handleLimpar = () => {

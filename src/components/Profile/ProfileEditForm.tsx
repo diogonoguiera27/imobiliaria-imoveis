@@ -72,7 +72,7 @@ export default function ProfileEditForm({ user }: Props) {
   };
 
   return (
-    <div className="!rounded-xl !p-6 !shadow-xl !bg-gradient-to-br !from-white !via-red-50 !to-red-100">
+    <div className="!rounded-xl !p-6 !mb-6 !shadow-xl !bg-gradient-to-br !from-white !via-red-50 !to-red-100">
       <ToastContainer
         position="top-right"
         autoClose={3000}
