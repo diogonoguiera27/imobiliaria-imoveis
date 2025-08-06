@@ -13,7 +13,7 @@ import Favorites from "@/pages/Favorites";
 
 export const Rotas: React.FC = () => (
   <Routes>
-    <Route path="/" element={<Navigate to="/login" />} /> {/* redireciona para login inicialmente */}
+    <Route path="/" element={<Navigate to="/login" />} /> 
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<RegisterPage />} />
     <Route path="/home" element={<Home />} />

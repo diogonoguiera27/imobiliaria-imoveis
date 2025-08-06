@@ -24,7 +24,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!user || !token) return;
 
-    // Reseta os estados ao carregar a página
+    
     setFavoritosCount(null);
     setUltimoAcesso("");
     setMembroDesde("");
@@ -55,7 +55,7 @@ export default function ProfilePage() {
         setMembroDesde(membroDesdeFmt);
         setUltimoAcesso(ultimoAcessoFmt);
       } catch (error) {
-        console.error("❌ Erro ao carregar overview:", error);
+        console.error("Erro ao carregar overview:", error);
         setErroResumo("Erro ao carregar resumo de atividades.");
       } finally {
         setLoadingResumo(false);

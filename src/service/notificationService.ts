@@ -15,7 +15,7 @@ export const getNotificationPreferences = async (
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    // Garante que a resposta é um array antes de usar find
+    
     if (Array.isArray(response.data)) {
       return response.data.find(
         (pref: NotificationPreference) => pref.tipo === tipo

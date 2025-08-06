@@ -8,8 +8,8 @@ export interface User {
   cidade: string;
   telefone?: string;
   avatarUrl?: string;
-  createdAt: string;       // ✅ novo campo
-  ultimoAcesso: string;    // ✅ novo campo
+  createdAt: string;       
+  ultimoAcesso: string;    
 }
 
 interface LoginResponse {
@@ -53,28 +53,28 @@ export interface Simulation {
   date: string;
 }
 
-// authService.ts
+
 export interface UserOverview {
   user: User;
-  simulations: Simulation[]; // ✅ Adicionado
+  simulations: Simulation[]; 
   favoritosCount: number;
 }
 
 
 
-// 🔐 Login
+
 export async function login(email: string, senha: string): Promise<LoginResponse> {
   const response = await api.post<LoginResponse>("/users/login", { email, senha });
   return response.data;
 }
 
-// 📝 Cadastro
+
 export async function registerUser(data: RegisterData) {
   const response = await api.post("/users/register", data);
   return response.data;
 }
 
-// 🔄 Atualizar dados do usuário
+
 export async function updateUser(
   id: number,
   data: UpdateUserData,
@@ -89,7 +89,7 @@ export async function updateUser(
   return response.data.user;
 }
 
-// 📤 Upload de avatar
+
 export async function uploadAvatar(userId: number, file: File): Promise<string> {
   const formData = new FormData();
   formData.append("avatar", file);
@@ -105,7 +105,7 @@ export async function uploadAvatar(userId: number, file: File): Promise<string> 
   return response.data.avatarUrl;
 }
 
-// ✉️ Atualizar e-mail
+
 export async function updateEmail(
   userId: number,
   data: UpdateEmailPayload,
@@ -124,7 +124,7 @@ export async function updateEmail(
   return response.data;
 }
 
-// 🔒 Atualizar senha
+
 export async function updatePassword(
   userId: number,
   data: { currentPassword: string; newPassword: string },
@@ -139,7 +139,7 @@ export async function updatePassword(
   return response.data;
 }
 
-// 📊 Obter visão geral do usuário (dados + simulações + favoritos)
+
 export async function getUserOverview(userId: number, token: string): Promise<UserOverview> {
   const response = await api.get<UserOverview>(`/users/${userId}/overview`, {
     headers: {

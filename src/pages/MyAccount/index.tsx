@@ -31,12 +31,12 @@ export default function MyAccountPage() {
   return (
     <SidebarProvider>
       <div className="flex flex-col min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-white via-red-50 to-red-100 text-gray-900">
-        {/* Sidebar Trigger */}
+        
         <SidebarTrigger />
 
         <main className="flex-grow flex justify-center !px-4 !pt-20 !mb-10">
           <div className="w-[80%] flex flex-col md:flex-row gap-8 mb-10">
-            {/* Sidebar */}
+            
             <aside className="w-full md:w-[320px] flex-shrink-0">
               <MyAccountSidebar
                 activeTab={activeTab}
@@ -45,7 +45,7 @@ export default function MyAccountPage() {
               />
             </aside>
 
-            {/* Conteúdo principal */}
+            
             <section className="flex-1 flex flex-col gap-6">
               {activeTab === "Overview" && <MyAccountOverview />}
               {activeTab === "Simulations" && <MyAccountSimulations />}
@@ -56,7 +56,7 @@ export default function MyAccountPage() {
           </div>
         </main>
 
-        {/* Footer */}
+        
         <Footer />
       </div>
     </SidebarProvider>
