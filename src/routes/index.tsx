@@ -11,6 +11,8 @@ import ProfilePreview from "@/pages/Profile";
 import MinhaConta from "@/pages/MyAccount";
 import Favorites from "@/pages/Favorites";
 
+
+
 export const Rotas: React.FC = () => (
   <Routes>
     <Route path="/" element={<Navigate to="/login" />} /> 
@@ -22,6 +24,9 @@ export const Rotas: React.FC = () => (
     <Route path="/profile" element={<ProfilePreview />} />
     <Route path="/minha-conta" element={<MinhaConta />} />
     <Route path="/favoritos" element={<Favorites/>} />
+    
+
+
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

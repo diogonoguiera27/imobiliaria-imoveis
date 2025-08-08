@@ -1,5 +1,3 @@
-// src/components/Login/LoginForm.tsx
-
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -18,7 +16,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const LoginForm: React.FC = () => {
+type LoginFormProps = {
+  onToggleForgotPassword: () => void
+};
+
+const LoginForm: React.FC<LoginFormProps> = ({ onToggleForgotPassword }) => {
   const {
     register,
     handleSubmit,
@@ -80,8 +82,14 @@ const LoginForm: React.FC = () => {
           )}
         </div>
 
-        <div className="!text-right !text-sm ">
-          <a href="#" className="!text-red-200 !hover:underline">Esqueceu a senha?</a>
+        <div className="!text-right !text-sm">
+          <button
+            type="button"
+            onClick={onToggleForgotPassword}
+            className="!text-red-200 !hover:underline"
+          >
+            Esqueceu a senha?
+          </button>
         </div>
 
         <Button

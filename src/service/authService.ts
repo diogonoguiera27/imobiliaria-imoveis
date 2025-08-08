@@ -149,3 +149,27 @@ export async function getUserOverview(userId: number, token: string): Promise<Us
 
   return response.data;
 }
+
+export async function sendForgotPassword(email: string) {
+  const { data } = await api.post<{ message: string }>(
+    "/auth/forgot-password",
+    { email }
+  );
+  return data;
+}
+
+export async function verifyResetCode(email: string, code: string) {
+  const { data } = await api.post<{ message: string }>(
+    "/auth/verify-reset-code",
+    { email, code }
+  );
+  return data;
+}
+
+export async function resetPassword(email: string, newPassword: string) {
+  const { data } = await api.post<{ message: string }>(
+    "/auth/reset-password",
+    { email, newPassword }
+  );
+  return data;
+}

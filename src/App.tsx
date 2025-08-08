@@ -10,6 +10,6 @@ function App() {
       </BrowserRouter>
     </AppProvider>
   );
-}
+} 
 
 export default App;
