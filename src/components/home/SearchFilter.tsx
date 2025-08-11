@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import api from "@/service/api"; // ✅ import do seu client
@@ -18,16 +18,25 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   const [tipo, setTipo] = useState("");
   const [cidade, setCidade] = useState("");
 
+  // ✅ Zera os inputs e executa o onLimparFiltro quando SidebarTrigger dispara "clear-filters"
+  useEffect(() => {
+    const onClear = () => {
+      setValorMax(3000000);
+      setTipo("");
+      setCidade("");
+      onLimparFiltro(); // garante que a lista também seja resetada
+    };
+    window.addEventListener("clear-filters", onClear);
+    return () => window.removeEventListener("clear-filters", onClear);
+  }, [onLimparFiltro]); // 🔹 dependência incluída
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // ✅ Envia a busca para o backend
     if (tipo) {
       try {
-        await api.post("/property/busca", {
-          tipo,
-          cidade,
-        });
+        await api.post("/property/busca", { tipo, cidade });
       } catch (error) {
         console.error("Erro ao registrar busca:", error);
       }
@@ -35,7 +44,6 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
 
     // 🔁 Executa filtro normal
     onFiltrar({ tipo, cidade, precoMax: valorMax });
-
   };
 
   const handleLimpar = () => {

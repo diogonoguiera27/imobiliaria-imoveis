@@ -18,15 +18,16 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Footer } from "@/components/Footer";
 
 const tabs = [
-  { label: "Overview", icon: LayoutDashboard },
-  { label: "Simulations", icon: Calculator },
-  { label: "Access Data", icon: KeyRound },
-  { label: "Personal Data", icon: User },
-  { label: "Preferences", icon: Bell },
+  { label: "Visão Geral", icon: LayoutDashboard },
+  { label: "Simulações", icon: Calculator },
+  { label: "Dados de Acesso", icon: KeyRound },
+  { label: "Dados pessoais", icon: User },
+  { label: "Preferências de notificação", icon: Bell },
 ];
 
+
 export default function MyAccountPage() {
-  const [activeTab, setActiveTab] = useState("Overview");
+  const [activeTab, setActiveTab] = useState("Visão Geral");
 
   return (
     <SidebarProvider>
@@ -47,11 +48,11 @@ export default function MyAccountPage() {
 
             
             <section className="flex-1 flex flex-col gap-6">
-              {activeTab === "Overview" && <MyAccountOverview />}
-              {activeTab === "Simulations" && <MyAccountSimulations />}
-              {activeTab === "Access Data" && <MyAccountAccessData />}
-              {activeTab === "Personal Data" && <MyAccountPersonalData />}
-              {activeTab === "Preferences" && <MyAccountPreferences />}
+              {activeTab === "Visão Geral" && <MyAccountOverview />}
+              {activeTab === "Simulações" && <MyAccountSimulations />}
+              {activeTab === "Dados de Acesso" && <MyAccountAccessData />}
+              {activeTab === "Dados pessoais" && <MyAccountPersonalData />}
+              {activeTab === "Preferências de notificação" && <MyAccountPreferences />}
             </section>
           </div>
         </main>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
@@ -47,15 +47,22 @@ export function Home() {
     carregarImoveis();
   }, []);
 
+  // ✅ memoriza a função para não mudar a cada render
+  const handleLimparFiltro = useCallback(() => {
+    setFiltroAtivo(false);
+    setImoveisFiltrados(todosImoveis);
+    setCurrentPage(1);
+  }, [todosImoveis]);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const shouldReset = params.get("reset") === "true";
 
     if (shouldReset) {
       handleLimparFiltro();
-      navigate("/", { replace: true });
+      navigate("/home", { replace: true });
     }
-  }, [location.search, navigate]);
+  }, [location.search, navigate, handleLimparFiltro]);
 
   type Filtros = {
     cidade?: string;
@@ -78,11 +85,18 @@ export function Home() {
     setCurrentPage(1);
   };
 
-  const handleLimparFiltro = () => {
-    setFiltroAtivo(false);
-    setImoveisFiltrados([]);
-    setCurrentPage(1);
-  };
+  // ✅ evento vindo do SidebarTrigger
+  useEffect(() => {
+    const handleClear = () => {
+      handleLimparFiltro();
+      if (location.search) {
+        navigate({ pathname: "/home", search: "" }, { replace: true });
+      }
+    };
+
+    window.addEventListener("clear-filters", handleClear);
+    return () => window.removeEventListener("clear-filters", handleClear);
+  }, [location.search, navigate, handleLimparFiltro]);
 
   return (
     <SidebarProvider>
@@ -99,14 +113,13 @@ export function Home() {
           {filtroAtivo ? (
             <section className="w-full px-4 pt-0 !mt-8">
               <div className="w-full !max-w-[80%] !mx-auto">
-
-                {currentImoveis.length > 0 ? (
+                {currentImoveis.length > 0 && (
                   <div className="w-full !flex !justify-center !mb-4 mt-8">
                     <h2 className="!text-black !text-xl !font-bold !text-center !max-w-screen-lg !mt-2">
                       Resultados filtrados
                     </h2>
                   </div>
-                ) : null}
+                )}
 
                 {currentImoveis.length === 0 ? (
                   <div className="text-center text-gray-600 text-lg font-semibold mt-12 mb-24">
@@ -124,12 +137,8 @@ export function Home() {
                           <CardProperties
                             key={item.id}
                             item={item}
-                            onOpenContactModal={() =>
-                              setShowContactModal(true)
-                            }
-                            onOpenPhoneModal={() =>
-                              setShowPhoneModal(true)
-                            }
+                            onOpenContactModal={() => setShowContactModal(true)}
+                            onOpenPhoneModal={() => setShowPhoneModal(true)}
                           />
                         ))}
                       </div>
@@ -148,10 +157,7 @@ export function Home() {
                 )}
               </div>
 
-              <Dialog
-                open={showContactModal}
-                onOpenChange={setShowContactModal}
-              >
+              <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
                 <MessageFormModal />
               </Dialog>
 

@@ -3,10 +3,10 @@ import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 
 function ContatoModal() {
   return (
-    <DialogContent className="!bg-white !rounded-xl !shadow-xl !max-w-md !mx-auto !p-6">
+    <DialogContent className="!bg-white !rounded-xl !shadow-xl !max-w-md !mx-auto !p-6 ">
       <h2 className="!text-xl !font-bold !text-gray-800 mb-4">Entre em Contato</h2>
 
-      <div className="!space-y-4 !text-sm !text-gray-700">
+      <div className="!space-y-4 !text-sm !text-gray-700 ">
         <p>
           A <strong>Imobiliária Luxury</strong> atua há mais de 10 anos no mercado de imóveis
           de alto padrão, oferecendo segurança, transparência e atendimento exclusivo.

@@ -1,11 +1,12 @@
-import api from "@/service/api";
 import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
+import { login as loginSvc, getMe, setAuthToken } from "@/service/authService"; // ✅ serviços
 
 // 🔐 Interface do usuário
 export interface User {
@@ -18,10 +19,10 @@ export interface User {
   avatarUrl?: string;
 }
 
-// 🔐 Estado de autenticação
+// 🔐 Estado de autenticação (user pode ser null enquanto hidrata)
 interface AuthState {
   token: string;
-  user: User;
+  user: User | null;
 }
 
 interface SignInCredentials {
@@ -34,7 +35,7 @@ interface SignInCredentials {
 interface AuthContextData {
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
-  updateUser(user: User): void;
+  updateUser(user: User): void; // mantido como estava
   token: string | null;
   user: User | null;
 }
@@ -46,70 +47,83 @@ interface AppProviderProps {
 const AuthContext = createContext<AuthContextData | undefined>(undefined);
 
 function AuthProvider({ children }: AppProviderProps) {
-  const [data, setData] = useState<AuthState | null>(() => {
-    try {
-      const token = localStorage.getItem("@Imobiliaria:token");
-      const userRaw = localStorage.getItem("@Imobiliaria:user");
-      const user = userRaw ? JSON.parse(userRaw) : null;
+  const [data, setData] = useState<AuthState | null>(null);
 
-      if (token && user) {
-        api.defaults.headers.authorization = `Bearer ${token}`;
-        return { token, user };
+  // 🔄 Hidrata sessão no reload usando só o token
+  useEffect(() => {
+    const token = localStorage.getItem("@Imobiliaria:token");
+
+    // limpeza de legado — nunca manter user no storage
+    localStorage.removeItem("@Imobiliaria:user");
+
+    if (!token) return;
+
+    setAuthToken(token);
+
+    (async () => {
+      try {
+        const me = await getMe();
+        setData({ token, user: me });
+      } catch {
+        // token inválido/expirado → limpa
+        localStorage.removeItem("@Imobiliaria:token");
+        setAuthToken(null);
+        setData(null);
       }
+    })();
+  }, []);
 
-      return null;
-    } catch (error) {
-      console.error("❌ Erro ao recuperar dados do localStorage:", error);
-      return null;
-    }
-  });
-
-  // 🔑 Login
+  // 🔑 Login: salva só o token; user fica apenas em memória
   const signIn = useCallback(
     async ({ email, senha, keepConnected }: SignInCredentials) => {
-      const response = await api.post("/users/login", { email, senha });
-
-      const { token, user } = response.data;
+      const { token, user } = await loginSvc(email, senha);
 
       if (keepConnected) {
-        localStorage.setItem("@Imobiliaria:token", token);
-        localStorage.setItem("@Imobiliaria:user", JSON.stringify(user));
+        localStorage.setItem("@Imobiliaria:token", token); // ✅ só o token
       }
 
-      api.defaults.headers.authorization = `Bearer ${token}`;
-      setData({ token, user });
+      // garantia extra: nunca gravar user no storage
+      localStorage.removeItem("@Imobiliaria:user");
+
+      setAuthToken(token);
+
+      // usa o user retornado (se vier) pra evitar “piscada”
+      if (user) {
+        setData({ token, user });
+      } else {
+        setData({ token, user: null });
+      }
+
+      // confirma/perfila oficialmente via /users/me
+      const me = await getMe();
+      setData({ token, user: me });
     },
     []
   );
 
-  // ✏️ Atualizar os dados do usuário no estado global + localStorage
+  // ✏️ Atualiza apenas em memória (nada no localStorage)
   const updateUser = useCallback((updatedUser: User) => {
     setData((prev) => {
       if (!prev) return prev;
 
-      if (!updatedUser || typeof updatedUser !== "object") {
-        console.warn("🚫 updateUser recebeu valor inválido:", updatedUser);
-        return prev;
-      }
-
       const mergedUser: User = {
-        ...prev.user,
+        ...(prev.user ?? ({} as User)),
         ...updatedUser,
         avatarUrl:
           updatedUser.avatarUrl !== undefined
             ? updatedUser.avatarUrl
-            : prev.user.avatarUrl,
+            : prev.user?.avatarUrl,
       };
 
-      localStorage.setItem("@Imobiliaria:user", JSON.stringify(mergedUser));
       return { ...prev, user: mergedUser };
     });
   }, []);
 
-  // 🚪 Logout
+  // 🚪 Logout: remove só o token e limpa header
   const signOut = useCallback(() => {
     localStorage.removeItem("@Imobiliaria:token");
-    localStorage.removeItem("@Imobiliaria:user");
+    localStorage.removeItem("@Imobiliaria:user"); // limpeza de legado
+    setAuthToken(null);
     setData(null);
   }, []);
 
@@ -126,8 +140,7 @@ function AuthProvider({ children }: AppProviderProps) {
       {children}
     </AuthContext.Provider>
   );
-};
-
+}
 
 // Hook de acesso ao contexto
 function useAuth(): AuthContextData {
