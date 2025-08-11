@@ -1,9 +1,10 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/auth";
+
 import { toast } from "react-toastify";
 import { uploadAvatar } from "@/service/authService";
+import { useAuth } from "@/hooks/auth";
 
 interface UploadAvatarModalProps {
   open: boolean;

@@ -12,9 +12,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/auth";
+
 import { updatePassword } from "@/service/authService";
 import { toast } from "react-toastify";
+import { useAuth } from "@/hooks/auth";
 
 const schema = z
   .object({

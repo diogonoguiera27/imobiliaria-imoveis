@@ -7,9 +7,10 @@ import { Imovel } from "@/types";
 import { CardProperties } from "@/components/PropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
 
-import { useAuth } from "@/hooks/auth";
+
 import { getUserFavorites } from "@/service/favoriteService";
 import { priorizarImoveisDaCidade } from "@/lib/utils"; // ✅ função de ordenação por cidade
+import { useAuth } from "@/hooks/auth";
 
 const ImoveisPopulares = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);

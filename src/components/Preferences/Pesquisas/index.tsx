@@ -1,10 +1,11 @@
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useState, useRef } from "react";
-import { useAuth } from "@/hooks/auth";
+
 import {
   getNotificationPreferences,
   saveNotificationPreference,
 } from "@/service/notificationService";
+import { useAuth } from "@/hooks/auth";
 
 export default function PesquisaOptions() {
   const { user, token } = useAuth();

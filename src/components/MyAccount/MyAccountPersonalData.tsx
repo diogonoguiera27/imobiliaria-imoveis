@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { User as UserIcon } from "lucide-react";
-import { useAuth } from "@/hooks/auth";
+
 import { updateUser } from "@/service/authService";
 import { toast } from "react-toastify";
+import { useAuth } from "@/hooks/auth";
 
 export default function MyAccountPersonalData() {
   const { user, updateUser: updateUserContext, token } = useAuth();

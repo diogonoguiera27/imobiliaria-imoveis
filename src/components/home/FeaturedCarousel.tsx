@@ -3,8 +3,9 @@ import { Imovel } from "@/types";
 
 import MainCarouselPropertyCard from "../PropertyCard/MainCarouselPropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
-import { useAuth } from "@/hooks/auth";
+
 import { priorizarImoveisDaCidade } from "@/lib/utils";
+import { useAuth } from "@/hooks/auth";
 
 const CarrosselDestaques: React.FC = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);

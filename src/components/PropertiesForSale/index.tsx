@@ -4,8 +4,9 @@ import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "@/components/ui/dialog";
 import type { Imovel } from "@/types";
-import { useAuth } from "@/hooks/auth";
+
 import { getUserFavorites } from "@/service/favoriteService";
+import { useAuth } from "@/hooks/auth";
 
 type PropertyListSectionProps = {
   imoveisVenda: Imovel[];

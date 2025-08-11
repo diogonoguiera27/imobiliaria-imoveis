@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { KeyRound } from "lucide-react";
 
-import { useAuth } from "@/hooks/auth";
+
 import AlterarEmailModal from "../ChangeEmailModal";
 import AlterarSenhaModal from "../ChangePasswordModal";
+import { useAuth } from "@/hooks/auth";
 
 export default function MyAccountAccessData() {
   const { user } = useAuth();

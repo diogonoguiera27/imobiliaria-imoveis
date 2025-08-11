@@ -6,11 +6,12 @@ import {
 } from "@/components/Profile";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { useAuth } from "@/hooks/auth";
+
 import { useEffect, useState } from "react";
 import { getUserOverview } from "@/service/authService";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useAuth } from "@/hooks/auth";
 
 export default function ProfilePage() {
   const { user, token } = useAuth();

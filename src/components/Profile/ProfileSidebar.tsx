@@ -3,7 +3,8 @@ import { useState } from "react";
 import {  Pencil } from "lucide-react";
 import defaultAvatar from "@/assets/defaultAvatar.jpg";
 import UploadAvatarModal from "../UploadAvatarModal";
-import { useAuth } from "@/hooks/auth"; // ← importante para manter dados atualizados
+import { useAuth } from "@/hooks/auth";
+ // ← importante para manter dados atualizados
 
 export default function ProfileSidebar() {
   const [modalOpen, setModalOpen] = useState(false);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/hooks/auth";
+
 import { getUserOverview, UserOverview } from "@/service/authService";
+import { useAuth } from "@/hooks/auth";
 
 export default function MyAccountOverview() {
   const { user, token } = useAuth();

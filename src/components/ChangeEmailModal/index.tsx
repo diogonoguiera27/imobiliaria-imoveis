@@ -13,8 +13,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { updateEmail } from "@/service/authService";
-import { useAuth } from "@/hooks/auth";
+
 import { toast } from "react-toastify";
+import { useAuth } from "@/hooks/auth";
 
 // ⛔ Removido campo de senha
 const emailSchema = z.object({

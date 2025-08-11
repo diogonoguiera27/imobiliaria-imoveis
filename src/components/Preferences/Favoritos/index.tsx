@@ -1,6 +1,6 @@
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useState, useRef } from "react";
-import { useAuth } from "@/hooks/auth";
+import { useAuth } from "@/hooks/auth/useAuth";
 import {
   getNotificationPreferences,
   saveNotificationPreference,

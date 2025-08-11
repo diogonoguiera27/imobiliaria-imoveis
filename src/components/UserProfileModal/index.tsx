@@ -1,9 +1,11 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useAuth } from "@/hooks/auth";
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, HeartIcon } from "lucide-react";
 import defaultAvatar from "@/assets/defaultAvatar.jpg";
+import { useAuth } from "@/hooks/auth";
+
 
 export default function PerfilUsuarioModal() {
   const { signOut, user } = useAuth();

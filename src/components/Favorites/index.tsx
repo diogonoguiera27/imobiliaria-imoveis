@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
-import { useAuth } from "@/hooks/auth";
+
 import { getFavoritedProperties } from "@/service/favoriteService";
 import { Imovel } from "@/types";
+import { useAuth } from "@/hooks/auth";
 
 export default function FavoriteProperties() {
   const [favoritos, setFavoritos] = useState<Imovel[]>([]);

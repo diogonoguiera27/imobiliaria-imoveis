@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Calculator } from "lucide-react";
 import { NovaSimulacaoModal } from "../NewModalSimulation";
-import { useAuth } from "@/hooks/auth";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { getSimulationsByUser } from "../../service/simulationService";
 
 interface Simulation {
