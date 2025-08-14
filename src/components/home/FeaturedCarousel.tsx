@@ -9,18 +9,18 @@ import { useAuth } from "@/hooks/auth";
 
 const CarrosselDestaques: React.FC = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
-  const { user } = useAuth(); // ✅ pega cidade do usuário
+  const { user } = useAuth(); 
 
   useEffect(() => {
     async function carregarImoveis() {
       const todos = await buscarImoveis();
 
-      // ✅ Prioriza os imóveis da cidade do usuário
+      
       const ordenados = user?.cidade
         ? priorizarImoveisDaCidade(todos, user.cidade)
         : todos;
 
-      // ✅ Filtra categoria "destaque"
+      
       const destaque = ordenados.filter((i) => i.categoria === "destaque");
       setImoveis(destaque);
     }
@@ -63,7 +63,7 @@ const CarrosselDestaques: React.FC = () => {
     <section className="w-full px-4 pt-2 !mt-0">
       <div className="!w-full !max-w-[80%] !mx-auto">
         <div className="w-full flex justify-center mb-0">
-          <h2 className="text-6xl font-extrabold text-black !text-center !max-w-screen-lg !text-neutral-120 !mb-4">
+          <h2 className="!text-xl !font-bold !text-gray-900 !text-center !max-w-screen-lg !text-neutral-120 !mb-4">
             Imóveis em Destaque
           </h2>
         </div>

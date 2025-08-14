@@ -169,7 +169,10 @@ export function Home() {
             <HighlightSection />
           )}
         </main>
-        <Footer />
+        <div className="!mt-8">
+          <Footer />
+        </div>
+        
       </div>
     </SidebarProvider>
   );

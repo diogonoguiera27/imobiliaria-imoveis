@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import api from "@/service/api"; // ✅ import do seu client
+import api from "@/service/api"; 
 
 type Props = {
   onFiltrar: (filtro: {

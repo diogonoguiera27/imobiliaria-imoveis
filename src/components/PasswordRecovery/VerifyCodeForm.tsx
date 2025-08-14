@@ -84,7 +84,7 @@ export default function VerifyCodeForm({ email, onBack, onVerified }: Props) {
         />
 
         <div className="flex items-center justify-between !mt-2 text-xs opacity-90">
-          <button type="button" onClick={onBack} className="underline">
+          <button type="button" onClick={onBack} className="underline cursor-pointer">
             Voltar
           </button>
 

@@ -57,7 +57,7 @@ export default function ForgotPasswordForm({ onSent }: Props) {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full !bg-white !text-red-900 !font-bold !py-2 !rounded-full !hover:bg-red-200 disabled:opacity-60"
+        className="w-full !bg-white !text-red-900 !font-bold !py-2 !rounded-full !hover:bg-red-200 disabled:opacity-60 cursor-pointer"
       >
         {loading ? 'Enviando...' : 'Enviar código de verificação'}
       </Button>

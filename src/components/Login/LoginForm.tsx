@@ -87,7 +87,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForgotPassword }) => {
           <button
             type="button"
             onClick={onToggleForgotPassword}
-            className="!text-red-200 !hover:underline"
+            className="!text-red-200 !hover:underline cursor-pointer"
           >
             Esqueceu a senha?
           </button>

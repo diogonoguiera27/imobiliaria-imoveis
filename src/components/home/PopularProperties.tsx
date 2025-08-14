@@ -9,7 +9,7 @@ import { buscarImoveis } from "@/service/propertyService";
 
 
 import { getUserFavorites } from "@/service/favoriteService";
-import { priorizarImoveisDaCidade } from "@/lib/utils"; // ✅ função de ordenação por cidade
+import { priorizarImoveisDaCidade } from "@/lib/utils"; 
 import { useAuth } from "@/hooks/auth";
 
 const ImoveisPopulares = () => {
@@ -22,18 +22,18 @@ const ImoveisPopulares = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
-  const { token, user } = useAuth(); // ✅ pega cidade
+  const { token, user } = useAuth(); 
 
   useEffect(() => {
     async function carregarImoveis() {
       const todos = await buscarImoveis();
 
-      // ✅ Prioriza os da cidade do usuário (se houver)
+     
       const ordenados = user?.cidade
         ? priorizarImoveisDaCidade(todos, user.cidade)
         : todos;
 
-      // ✅ Filtra por categoria "popular"
+      
       const populares = ordenados.filter(
         (i) => i.categoria === "popular" && typeof i.id === "number"
       );
@@ -43,7 +43,7 @@ const ImoveisPopulares = () => {
       if (token) {
         try {
           const favoritos = await getUserFavorites(token);
-          setFavoritedIds(favoritos); // array de propertyId
+          setFavoritedIds(favoritos); 
         } catch (err) {
           console.error("Erro ao buscar favoritos:", err);
         }
@@ -82,7 +82,7 @@ const ImoveisPopulares = () => {
     <section className="w-full px-4 pt-0">
       <div className="w-full !max-w-[80%] !mx-auto">
         <div className="w-full flex justify-center mb-0 !mt-8">
-          <h2 className="text-black text-xl font-bold text-center max-w-screen-lg">
+          <h2 className="!text-gray-900 !text-xl !font-bold text-center max-w-screen-lg">
             Apartamentos mais populares perto de você
           </h2>
         </div>
@@ -94,7 +94,7 @@ const ImoveisPopulares = () => {
                 onClick={() => scrollToPage(currentPage - 1)}
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md"
               >
-                <ChevronLeft />
+                <ChevronLeft className="cursor-pointer"/>
               </button>
             )}
 
@@ -122,7 +122,7 @@ const ImoveisPopulares = () => {
                 onClick={() => scrollToPage(currentPage + 1)}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md"
               >
-                <ChevronRight />
+                <ChevronRight className="cursor-pointer" />
               </button>
             )}
           </div>

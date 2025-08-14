@@ -39,7 +39,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setStep('login')}
-                className="!text-white !underline"
+                className="!text-white !underline cursor-pointer"
               >
                 Voltar para login
               </button>
@@ -79,7 +79,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setStep('login')}
-                className="!text-white !underline"
+                className="!text-white !underline cursor-pointer"
               >
                 Voltar para login
               </button>

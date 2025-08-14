@@ -8,8 +8,9 @@ import { CardProperties } from "@/components/PropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
 import { getUserFavorites } from "@/service/favoriteService";
 
-import { priorizarImoveisDaCidade } from "@/lib/utils"; // ✅
+import { priorizarImoveisDaCidade } from "@/lib/utils"; 
 import { useAuth } from "@/hooks/auth";
+
 
 const ImoveisPromocao = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
@@ -20,18 +21,18 @@ const ImoveisPromocao = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
-  const { token, user } = useAuth(); // ✅ pega cidade do usuário
+  const { token, user } = useAuth(); 
 
   useEffect(() => {
     async function carregarImoveis() {
       const todos = await buscarImoveis();
 
-      // ✅ Ordena priorizando cidade do usuário
+      
       const ordenados = user?.cidade
         ? priorizarImoveisDaCidade(todos, user.cidade)
         : todos;
 
-      // ✅ Filtra apenas os imóveis com categoria "promocao"
+      
       const promocao = ordenados.filter((i) => i.categoria === "promocao");
 
       setImoveis(promocao);
@@ -78,7 +79,7 @@ const ImoveisPromocao = () => {
     <section className="w-full px-4 pt-0 !mt-0">
       <div className="w-full !max-w-[80%] !mx-auto">
         <div className="w-full flex justify-center mb-0 mt-8!">
-          <h2 className="text-black text-xl font-bold text-center max-w-screen-lg">
+          <h2 className="!text-gray-900 !text-xl !font-bold text-center max-w-screen-lg">
             Imóveis que baixaram de preço em até 32% próximos a você
           </h2>
         </div>
@@ -90,7 +91,7 @@ const ImoveisPromocao = () => {
                 onClick={() => scrollToPage(currentPage - 1)}
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md"
               >
-                <ChevronLeft />
+                <ChevronLeft className="cursor-pointer"/>
               </button>
             )}
 
@@ -118,7 +119,7 @@ const ImoveisPromocao = () => {
                 onClick={() => scrollToPage(currentPage + 1)}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md"
               >
-                <ChevronRight />
+                <ChevronRight  className="cursor-pointer"/>
               </button>
             )}
           </div>

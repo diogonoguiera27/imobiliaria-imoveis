@@ -51,7 +51,7 @@ const RegisterForm: React.FC = () => {
       <h2 className="!text-3xl !font-bold !mb-10 !mt-7">Criar Conta</h2>
 
       <form className="!space-y-0" onSubmit={handleSubmit(onSubmit)}>
-        {/* Nome */}
+        
         <div className="mb-4">
           <Label htmlFor="nome" className="!block !text-sm !mb-2">Nome</Label>
           <Input
@@ -66,7 +66,7 @@ const RegisterForm: React.FC = () => {
           </p>
         </div>
 
-        {/* Telefone */}
+        
         <div className="mb-4">
           <Label htmlFor="telefone" className="!block !text-sm !mb-2">Telefone</Label>
           <Input
@@ -81,7 +81,7 @@ const RegisterForm: React.FC = () => {
           </p>
         </div>
 
-        {/* E-mail */}
+        
         <div className="mb-4">
           <Label htmlFor="email" className="!block !text-sm !mb-2">E-mail</Label>
           <Input
@@ -96,7 +96,7 @@ const RegisterForm: React.FC = () => {
           </p>
         </div>
 
-        {/* Senha */}
+        
         <div className="mb-4">
           <Label htmlFor="senha" className="!block !text-sm !mb-2">Senha</Label>
           <Input
@@ -111,7 +111,7 @@ const RegisterForm: React.FC = () => {
           </p>
         </div>
 
-        {/* Cidade */}
+        
         <div className="mb-5">
           <Label htmlFor="cidade" className="!block !text-sm !mb-2">Cidade</Label>
           <Input
@@ -126,7 +126,7 @@ const RegisterForm: React.FC = () => {
           </p>
         </div>
 
-        {/* Botão */}
+        
         <Button
           type="submit"
           className="w-full !bg-white !text-red-900 !font-bold !py-2 !rounded-full !hover:bg-red-200"
@@ -134,7 +134,7 @@ const RegisterForm: React.FC = () => {
           Criar Conta
         </Button>
 
-        {/* Link login */}
+        
         <div className="!text-sm !text-center !mt-4">
           Já tem uma conta?{' '}
           <a href="/login" className="!text-red-200 !underline">Fazer login</a>
