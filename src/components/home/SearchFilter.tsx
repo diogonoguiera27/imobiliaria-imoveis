@@ -18,23 +18,23 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   const [tipo, setTipo] = useState("");
   const [cidade, setCidade] = useState("");
 
-  // ✅ Zera os inputs e executa o onLimparFiltro quando SidebarTrigger dispara "clear-filters"
+  
   useEffect(() => {
     const onClear = () => {
       setValorMax(3000000);
       setTipo("");
       setCidade("");
-      onLimparFiltro(); // garante que a lista também seja resetada
+      onLimparFiltro(); 
     };
     window.addEventListener("clear-filters", onClear);
     return () => window.removeEventListener("clear-filters", onClear);
-  }, [onLimparFiltro]); // 🔹 dependência incluída
+  }, [onLimparFiltro]); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // ✅ Envia a busca para o backend
-    if (tipo) {
+    if (tipo || cidade) {
       try {
         await api.post("/property/busca", { tipo, cidade });
       } catch (error) {
@@ -42,8 +42,12 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
       }
     }
 
-    // 🔁 Executa filtro normal
-    onFiltrar({ tipo, cidade, precoMax: valorMax });
+    
+     onFiltrar({
+      tipo: tipo.trim(),
+      cidade: cidade.trim(),
+      precoMax: Number.isFinite(valorMax) ? valorMax : 3_000_000,
+    });
   };
 
   const handleLimpar = () => {

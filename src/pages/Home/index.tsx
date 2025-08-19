@@ -1,11 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  HeroBanner,
-  SearchFilter,
-  HighlightSection,
-} from "@/components/Home";
+import { HeroBanner, SearchFilter, HighlightSection } from "@/components/Home";
 import { Imovel } from "@/types";
 import Pagination from "@/components/Pagination";
 import { Dialog } from "@/components/ui/dialog";
@@ -16,6 +12,22 @@ import { CardProperties } from "@/components/PropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
 
 const ITEMS_PER_PAGE = 12;
+
+// helpers locais para normalização e comparação de texto
+const norm = (s: string | null | undefined): string =>
+  (s ?? "")
+    .toString()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "") // remove acentos
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, " ");
+
+const contains = (hay: string | null | undefined, needle: string | null | undefined): boolean => {
+  const n = norm(needle);
+  if (!n) return true; // filtro vazio não restringe
+  return norm(hay).includes(n); // substring insensitive
+};
 
 export function Home() {
   const [todosImoveis, setTodosImoveis] = useState<Imovel[]>([]);
@@ -29,63 +41,52 @@ export function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const totalPages = Math.ceil(imoveisFiltrados.length / ITEMS_PER_PAGE);
+  // paginação derivada
+  const totalPages = useMemo(
+    () => Math.ceil(imoveisFiltrados.length / ITEMS_PER_PAGE) || 1,
+    [imoveisFiltrados.length]
+  );
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentImoveis = imoveisFiltrados.slice(startIndex, endIndex);
+  const currentImoveis = useMemo(
+    () => imoveisFiltrados.slice(startIndex, endIndex),
+    [imoveisFiltrados, startIndex, endIndex]
+  );
 
+  // carrega imóveis da API
   useEffect(() => {
     async function carregarImoveis() {
       try {
         const imoveisAPI = await buscarImoveis();
         setTodosImoveis(imoveisAPI);
+        // se não houver filtro ativo, exibir todos
+        if (!filtroAtivo) {
+          setImoveisFiltrados(imoveisAPI);
+        }
       } catch (error) {
         console.error("Erro ao buscar imóveis da API:", error);
       }
     }
-
     carregarImoveis();
-  }, []);
+  }, [filtroAtivo]);
 
-  // ✅ memoriza a função para não mudar a cada render
+  // limpar filtro
   const handleLimparFiltro = useCallback(() => {
     setFiltroAtivo(false);
     setImoveisFiltrados(todosImoveis);
     setCurrentPage(1);
   }, [todosImoveis]);
 
+  // suporte a reset via query param / evento global
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const shouldReset = params.get("reset") === "true";
-
     if (shouldReset) {
       handleLimparFiltro();
       navigate("/home", { replace: true });
     }
   }, [location.search, navigate, handleLimparFiltro]);
 
-  type Filtros = {
-    cidade?: string;
-    tipo?: string;
-    precoMax?: number;
-  };
-
-  const handleFiltrar = (filtros: Filtros) => {
-    let resultado = todosImoveis.filter((imovel) => {
-      return (
-        (!filtros.cidade || imovel.cidade === filtros.cidade) &&
-        (!filtros.tipo || imovel.tipo === filtros.tipo) &&
-        (!filtros.precoMax || imovel.preco === filtros.precoMax)
-      );
-    });
-
-    resultado = resultado.sort((a, b) => b.preco - a.preco);
-    setImoveisFiltrados(resultado);
-    setFiltroAtivo(true);
-    setCurrentPage(1);
-  };
-
-  // ✅ evento vindo do SidebarTrigger
   useEffect(() => {
     const handleClear = () => {
       handleLimparFiltro();
@@ -93,10 +94,42 @@ export function Home() {
         navigate({ pathname: "/home", search: "" }, { replace: true });
       }
     };
-
     window.addEventListener("clear-filters", handleClear);
     return () => window.removeEventListener("clear-filters", handleClear);
   }, [location.search, navigate, handleLimparFiltro]);
+
+  // -------------------------
+  // FILTRO (faixa + substring)
+  // -------------------------
+  type Filtros = {
+    cidade?: string;
+    tipo?: string;
+    precoMax?: number; // usuário escolhe o teto; mínimo é fixo (50k)
+  };
+
+  const handleFiltrar = (filtros: Filtros) => {
+    const PRECO_MIN = 50_000;
+    const PRECO_MAX_DEFAULT = 3_000_000;
+
+    const teto =
+      typeof filtros.precoMax === "number" && Number.isFinite(filtros.precoMax)
+        ? filtros.precoMax!
+        : PRECO_MAX_DEFAULT;
+
+    let resultado = todosImoveis.filter((imovel) => {
+      const okPreco = imovel.preco >= PRECO_MIN && imovel.preco <= teto;
+      const okTipo = contains(imovel.tipo, filtros.tipo);
+      const okCidade = contains(imovel.cidade, filtros.cidade);
+      return okPreco && okTipo && okCidade;
+    });
+
+    // ordenar do maior preço para o menor (mantido)
+    resultado = resultado.sort((a, b) => b.preco - a.preco);
+
+    setImoveisFiltrados(resultado);
+    setFiltroAtivo(true);
+    setCurrentPage(1);
+  };
 
   return (
     <SidebarProvider>
@@ -104,6 +137,8 @@ export function Home() {
         <main className="flex-grow">
           <SidebarTrigger />
           <HeroBanner />
+
+          {/* Componente de busca/filtro */}
           <SearchFilter
             onFiltrar={handleFiltrar}
             onLimparFiltro={handleLimparFiltro}
@@ -169,11 +204,13 @@ export function Home() {
             <HighlightSection />
           )}
         </main>
+
         <div className="!mt-8">
           <Footer />
         </div>
-        
       </div>
     </SidebarProvider>
   );
 }
+
+export default Home;
