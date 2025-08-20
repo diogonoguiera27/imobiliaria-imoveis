@@ -10,6 +10,8 @@ import RegisterPage from "@/pages/Register";
 import ProfilePreview from "@/pages/Profile";
 import MinhaConta from "@/pages/MyAccount";
 import Favorites from "@/pages/Favorites";
+import CreateProperty from "@/pages/CreateProperty";
+import MyProperties from "@/pages/MyProperties";
 
 
 
@@ -21,11 +23,11 @@ export const Rotas: React.FC = () => (
     <Route path="/home" element={<Home />} />
     <Route path="/imoveis-venda" element={<ListaImoveisVenda />} />
     <Route path="/imovel/:id" element={<ImovelDetalhes />} />
+    <Route path="/imovel/novo" element={<CreateProperty/>}/>
+    <Route path="/meus-imoveis" element={<MyProperties />} />
     <Route path="/profile" element={<ProfilePreview />} />
     <Route path="/minha-conta" element={<MinhaConta />} />
     <Route path="/favoritos" element={<Favorites/>} />
-    
-
 
     <Route path="*" element={<NoMatch />} />
   </Routes>

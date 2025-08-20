@@ -1,27 +1,48 @@
 // src/types/imovel.ts
 
-export type TipoNegocio = "venda" | "aluguel";
-
-export type TipoImovel = "Apartamento" | "Condomínio" | "Casa Residencial";
-
-export type CategoriaImovel = "popular" | "promocao" | "destaque"| "venda";
+// Sugestões conhecidas + mantêm flexibilidade para qualquer string do backend
+export type TipoNegocio = "venda" | "aluguel" | (string & {});
+export type TipoImovel =
+  | "Apartamento"
+  | "Condomínio"
+  | "Casa Residencial"
+  | (string & {});
+export type CategoriaImovel =
+  | "popular"
+  | "promocao"
+  | "destaque"
+  | "venda"
+  | (string & {});
 
 export type Imovel = {
   id: number;
+
+  // campos principais
   imagem: string;
-  cidade: string;
-  bairro: string;
   endereco: string;
+  bairro: string;
+  cidade: string;
+
+  // classificação
+  tipo: TipoImovel;
+  tipoNegocio: TipoNegocio;
+  categoria: CategoriaImovel;
+
+  // numéricos (compatíveis com Prisma/rota)
   metragem: number;
+  areaConstruida?: number | null; // Prisma permite opcional
   quartos: number;
+  suites?: number | null;         // Prisma permite opcional
   banheiros: number;
-  suites?: number;
   vagas: number;
   preco: number;
-  infoExtra: string;
+
+  // textos opcionais conforme backend
+  infoExtra?: string;
   descricao?: string;
-  tipoNegocio: TipoNegocio;
-  tipo: TipoImovel;
-  categoria: CategoriaImovel; 
-  
+
+  // metadados que o backend retorna
+  userId?: number | null;
+  createdAt?: string;
+  updatedAt?: string;
 };

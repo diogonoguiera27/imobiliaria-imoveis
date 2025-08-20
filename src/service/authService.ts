@@ -62,9 +62,10 @@ export interface UserOverview {
 /** ✔ Centraliza set/clear do header Authorization */
 export function setAuthToken(token: string | null) {
   if (token) {
-    api.defaults.headers.authorization = `Bearer ${token}`;
+    // use .common para valer para GET/POST/PUT/DELETE etc.
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
-    delete api.defaults.headers.authorization;
+    delete api.defaults.headers.common["Authorization"];
   }
 }
 
