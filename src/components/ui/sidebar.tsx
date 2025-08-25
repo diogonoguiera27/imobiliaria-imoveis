@@ -26,6 +26,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import  ContactInfoModal  from "@/components/ContactInfoModal";
+import { Plus } from "lucide-react";
+import { useAuth } from "@/hooks/auth";
 
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
@@ -225,28 +227,39 @@ export default function SidebarTrigger({
   const { toggleSidebar } = useSidebar();
   const navigate = useNavigate();
   const location = useLocation();
+  const { token } = useAuth();
 
-  // 👉 troque para "/" se sua Home for a raiz
   const HOME_PATH = "/home";
 
   const goHome = () => {
-    // 1) Navega para a Home sem querystring
     if (location.pathname !== HOME_PATH || location.search) {
       navigate({ pathname: HOME_PATH, search: "" });
     }
-    // 2) Dispara evento global para limpar filtros/estado — sem reload
     window.dispatchEvent(new Event("clear-filters"));
   };
 
+  const ensureAuth = (path: string) => {
+    if (!token) {
+      navigate("/login", { state: { redirectTo: path } });
+      return;
+    }
+    navigate(path);
+  };
+
+  const goMyProperties = () => ensureAuth("/meus-imoveis");
+  const goCreateProperty = () => ensureAuth("/imovel/novo");
+
   return (
     <main className="fixed z-50 flex h-[60px] w-full items-center justify-between !px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
+      {/* ESQUERDA: logo + botão de abrir sidebar */}
       <div className="flex items-center gap-4">
         <img
           src={logoImg}
           alt={import.meta.env.VITE_COMPANY_NAME}
-          className="!h-18 w-auto cursor-pointer"
+          className="!h-10 w-auto cursor-pointer"
           onClick={goHome}
         />
+
         <Button
           data-sidebar="trigger"
           data-slot="sidebar-trigger"
@@ -261,10 +274,19 @@ export default function SidebarTrigger({
         />
       </div>
 
+      {/* DIREITA: navegação principal */}
       <div className="flex items-center gap-6">
-        <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold ">
+        <nav className="hidden md:flex gap-6 items-center !text-white !text-sm !font-semibold">
           <button onClick={goHome} className="hover:underline !cursor-pointer">
             Home
+          </button>
+
+          <button onClick={goMyProperties} className="hover:underline !cursor-pointer">
+            Meus Imóveis
+          </button>
+
+          <button onClick={goCreateProperty} className="hover:underline !cursor-pointer">
+            Cadastrar Imóveis
           </button>
 
           <Dialog>
@@ -282,7 +304,6 @@ export default function SidebarTrigger({
     </main>
   );
 }
-
 
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {

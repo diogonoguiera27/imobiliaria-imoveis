@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -10,6 +10,13 @@ import { Textarea } from "../ui/textarea";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { criarImovel } from "@/service/propertyService";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 /* ===================== Helpers numéricos (Zod) ===================== */
 const asRequiredInt = (msg: string, opts?: { positive?: boolean }) =>
@@ -34,6 +41,14 @@ const asRequiredNumber = (msg: string, opts?: { positive?: boolean }) =>
       .number({ required_error: msg })
       .refine((n) => (opts?.positive ? n > 0 : true), msg)
   );
+
+/* ========================= Opções dos selects ========================= */
+const TIPO_IMOVEL_OPCOES = ["Apartamento", "Casa Residencial", "Condomínio"];
+
+const TIPO_NEGOCIO_OPCOES = ["Aluguel", "Venda"];
+
+const CATEGORIA_OPCOES = ["venda", "destaque", "popular"];
+
 
 /* ========================= Schema do Form ========================= */
 const schema = z.object({
@@ -82,6 +97,7 @@ export default function PropertyForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
+    control, // necessário para Controller
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: "onSubmit",
@@ -111,10 +127,7 @@ export default function PropertyForm() {
     const parsed = schema.parse(values);
 
     try {
-      // cria no backend; userId vem do token
       const { id } = await criarImovel(parsed);
-
-      // ✅ redireciona para a página "Meus Imóveis" já indicando o recém-criado
       navigate(`/meus-imoveis?createdId=${id}`, { replace: true });
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -148,21 +161,25 @@ export default function PropertyForm() {
   };
 
   return (
-    <form className="!px-6 !py-6" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-6">
-        <div className="!space-y-2">
+    <form
+      className="!px-6 !py-6 !space-y-4"
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+    >
+      {/* Linha 1: Imagem + Bairro */}
+      <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4">
+        <div className="!space-y-1">
           <Label htmlFor="imagem" className="!text-sm !font-medium">
-            Imagem (URL)
+            Imagem
           </Label>
           <Input
             id="imagem"
-            type="url"
-            placeholder="https://exemplo.com/foto.jpg"
+            type="file"
+            accept="image/*"
             className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
+              "!h-10 !text-sm !w-full !rounded-full !border !border-neutral-300 !bg-white !px-4 focus:!ring-1 focus:!ring-red-500/40",
               !!errors.imagem
             )}
-            aria-invalid={!!errors.imagem}
             {...register("imagem")}
           />
           {errors.imagem && (
@@ -170,26 +187,7 @@ export default function PropertyForm() {
           )}
         </div>
 
-        <div className="!space-y-2">
-          <Label htmlFor="endereco" className="!text-sm !font-medium">
-            Endereço
-          </Label>
-          <Input
-            id="endereco"
-            type="text"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.endereco
-            )}
-            aria-invalid={!!errors.endereco}
-            {...register("endereco")}
-          />
-          {errors.endereco && (
-            <p className="!text-xs !text-red-600">{errors.endereco.message}</p>
-          )}
-        </div>
-
-        <div className="!space-y-2">
+        <div className="!space-y-1">
           <Label htmlFor="bairro" className="!text-sm !font-medium">
             Bairro
           </Label>
@@ -197,70 +195,106 @@ export default function PropertyForm() {
             id="bairro"
             type="text"
             className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
+              "!h-10 !text-sm !w-full !rounded-full !border !border-neutral-300 !bg-white !px-4 focus:!ring-1 focus:!ring-red-500/40",
               !!errors.bairro
             )}
-            aria-invalid={!!errors.bairro}
             {...register("bairro")}
           />
           {errors.bairro && (
             <p className="!text-xs !text-red-600">{errors.bairro.message}</p>
           )}
         </div>
+      </div>
 
-        <div className="!space-y-2">
-          <Label htmlFor="cidade" className="!text-sm !font-medium">
-            Cidade
+      {/* Linha 2: Endereço + Categoria + Tipo de Negócio */}
+      <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
+        <div className="!space-y-1">
+          <Label htmlFor="endereco" className="!text-sm !font-medium">
+            Endereço
           </Label>
           <Input
-            id="cidade"
+            id="endereco"
             type="text"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.cidade
-            )}
-            aria-invalid={!!errors.cidade}
-            {...register("cidade")}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            {...register("endereco")}
           />
-          {errors.cidade && (
-            <p className="!text-xs !text-red-600">{errors.cidade.message}</p>
+          {errors.endereco && (
+            <p className="!text-xs !text-red-600">{errors.endereco.message}</p>
           )}
         </div>
 
-        <div className="!space-y-2">
-          <Label htmlFor="tipo" className="!text-sm !font-medium">
-            Tipo
+        {/* Categoria - Select */}
+        <div className="!space-y-1">
+          <Label htmlFor="categoria" className="!text-sm !font-medium">
+            Categoria
           </Label>
-          <Input
-            id="tipo"
-            type="text"
-            placeholder="Casa, Apto, Terreno..."
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.tipo
+          <Controller
+            name="categoria"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger
+                  id="categoria"
+                  className={withError(
+                    "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40",
+                    !!errors.categoria
+                  )}
+                  aria-invalid={!!errors.categoria}
+                >
+                  <SelectValue placeholder="Selecionar" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIA_OPCOES.map((opt) => (
+                    <SelectItem
+                      key={opt}
+                      value={opt}
+                      className="!py-2 !px-3 !text-sm"
+                    >
+                      {opt}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
-            aria-invalid={!!errors.tipo}
-            {...register("tipo")}
           />
-          {errors.tipo && (
-            <p className="!text-xs !text-red-600">{errors.tipo.message}</p>
+          {errors.categoria && (
+            <p className="!text-xs !text-red-600">{errors.categoria.message}</p>
           )}
         </div>
 
-        <div className="!space-y-2">
+        {/* Tipo de Negócio - Select */}
+        <div className="!space-y-1">
           <Label htmlFor="tipoNegocio" className="!text-sm !font-medium">
             Tipo de Negócio
           </Label>
-          <Input
-            id="tipoNegocio"
-            type="text"
-            placeholder="Venda, Aluguel..."
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.tipoNegocio
+          <Controller
+            name="tipoNegocio"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger
+                  id="tipoNegocio"
+                  className={withError(
+                    "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40",
+                    !!errors.tipoNegocio
+                  )}
+                  aria-invalid={!!errors.tipoNegocio}
+                >
+                  <SelectValue placeholder="Selecionar" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TIPO_NEGOCIO_OPCOES.map((opt) => (
+                    <SelectItem
+                      key={opt}
+                      value={opt}
+                      className="!py-2 !px-3 !text-sm"
+                    >
+                      {opt}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
-            aria-invalid={!!errors.tipoNegocio}
-            {...register("tipoNegocio")}
           />
           {errors.tipoNegocio && (
             <p className="!text-xs !text-red-600">
@@ -268,58 +302,90 @@ export default function PropertyForm() {
             </p>
           )}
         </div>
+      </div>
 
-        <div className="!space-y-2">
-          <Label htmlFor="categoria" className="!text-sm !font-medium">
-            Categoria
+      {/* Linha 3: Cidade + Tipo + Metragem */}
+      <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
+        <div className="!space-y-1">
+          <Label htmlFor="cidade" className="!text-sm !font-medium">
+            Cidade
           </Label>
           <Input
-            id="categoria"
+            id="cidade"
             type="text"
-            placeholder="Residencial, Comercial..."
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.categoria
-            )}
-            aria-invalid={!!errors.categoria}
-            {...register("categoria")}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            {...register("cidade")}
           />
-          {errors.categoria && (
-            <p className="!text-xs !text-red-600">{errors.categoria.message}</p>
+          {errors.cidade && (
+            <p className="!text-xs !text-red-600">{errors.cidade.message}</p>
           )}
         </div>
 
-        <div className="!space-y-2">
+        {/* Tipo - Select */}
+        <div className="!space-y-1">
+          <Label htmlFor="tipo" className="!text-sm !font-medium">
+            Tipo
+          </Label>
+          <Controller
+            name="tipo"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger
+                  id="tipo"
+                  className={withError(
+                    "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40",
+                    !!errors.tipo
+                  )}
+                  aria-invalid={!!errors.tipo}
+                >
+                  <SelectValue placeholder="Selecionar" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TIPO_IMOVEL_OPCOES.map((opt) => (
+                    <SelectItem
+                      key={opt}
+                      value={opt}
+                      className="!py-2 !px-3 !text-sm"
+                    >
+                      {opt}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.tipo && (
+            <p className="!text-xs !text-red-600">{errors.tipo.message}</p>
+          )}
+        </div>
+
+        <div className="!space-y-1">
           <Label htmlFor="metragem" className="!text-sm !font-medium">
             Metragem (m²)
           </Label>
           <Input
             id="metragem"
             type="number"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.metragem
-            )}
-            aria-invalid={!!errors.metragem}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("metragem")}
           />
           {errors.metragem && (
             <p className="!text-xs !text-red-600">{errors.metragem.message}</p>
           )}
         </div>
+      </div>
 
-        <div className="!space-y-2">
+      {/* Linha 4: Área construída + Quartos + Suítes */}
+      <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
+        <div className="!space-y-1">
           <Label htmlFor="areaConstruida" className="!text-sm !font-medium">
             Área Construída (m²)
           </Label>
           <Input
             id="areaConstruida"
             type="number"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.areaConstruida
-            )}
-            aria-invalid={!!errors.areaConstruida}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("areaConstruida")}
           />
           {errors.areaConstruida && (
@@ -328,84 +394,67 @@ export default function PropertyForm() {
             </p>
           )}
         </div>
-
-        <div className="!space-y-2">
+        <div className="!space-y-1">
           <Label htmlFor="quartos" className="!text-sm !font-medium">
             Quartos
           </Label>
           <Input
             id="quartos"
             type="number"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.quartos
-            )}
-            aria-invalid={!!errors.quartos}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("quartos")}
           />
           {errors.quartos && (
             <p className="!text-xs !text-red-600">{errors.quartos.message}</p>
           )}
         </div>
-
-        <div className="!space-y-2">
+        <div className="!space-y-1">
           <Label htmlFor="suites" className="!text-sm !font-medium">
             Suítes
           </Label>
           <Input
             id="suites"
             type="number"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.suites
-            )}
-            aria-invalid={!!errors.suites}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("suites")}
           />
           {errors.suites && (
             <p className="!text-xs !text-red-600">{errors.suites.message}</p>
           )}
         </div>
+      </div>
 
-        <div className="!space-y-2">
+      {/* Linha 5: Banheiros + Vagas + Preço */}
+      <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
+        <div className="!space-y-1">
           <Label htmlFor="banheiros" className="!text-sm !font-medium">
             Banheiros
           </Label>
           <Input
             id="banheiros"
             type="number"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.banheiros
-            )}
-            aria-invalid={!!errors.banheiros}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("banheiros")}
           />
           {errors.banheiros && (
             <p className="!text-xs !text-red-600">{errors.banheiros.message}</p>
           )}
         </div>
-
-        <div className="!space-y-2">
+        <div className="!space-y-1">
           <Label htmlFor="vagas" className="!text-sm !font-medium">
             Vagas
           </Label>
           <Input
             id="vagas"
             type="number"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.vagas
-            )}
-            aria-invalid={!!errors.vagas}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("vagas")}
           />
           {errors.vagas && (
             <p className="!text-xs !text-red-600">{errors.vagas.message}</p>
           )}
         </div>
-
-        <div className="!space-y-2">
+        <div className="!space-y-1">
           <Label htmlFor="preco" className="!text-sm !font-medium">
             Preço (R$)
           </Label>
@@ -413,54 +462,53 @@ export default function PropertyForm() {
             id="preco"
             type="number"
             step="0.01"
-            className={withError(
-              "!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30",
-              !!errors.preco
-            )}
-            aria-invalid={!!errors.preco}
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("preco")}
           />
           {errors.preco && (
             <p className="!text-xs !text-red-600">{errors.preco.message}</p>
           )}
         </div>
+      </div>
 
-        <div className="md:!col-span-2 !space-y-2">
+      {/* Linha 6: Info Extra + Descrição */}
+      <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4">
+        <div className="!space-y-1">
           <Label htmlFor="infoExtra" className="!text-sm !font-medium">
-            Info Extra
+            Informação Extra
           </Label>
           <Input
             id="infoExtra"
             type="text"
-            className="!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30"
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("infoExtra")}
           />
         </div>
-
-        <div className="md:!col-span-2 !space-y-2">
+        <div className="!space-y-1">
           <Label htmlFor="descricao" className="!text-sm !font-medium">
             Descrição
           </Label>
           <Textarea
             id="descricao"
-            rows={4}
-            className="!w-full !rounded-xl !border !border-neutral-300 !bg-white !px-3 !py-2 focus:!outline-none focus:!ring-2 focus:!ring-red-500/30"
+            rows={3}
+            className="!text-sm !w-full !rounded-2xl !border !border-neutral-300 !px-4 !py-2 focus:!ring-1 focus:!ring-red-500/40"
             {...register("descricao")}
           />
         </div>
       </div>
 
-      <div className="!mt-8 !flex !items-center !gap-3">
+      {/* Botões */}
+      <div className="!flex !justify-end !gap-3 !pt-3 !border-t !border-neutral-200">
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="!rounded-xl !px-5 !py-2 !font-medium !shadow-sm !bg-red-600 !text-white hover:!opacity-95 disabled:!opacity-60"
+          className="!rounded-full !px-6 !py-2 !text-sm !bg-red-600 !text-white hover:!opacity-95 disabled:!opacity-60"
         >
           {isSubmitting ? "Validando..." : "Salvar Imóvel"}
         </Button>
         <Button
           type="button"
-          className="!rounded-xl !px-5 !py-2 !font-medium !bg-neutral-400 !text-white hover:!bg-neutral-500"
+          className="!rounded-full !px-6 !py-2 !text-sm !bg-neutral-400 !text-white hover:!bg-neutral-500"
           onClick={() => window.history.back()}
         >
           Cancelar
