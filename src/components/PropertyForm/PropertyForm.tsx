@@ -1,4 +1,4 @@
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -9,7 +9,7 @@ import { Textarea } from "../ui/textarea";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { criarImovel } from "@/service/propertyService";
+import { criarImovel, atualizarImovel } from "@/service/propertyService";
 import {
   Select,
   SelectContent,
@@ -17,65 +17,72 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import type { Imovel, TipoImovel, TipoNegocio, CategoriaImovel } from "@/types";
 
-/* ===================== Helpers numéricos (Zod) ===================== */
-const asRequiredInt = (msg: string, opts?: { positive?: boolean }) =>
-  z.preprocess(
-    (v) => {
-      const n = Number(v);
-      return Number.isNaN(n) ? v : n;
-    },
-    z
-      .number({ required_error: msg })
-      .int()
-      .refine((n) => (opts?.positive ? n > 0 : true), msg)
-  );
+/* ========================= Opções ========================= */
+const TIPO_IMOVEL_OPCOES: TipoImovel[] = ["Apartamento", "Casa Residencial", "Condomínio"];
+const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["aluguel", "venda"];
+const CATEGORIA_OPCOES: CategoriaImovel[] = ["venda", "destaque", "popular", "promocao"];
 
-const asRequiredNumber = (msg: string, opts?: { positive?: boolean }) =>
-  z.preprocess(
-    (v) => {
-      const n = Number(v);
-      return Number.isNaN(n) ? v : n;
-    },
-    z
-      .number({ required_error: msg })
-      .refine((n) => (opts?.positive ? n > 0 : true), msg)
-  );
-
-/* ========================= Opções dos selects ========================= */
-const TIPO_IMOVEL_OPCOES = ["Apartamento", "Casa Residencial", "Condomínio"];
-
-const TIPO_NEGOCIO_OPCOES = ["Aluguel", "Venda"];
-
-const CATEGORIA_OPCOES = ["venda", "destaque", "popular"];
-
-
-/* ========================= Schema do Form ========================= */
-const schema = z.object({
-  imagem: z.string().url("Informe uma URL válida para a imagem"),
-  endereco: z.string().min(3, "Endereço é obrigatório"),
-  bairro: z.string().min(2, "Bairro é obrigatório"),
-  cidade: z.string().min(2, "Cidade é obrigatória"),
-  tipo: z.string().min(2, "Tipo é obrigatório"),
-  tipoNegocio: z.string().min(2, "Tipo de negócio é obrigatório"),
-  categoria: z.string().min(2, "Categoria é obrigatória"),
-
-  metragem: asRequiredInt("Metragem deve ser maior que 0", { positive: true }),
-  areaConstruida: asRequiredInt("Área construída deve ser maior que 0", {
-    positive: true,
-  }),
-  quartos: asRequiredInt("Número de quartos inválido", { positive: true }),
-  suites: asRequiredInt("Número de suítes inválido", { positive: true }),
-  banheiros: asRequiredInt("Número de banheiros inválido", { positive: true }),
-  vagas: asRequiredInt("Número de vagas inválido", { positive: true }),
-  preco: asRequiredNumber("Preço deve ser maior que 0", { positive: true }),
-
+/* ========================= Schemas ========================= */
+const createSchema = z.object({
+  imagem: z
+    .instanceof(FileList, { message: "Selecione uma imagem" })
+    .refine((fl) => fl.length > 0, "Selecione uma imagem")
+    .refine(
+      (fl) =>
+        ["image/jpeg", "image/png", "image/webp"].includes(fl[0]?.type ?? ""),
+      "Formato inválido (use JPG, PNG ou WEBP)"
+    )
+    .refine(
+      (fl) => (fl[0]?.size ?? 0) <= 5 * 1024 * 1024,
+      "Imagem deve ter no máximo 5MB"
+    ),
+  endereco: z.string().min(3),
+  bairro: z.string().min(2),
+  cidade: z.string().min(2),
+  tipo: z.string().min(2),
+  tipoNegocio: z.string().min(2),
+  categoria: z.string().min(2),
+  metragem: z.coerce.number().int().positive(),
+  areaConstruida: z.coerce.number().int().positive(),
+  quartos: z.coerce.number().int().positive(),
+  suites: z.coerce.number().int().min(0),
+  banheiros: z.coerce.number().int().positive(),
+  vagas: z.coerce.number().int().positive(),
+  preco: z.coerce.number().positive(),
   infoExtra: z.string().optional(),
   descricao: z.string().optional(),
 });
 
-type FormValues = z.input<typeof schema>;
+const editSchema = createSchema.extend({
+  imagem: z
+    .instanceof(FileList)
+    .optional()
+    .refine(
+      (fl) =>
+        !fl || fl.length === 0 ||
+        ["image/jpeg", "image/png", "image/webp"].includes(fl[0]?.type ?? ""),
+      "Formato inválido"
+    )
+    .refine(
+      (fl) => !fl || fl.length === 0 || (fl[0]?.size ?? 0) <= 5 * 1024 * 1024,
+      "Imagem deve ter no máximo 5MB"
+    ),
+});
 
+type CreateValues = z.infer<typeof createSchema>;
+type EditValues = z.infer<typeof editSchema>;
+type FormValues = CreateValues | EditValues;
+
+/* ========================= Props ========================= */
+export type PropertyFormProps = {
+  mode?: "create" | "edit";
+  initialData?: Imovel;
+  onSuccess?: (id: number) => void;
+};
+
+/* ========================= Tipagem do erro backend ========================= */
 type BackendFieldErrors = Record<string, string[] | undefined>;
 type BackendError = {
   message?: string;
@@ -83,57 +90,103 @@ type BackendError = {
   errors?: BackendFieldErrors;
 };
 
-/* ========================= UI helper erro ========================= */
+/* ========================= Helper ========================= */
 function withError(base: string, hasError?: boolean) {
   return `${base} ${hasError ? "!border-red-500 !ring-1 !ring-red-500/60" : ""}`;
 }
 
-/* ============================ Componente ========================== */
-export default function PropertyForm() {
+/* ========================= Componente ========================= */
+export default function PropertyForm({
+  mode = "create",
+  initialData,
+  onSuccess,
+}: PropertyFormProps) {
   const navigate = useNavigate();
+  const schema = mode === "edit" ? editSchema : createSchema;
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-    control, // necessário para Controller
+    control,
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    mode: "onSubmit",
-    reValidateMode: "onBlur",
-    shouldFocusError: true,
-    defaultValues: {
-      imagem: "",
-      endereco: "",
-      bairro: "",
-      cidade: "",
-      tipo: "",
-      tipoNegocio: "",
-      categoria: "",
-      metragem: "",
-      areaConstruida: "",
-      quartos: "",
-      suites: "",
-      banheiros: "",
-      vagas: "",
-      preco: "",
-      infoExtra: "",
-      descricao: "",
-    },
+    defaultValues:
+      mode === "edit" && initialData
+        ? {
+            endereco: initialData.endereco,
+            bairro: initialData.bairro,
+            cidade: initialData.cidade,
+            tipo: initialData.tipo,
+            tipoNegocio: initialData.tipoNegocio,
+            categoria: initialData.categoria,
+            metragem: initialData.metragem,
+            areaConstruida: initialData.areaConstruida ?? 0,
+            quartos: initialData.quartos,
+            suites: initialData.suites ?? 0,
+            banheiros: initialData.banheiros,
+            vagas: initialData.vagas,
+            preco: initialData.preco,
+            infoExtra: initialData.infoExtra ?? "",
+            descricao: initialData.descricao ?? "",
+          }
+        : undefined,
   });
 
-  const onSubmit = async (values: FormValues) => {
-    const parsed = schema.parse(values);
-
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
     try {
-      const { id } = await criarImovel(parsed);
-      navigate(`/meus-imoveis?createdId=${id}`, { replace: true });
+      if (mode === "create") {
+        const fd = new FormData();
+        fd.append("imagem", (values as CreateValues).imagem[0]);
+        for (const [k, v] of Object.entries(values)) {
+          if (k === "imagem") continue;
+          if (v !== undefined && v !== null) fd.append(k, String(v));
+        }
+        const created = await criarImovel(fd);
+
+        if (onSuccess) {
+          onSuccess(created.id);
+        } else {
+          navigate(`/meus-imoveis?createdId=${created.id}`, { replace: true });
+        }
+        return;
+      }
+
+      if (!initialData) throw new Error("ID do imóvel ausente para edição.");
+      const hasNewImage =
+        (values as EditValues).imagem &&
+        (values as EditValues).imagem!.length > 0;
+
+      if (hasNewImage) {
+        const fd = new FormData();
+        fd.append("imagem", (values as EditValues).imagem![0]);
+        for (const [k, v] of Object.entries(values)) {
+          if (k === "imagem") continue;
+          if (v !== undefined && v !== null) fd.append(k, String(v));
+        }
+        const updated = await atualizarImovel(initialData.id, fd);
+
+        if (onSuccess) {
+          onSuccess(updated.id);
+        } else {
+          navigate("/meus-imoveis", { replace: true });
+        }
+      } else {
+        const payload = { ...values } as Partial<FormValues>;
+        delete (payload as Partial<EditValues>).imagem;
+
+        const updated = await atualizarImovel(initialData.id, payload);
+
+        if (onSuccess) {
+          onSuccess(updated.id);
+        } else {
+          navigate("/meus-imoveis", { replace: true });
+        }
+      }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const fieldErrors = (err.response?.data as BackendError | undefined)
-          ?.errors;
-
+        const fieldErrors = (err.response?.data as BackendError)?.errors;
         if (fieldErrors) {
           Object.entries(fieldErrors).forEach(([field, msgs]) => {
             if (msgs?.[0]) {
@@ -145,18 +198,15 @@ export default function PropertyForm() {
           });
           return;
         }
-
-        const msg =
-          (err.response?.data as BackendError | undefined)?.message ||
-          (err.response?.data as BackendError | undefined)?.error ||
-          "Erro ao criar imóvel";
-
-        alert(msg);
+        alert(
+          (err.response?.data as BackendError)?.message ||
+            (err.response?.data as BackendError)?.error ||
+            "Erro ao salvar imóvel"
+        );
         if (err.response?.status === 401) navigate("/login");
-        return;
+      } else {
+        alert("Erro inesperado ao salvar imóvel.");
       }
-
-      alert("Erro inesperado ao criar imóvel.");
     }
   };
 
@@ -499,18 +549,14 @@ export default function PropertyForm() {
 
       {/* Botões */}
       <div className="!flex !justify-end !gap-3 !pt-3 !border-t !border-neutral-200">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="!rounded-full !px-6 !py-2 !text-sm !bg-red-600 !text-white hover:!opacity-95 disabled:!opacity-60"
-        >
-          {isSubmitting ? "Validando..." : "Salvar Imóvel"}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting
+            ? "Salvando..."
+            : mode === "edit"
+            ? "Salvar alterações"
+            : "Salvar Imóvel"}
         </Button>
-        <Button
-          type="button"
-          className="!rounded-full !px-6 !py-2 !text-sm !bg-neutral-400 !text-white hover:!bg-neutral-500"
-          onClick={() => window.history.back()}
-        >
+        <Button type="button" onClick={() => window.history.back()}>
           Cancelar
         </Button>
       </div>

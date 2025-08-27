@@ -9,6 +9,7 @@ export default function FavoriteProperties() {
   const [favoritos, setFavoritos] = useState<Imovel[]>([]);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
   useEffect(() => {
     const carregarFavoritos = async () => {
@@ -51,7 +52,8 @@ export default function FavoriteProperties() {
           </p>
           <p className="text-sm text-gray-400 mt-2">
             Explore os imóveis disponíveis e clique no{" "}
-            <Heart className="inline text-red-400" size={16} /> para salvar seus preferidos!
+            <Heart className="inline text-red-400" size={16} /> para salvar seus
+            preferidos!
           </p>
         </div>
       ) : (
@@ -62,7 +64,7 @@ export default function FavoriteProperties() {
               className="!bg-white !rounded-lg !overflow-hidden !shadow-sm !border !border-red-100 hover:!shadow-md !transition !duration-200"
             >
               <img
-                src={imovel.imagem}
+                src={`${API_URL}${imovel.imagem}`}
                 alt={`${imovel.tipo} em ${imovel.bairro}`}
                 className="!w-full !h-40 !object-cover"
               />
@@ -74,6 +76,12 @@ export default function FavoriteProperties() {
                   {imovel.endereco}, {imovel.bairro}
                 </p>
                 <p className="!text-sm !text-gray-500">{imovel.cidade}</p>
+                {imovel.user?.nome && (
+                  <p className="!text-xs !text-gray-700 !font-bold">
+                    Proprietário:{" "}
+                    <span className="font-medium">{imovel.user.nome}</span>
+                  </p>
+                )}
                 <p className="!text-sm !text-green-600 !font-bold !mt-2">
                   R$ {imovel.preco.toLocaleString("pt-BR")}
                 </p>

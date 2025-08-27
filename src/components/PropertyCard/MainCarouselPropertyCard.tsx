@@ -10,13 +10,15 @@ interface PropertyHighlightCardProps {
 const MainCarouselPropertyCard = ({ imovel }: PropertyHighlightCardProps) => {
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
+
   return (
     <div
       key={imovel.id}
       className="w-[460px] flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden border border-gray-700 hover:scale-[1.01] transition"
     >
       <img
-        src={imovel.imagem}
+        src={`${API_URL}${imovel.imagem}`}
         alt={imovel.bairro}
         className="w-full !h-[200px] object-cover"
       />
@@ -32,6 +34,13 @@ const MainCarouselPropertyCard = ({ imovel }: PropertyHighlightCardProps) => {
           <p className="text-xs font-semibold uppercase text-red-600">
             {imovel.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
           </p>
+
+          {/* Proprietário */}
+          {imovel.user?.nome && (
+            <p className="!text-xs !text-gray-700 !font-bold">
+              Proprietário: <span className="font-medium">{imovel.user.nome}</span>
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-x-3 gap-y-2 text-gray-700 text-sm mt-1">

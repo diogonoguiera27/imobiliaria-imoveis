@@ -14,6 +14,12 @@ export type CategoriaImovel =
   | "venda"
   | (string & {});
 
+// 👤 Tipo básico do usuário que vem junto no include
+export type UsuarioResumo = {
+  id: number;
+  nome: string;
+};
+
 export type Imovel = {
   id: number;
 
@@ -41,8 +47,11 @@ export type Imovel = {
   infoExtra?: string;
   descricao?: string;
 
-  // metadados que o backend retorna
+  // metadados
   userId?: number | null;
   createdAt?: string;
   updatedAt?: string;
+
+  // 🚀 novo: dados do usuário (quando backend inclui)
+  user?: UsuarioResumo;
 };

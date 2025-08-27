@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { PropertyForm } from "@/components/PropertyForm";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Boneco from "@/assets/Boneco.png";
 import SidebarTrigger, { SidebarProvider } from "@/components/ui/sidebar";
 import { Footer } from "@/components/Footer";
+import PropertyForm from "@/components/PropertyForm/PropertyForm";
 
 export default function CreatePropertyPage() {
   const [imgLoaded, setImgLoaded] = useState(false);

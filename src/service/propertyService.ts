@@ -2,19 +2,18 @@
 import api from "./api";
 import { Imovel } from "@/types/index";
 
-// Payload de criação alinhado ao backend (o userId é lido do token no backend)
+// Payload padrão para criar imóvel via JSON (sem arquivo)
 export type CreatePropertyPayload = {
-  imagem: string;
   endereco: string;
   bairro: string;
   cidade: string;
-  tipo: string;         // backend aceita string livre
-  tipoNegocio: string;  // idem
-  categoria: string;    // idem
+  tipo: string;
+  tipoNegocio: string;
+  categoria: string;
   metragem: number;
-  areaConstruida?: number | null; // compatível com Prisma
+  areaConstruida?: number | null;
   quartos: number;
-  suites?: number | null;         // compatível com Prisma
+  suites?: number | null;
   banheiros: number;
   vagas: number;
   preco: number;
@@ -32,7 +31,7 @@ export async function buscarImoveis(): Promise<Imovel[]> {
   return data;
 }
 
-// 🔍 Listar por cidade (prioriza a cidade, depois o resto)
+// 🔍 Listar por cidade
 export async function buscarImoveisPorCidade(cidade: string): Promise<Imovel[]> {
   const { data } = await api.get<Imovel[]>("/property", { params: { cidade } });
   return data;
@@ -44,18 +43,31 @@ export async function buscarImovelPorId(id: number): Promise<Imovel> {
   return data;
 }
 
-// 🆕 Criar imóvel (userId vem do token no backend)
-export async function criarImovel(payload: CreatePropertyPayload): Promise<Imovel> {
-  const { data } = await api.post<Imovel>("/property", payload);
+// 🆕 Criar imóvel com imagem (FormData)
+export async function criarImovel(formData: FormData): Promise<Imovel> {
+  const { data } = await api.post<Imovel>("/property", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return data;
 }
 
 // ✏️ Atualizar imóvel
 export async function atualizarImovel(
   id: number,
-  payload: UpdatePropertyPayload
+  payload: UpdatePropertyPayload | FormData
 ): Promise<Imovel> {
-  const { data } = await api.put<Imovel>(`/property/${id}`, payload);
+  const isFormData = payload instanceof FormData;
+
+  const { data } = await api.put<Imovel>(
+    `/property/${id}`,
+    payload,
+    isFormData
+      ? { headers: { "Content-Type": "multipart/form-data" } }
+      : undefined
+  );
+
   return data;
 }
 

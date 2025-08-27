@@ -26,6 +26,7 @@ const PropertyCard = ({
   const { token } = useAuth();
 
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially);
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
   // 🔁 Sincroniza favorito com o prop quando mudar
   useEffect(() => {
@@ -53,17 +54,20 @@ const PropertyCard = ({
       onClick={() => (window.location.href = `/imovel/${item.id}`)}
       className={`${
         isFeatured ? "w-[460px]" : "w-[285px]"
-      } !h-[431px] flex-shrink-0 flex flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer`}
+      } !h-[460px] flex-shrink-0 flex flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer`}
     >
+      {/* Imagem */}
       <div className="w-full !h-[180px] !overflow-hidden">
         <img
-          src={item.imagem}
+          src={`${API_URL}${item.imagem}`}
           alt={`${item.tipo} em ${item.bairro}, ${item.cidade}`}
           className="w-full h-full !object-cover !block"
         />
       </div>
 
+      {/* Conteúdo */}
       <div className="!p-4 !bg-gray-100 !border-t !border-gray-800 flex flex-col justify-between gap-4 !rounded-b-xl flex-1">
+        {/* Endereço e categoria */}
         <div className="flex flex-col gap-2 text-left">
           <h3 className="!text-base !font-semibold !text-gray-900 !leading-snug break-words">
             {item.bairro}, {item.cidade}
@@ -72,8 +76,16 @@ const PropertyCard = ({
           <p className="!text-xs !font-semibold !uppercase !text-red-600">
             {item.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
           </p>
+
+          {/* Proprietário */}
+          {item.user?.nome && (
+            <p className="!text-xs !text-gray-700 !font-bold">
+              Proprietário: <span className="font-medium">{item.user.nome}</span>
+            </p>
+          )}
         </div>
 
+        {/* Características */}
         <div className="flex flex-wrap gap-x-3 gap-y-2 !text-gray-600 !text-sm">
           <div className="flex items-center gap-2">
             <FaRulerCombined className="text-[15px]" />
@@ -93,6 +105,7 @@ const PropertyCard = ({
           </div>
         </div>
 
+        {/* Preço e favorito */}
         <div className="flex justify-between items-center mt-3">
           <div>
             <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
@@ -114,6 +127,7 @@ const PropertyCard = ({
           </button>
         </div>
 
+        {/* Botões */}
         <div className="flex justify-between gap-2 mt-4">
           <Button
             onClick={(e) => {

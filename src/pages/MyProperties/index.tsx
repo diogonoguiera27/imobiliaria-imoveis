@@ -1,3 +1,4 @@
+// src/pages/MyProperties.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -5,8 +6,8 @@ import axios from "axios";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Footer } from "@/components/Footer";
 
-import { buscarMeusImoveis } from "@/service/propertyService";
-import type { Imovel } from "@/types";
+import { buscarMeusImoveis, deletarImovel } from "@/service/propertyService";
+import type { Imovel, TipoImovel, TipoNegocio } from "@/types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,9 +19,20 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import PropertyCard from "@/components/PropertyCard/CardProperties";
+
+// Card administrativo
+import CardPropertiesAdmin from "@/components/PropertyCard/CardPropertiesAdmin";
 
 type BackendError = { message?: string; error?: string };
+
+// opções fixas
+const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
+  "Apartamento",
+  "Condomínio",
+  "Casa Residencial",
+];
+
+const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["venda", "aluguel"];
 
 export default function MyProperties() {
   const navigate = useNavigate();
@@ -31,18 +43,19 @@ export default function MyProperties() {
 
   const [q, setQ] = useState("");
   const [cidade, setCidade] = useState<string | undefined>();
-  const [tipo, setTipo] = useState<string | undefined>();
-  const [negocio, setNegocio] = useState<string | undefined>();
+  const [tipo, setTipo] = useState<TipoImovel | undefined>();
+  const [negocio, setNegocio] = useState<TipoNegocio | undefined>();
 
   const [applied, setApplied] = useState({
     q: "",
     cidade: undefined as string | undefined,
-    tipo: undefined as string | undefined,
-    negocio: undefined as string | undefined,
+    tipo: undefined as TipoImovel | undefined,
+    negocio: undefined as TipoNegocio | undefined,
   });
 
   const createdId = useMemo(() => Number(params.get("createdId")), [params]);
 
+  // carregar imóveis do usuário
   useEffect(() => {
     let isMounted = true;
     (async () => {
@@ -71,17 +84,33 @@ export default function MyProperties() {
     };
   }, [navigate]);
 
+  // filtros
   const filtered = useMemo(() => {
     const txt = (applied.q || "").trim().toLowerCase();
     let list = [...items];
-    if (txt)
+
+    if (txt) {
       list = list.filter((p) =>
-        `${p.endereco} ${p.bairro} ${p.cidade}`.toLowerCase().includes(txt)
+        `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt)
       );
-    if (applied.cidade) list = list.filter((p) => p.cidade === applied.cidade);
-    if (applied.tipo) list = list.filter((p) => p.tipo === applied.tipo);
-    if (applied.negocio)
-      list = list.filter((p) => p.tipoNegocio === applied.negocio);
+    }
+
+    if (applied.cidade) {
+      list = list.filter(
+        (p) => p.cidade.toLowerCase() === applied.cidade?.toLowerCase()
+      );
+    }
+
+    if (applied.tipo) {
+      list = list.filter((p) => p.tipo === applied.tipo);
+    }
+
+    if (applied.negocio) {
+      list = list.filter(
+        (p) => p.tipoNegocio.toLowerCase() === applied.negocio?.toLowerCase()
+      );
+    }
+
     return list;
   }, [items, applied]);
 
@@ -103,15 +132,28 @@ export default function MyProperties() {
     );
   }
 
+  // handlers
+  const handleView = (id: number) => navigate(`/imovel/${id}`);
+  const handleEdit = (id: number) => navigate(`/imovel/editar/${id}`);
+  const handleDelete = async (id: number) => {
+    if (!confirm("Deseja realmente excluir este imóvel?")) return;
+    try {
+      await deletarImovel(id);
+      setItems((prev) => prev.filter((i) => i.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Não foi possível excluir o imóvel.");
+    }
+  };
+
+  // filtros UI
   const Filters = (
     <div className="!grid !grid-cols-1 md:!grid-cols-[1fr_180px_180px_180px_150px] !gap-4">
       {/* Buscar */}
       <div className="!flex !flex-col !gap-1">
-        <label className="!text-xs !font-medium !text-neutral-600">
-          Buscar
-        </label>
+        <label className="!text-xs !font-medium !text-neutral-600">Buscar</label>
         <Input
-          placeholder="Endereço ou cidade"
+          placeholder="Bairro ou cidade"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm focus:!ring-2 focus:!ring-blue-500/30"
@@ -120,20 +162,14 @@ export default function MyProperties() {
 
       {/* Cidade */}
       <div className="!flex !flex-col !gap-1">
-        <label className="!text-xs !font-medium !text-neutral-600">
-          Cidade
-        </label>
+        <label className="!text-xs !font-medium !text-neutral-600">Cidade</label>
         <Select value={cidade} onValueChange={setCidade}>
-          <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm focus:!ring-2 focus:!ring-blue-500/30">
+          <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm">
             <SelectValue placeholder="Selecione" />
           </SelectTrigger>
-          <SelectContent className="!rounded-lg !border !border-neutral-200 !bg-white !shadow-lg !p-1 !space-y-1">
+          <SelectContent>
             {Array.from(new Set(items.map((i) => i.cidade))).map((c) => (
-              <SelectItem
-                key={c}
-                value={c}
-                className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100"
-              >
+              <SelectItem key={c} value={c} className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100">
                 {c}
               </SelectItem>
             ))}
@@ -145,16 +181,12 @@ export default function MyProperties() {
       <div className="!flex !flex-col !gap-1">
         <label className="!text-xs !font-medium !text-neutral-600">Tipo</label>
         <Select value={tipo} onValueChange={setTipo}>
-          <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm focus:!ring-2 focus:!ring-blue-500/30">
+          <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm">
             <SelectValue placeholder="Selecione" />
           </SelectTrigger>
-          <SelectContent className="!rounded-lg !border !border-neutral-200 !bg-white !shadow-lg !p-1 !space-y-1">
-            {Array.from(new Set(items.map((i) => i.tipo))).map((t) => (
-              <SelectItem
-                key={t}
-                value={t}
-                className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100"
-              >
+          <SelectContent>
+            {TIPO_IMOVEL_OPCOES.map((t) => (
+              <SelectItem key={t} value={t} className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100">
                 {t}
               </SelectItem>
             ))}
@@ -164,35 +196,24 @@ export default function MyProperties() {
 
       {/* Negócio */}
       <div className="!flex !flex-col !gap-1">
-        <label className="!text-xs !font-medium !text-neutral-600">
-          Negócio
-        </label>
+        <label className="!text-xs !font-medium !text-neutral-600">Negócio</label>
         <Select value={negocio} onValueChange={setNegocio}>
-          <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm focus:!ring-2 focus:!ring-blue-500/30">
+          <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm">
             <SelectValue placeholder="Selecione" />
           </SelectTrigger>
-          <SelectContent className="!rounded-lg !border !border-neutral-200 !bg-white !shadow-lg !p-1 !space-y-1">
-            <SelectItem
-              value="venda"
-              className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100"
-            >
-              Venda
-            </SelectItem>
-            <SelectItem
-              value="aluguel"
-              className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100"
-            >
-              Aluga-se
-            </SelectItem>
+          <SelectContent>
+            {TIPO_NEGOCIO_OPCOES.map((n) => (
+              <SelectItem key={n} value={n} className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100">
+                {n === "venda" ? "Venda" : "Aluguel"}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
 
       {/* Aplicar */}
       <div className="!flex !flex-col !gap-1">
-        <label className="!text-xs !font-medium !text-neutral-600 invisible">
-          Filtro
-        </label>
+        <label className="invisible">Filtro</label>
         <Button
           className="!h-10 !rounded-lg !bg-blue-600 hover:!bg-blue-700"
           onClick={() => setApplied({ q, cidade, tipo, negocio })}
@@ -207,20 +228,13 @@ export default function MyProperties() {
     <SidebarProvider>
       <div className="!w-screen !flex !flex-col !overflow-x-hidden">
         <main className="!flex-1">
-          {/* Header fixo */}
           <SidebarTrigger />
-
-          {/* Conteúdo central alinhado com o header */}
           <section className="!pt-[72px] !w-full">
-            {/* 🔑 ÚNICO CONTAINER — tudo dentro dele compartilha o mesmo alinhamento */}
             <div className="!w-full !max-w-6xl !mx-auto !px-6 md:!px-10">
-              {/* Título + CTA */}
               <div className="!pb-3 !flex !items-start !justify-between">
                 <div>
                   <h1 className="!text-2xl !font-semibold">Meus Imóveis</h1>
-                  <p className="!text-sm !text-neutral-500">
-                    Gerencie seus anúncios
-                  </p>
+                  <p className="!text-sm !text-neutral-500">Gerencie seus anúncios</p>
                 </div>
                 <Button
                   className="!h-10 !rounded-lg !bg-red-600 hover:!opacity-95 !px-4 !font-medium !text-white md:!mt-0 !mt-3"
@@ -231,44 +245,32 @@ export default function MyProperties() {
                 </Button>
               </div>
 
-              {/* Alerta de sucesso */}
               {createdId ? (
                 <div className="!rounded-xl !border !border-green-300 !bg-green-50 !p-4 !text-green-800">
                   ✅ Imóvel cadastrado com sucesso (ID: {createdId}).
                 </div>
               ) : null}
 
-              {/* Filtros */}
               <div className="!mt-4">{Filters}</div>
 
-              {/* Cards — flex-wrap para alinhar com o botão/contêiner */}
               <div className="!mt-6">
                 <div className="!flex !flex-wrap !gap-5 xl:!justify-between !justify-start">
                   {filtered.map((it) => {
+                    if (!it) return null; // segurança contra undefined
                     const highlight = Boolean(createdId && it.id === createdId);
-                    const isFav =
-                      "isFavorited" in it &&
-                      typeof (it as Imovel & { isFavorited?: unknown })
-                        .isFavorited === "boolean"
-                        ? (it as Imovel & { isFavorited?: boolean })
-                            .isFavorited === true
-                        : false;
 
                     return (
                       <div
                         key={it.id}
-                        className={`!w-auto ${highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""}`}
+                        className={`!w-auto ${
+                          highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""
+                        }`}
                       >
-                        <PropertyCard
+                        <CardPropertiesAdmin
                           item={it}
-                          onOpenContactModal={() =>
-                            console.log("Mensagem →", it.id)
-                          }
-                          onOpenPhoneModal={() =>
-                            console.log("Telefone →", it.id)
-                          }
-                          variant="default" // mantém largura fixa do card
-                          isFavoritedInitially={isFav}
+                          onView={() => handleView(it.id)}
+                          onEdit={() => handleEdit(it.id)}
+                          onDelete={() => handleDelete(it.id)}
                         />
                       </div>
                     );
@@ -278,10 +280,7 @@ export default function MyProperties() {
             </div>
           </section>
         </main>
-
-        <div className="!mt-4">
-          <Footer />
-        </div>
+        <Footer />
       </div>
     </SidebarProvider>
   );
