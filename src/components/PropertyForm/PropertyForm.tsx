@@ -94,7 +94,6 @@ export type PropertyFormProps = {
   mode?: "create" | "edit";
   initialData?: Imovel;
   onSuccess?: (id: number) => void;
-  /** envia para o pai a URL do preview (blob ou URL do backend) */
   onImageSelect?: (url: string | null) => void;
 };
 
@@ -152,32 +151,44 @@ export default function PropertyForm({
         : undefined,
   });
 
-  // observa o campo de arquivo
   const selectedFile = watch("imagem");
 
-  // 🔁 Sempre que o arquivo mudar, gera o preview.
-  // No modo edição, se nenhum arquivo estiver selecionado, mostra a imagem do backend.
+  /* ========== Preview da imagem ========== */
   useEffect(() => {
     if (!onImageSelect) return;
 
-    // 1) Usuário escolheu um novo arquivo => preview blob
+    // Usuário selecionou nova imagem
     if (selectedFile && (selectedFile as FileList).length > 0) {
       const file = (selectedFile as FileList)[0];
       const url = URL.createObjectURL(file);
       onImageSelect(url);
-      return () => URL.revokeObjectURL(url); // cleanup do blob
+      return () => URL.revokeObjectURL(url);
     }
 
-    // 2) Modo edição sem novo arquivo => usa imagem do backend
+    // Modo edição → usar imagem já cadastrada
     if (mode === "edit" && initialData?.imagem) {
-      onImageSelect(initialData.imagem);
+      let url = initialData.imagem;
+
+      // garante que a URL seja completa
+      if (!url.startsWith("http")) {
+        url = `${import.meta.env.VITE_API_URL}/uploads/${url.replace(
+          /^\/?uploads\/?/,
+          ""
+        )}`;
+      }
+
+      console.log("Preview carregada do backend:", url);
+      onImageSelect(url);
       return;
     }
 
-    // 3) Nada selecionado => remove preview
-    onImageSelect(null);
+    // Criar sem imagem → vazio
+    if (mode === "create") {
+      onImageSelect(null);
+    }
   }, [selectedFile, mode, initialData?.imagem, onImageSelect]);
 
+  /* ========== Submit ========== */
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     try {
       if (mode === "create") {
@@ -186,7 +197,6 @@ export default function PropertyForm({
 
         for (const [k, v] of Object.entries(values)) {
           if (k === "imagem") continue;
-
           if (k === "caracteristicas" && Array.isArray(v)) {
             fd.append("caracteristicas", JSON.stringify(v));
           } else if (v !== undefined && v !== null) {
@@ -195,16 +205,13 @@ export default function PropertyForm({
         }
 
         const created = await criarImovel(fd);
-
-        toast.success("Imóvel cadastrado com sucesso!"); // ✅ sucesso
+        toast.success("Imóvel cadastrado com sucesso!");
 
         if (onSuccess) {
           onSuccess(created.id);
         } else {
           setTimeout(() => {
-            navigate(`/meus-imoveis?createdId=${created.id}`, {
-              replace: true,
-            });
+            navigate(`/meus-imoveis?createdId=${created.id}`, { replace: true });
           }, 2000);
         }
         return;
@@ -222,7 +229,6 @@ export default function PropertyForm({
 
         for (const [k, v] of Object.entries(values)) {
           if (k === "imagem") continue;
-
           if (k === "caracteristicas" && Array.isArray(v)) {
             fd.append("caracteristicas", JSON.stringify(v));
           } else if (v !== undefined && v !== null) {
@@ -231,8 +237,7 @@ export default function PropertyForm({
         }
 
         const updated = await atualizarImovel(initialData.id, fd);
-
-        toast.success("Imóvel atualizado com sucesso!"); // ✅ sucesso
+        toast.success("Imóvel atualizado com sucesso!");
 
         if (onSuccess) {
           onSuccess(updated.id);
@@ -246,8 +251,7 @@ export default function PropertyForm({
         delete (payload as Partial<EditValues>).imagem;
 
         const updated = await atualizarImovel(initialData.id, payload);
-
-        toast.success("Imóvel atualizado com sucesso!"); // ✅ sucesso
+        toast.success("Imóvel atualizado com sucesso!");
 
         if (onSuccess) {
           onSuccess(updated.id);
@@ -276,11 +280,11 @@ export default function PropertyForm({
           (err.response?.data as BackendError)?.message ||
             (err.response?.data as BackendError)?.error ||
             "Erro ao salvar imóvel"
-        ); // ✅ erro
+        );
 
         if (err.response?.status === 401) navigate("/login");
       } else {
-        toast.error("Erro inesperado ao salvar imóvel."); // ✅ erro
+        toast.error("Erro inesperado ao salvar imóvel.");
       }
     }
   };
