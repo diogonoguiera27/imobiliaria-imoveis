@@ -1,32 +1,26 @@
+// src/components/PropertyDetails/SimilarProperties.tsx
+
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { imoveis } from "@/data/imovel";
-import { ImovelComCategoria } from "@/data/imovel";
+
 import { CardProperties } from "../PropertyCard";
 import { Dialog } from "../ui/dialog";
 import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
+import { Imovel } from "@/types";
 
 type SimilarPropertiesProps = {
-  imovelAtual: ImovelComCategoria;
+  imoveis: Imovel[];
 };
 
-function SimilarProperties({ imovelAtual }: SimilarPropertiesProps) {
+function SimilarProperties({ imoveis }: SimilarPropertiesProps) {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const similares = imoveis.filter(
-    (imovel) =>
-      imovel.id !== imovelAtual.id &&
-      imovel.categoria === imovelAtual.categoria &&
-      imovel.cidade.toLowerCase() === imovelAtual.cidade.toLowerCase() &&
-      imovel.tipo === imovelAtual.tipo
-  );
-
   const cardsPorPagina = 3;
-  const totalPages = Math.ceil(similares.length / cardsPorPagina);
+  const totalPages = Math.ceil(imoveis.length / cardsPorPagina);
 
   const scrollToPage = (page: number) => {
     if (!containerRef.current) return;
@@ -36,7 +30,7 @@ function SimilarProperties({ imovelAtual }: SimilarPropertiesProps) {
     setCurrentPage(page);
   };
 
-  if (similares.length === 0) return null;
+  if (imoveis.length === 0) return null;
 
   return (
     <section className="w-full flex justify-center !mt-12 !mb-12">
@@ -61,7 +55,7 @@ function SimilarProperties({ imovelAtual }: SimilarPropertiesProps) {
           className="flex gap-4 overflow-x-hidden scroll-smooth items-center w-full"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {similares.map((item) => (
+          {imoveis.map((item) => (
             <CardProperties
               key={item.id}
               item={item}

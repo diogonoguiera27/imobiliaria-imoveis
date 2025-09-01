@@ -26,7 +26,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import  ContactInfoModal  from "@/components/ContactInfoModal";
-import { Plus } from "lucide-react";
+
 import { useAuth } from "@/hooks/auth";
 
 

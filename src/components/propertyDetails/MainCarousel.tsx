@@ -1,46 +1,20 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
-
 type CarrosselProps = {
-  imagens: { src: string; alt: string }[];
+  imagem: string;
 };
 
-const CarrosselPrincipal = ({ imagens }: CarrosselProps) => {
+const CarrosselPrincipal = ({ imagem }: CarrosselProps) => {
+  const fullUrl = imagem.startsWith("http")
+    ? imagem
+    : `http://localhost:3333${imagem}`;
+
   return (
-    <section className="w-full flex justify-center overflow-hidden">
-      <div className="w-full !max-w-[1280px] !px-4">
-        <Carousel opts={{ align: "start" }} className="w-full">
-          <CarouselContent className="flex gap-x-2">
-            {imagens.map((img, index) => (
-              <CarouselItem
-                key={index}
-                className="basis-full md:basis-1/2 p-0"
-              >
-                <Card className="rounded-none shadow-none border-none">
-                  <CardContent className="p-0">
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      style={{
-                        width: "100%",
-                        height: "350px",
-                        objectFit: "cover",
-                        objectPosition: "center",
-                      }}
-                    />
-                  </CardContent>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          {/*<CarouselPrevious className="-left-2" />*/}
-          {/*<CarouselNext className="-right-2" /> */}
-        </Carousel>
-        <div className="h-2 md:h-2" />
+    <section className="w-full flex !justify-center !overflow-hidden !pt-2 ">
+      <div className="!w-full !max-w-[1280px] !px-4">
+        <img
+          src={fullUrl}
+          alt="Imagem do imóvel"
+          className="!w-full !h-[400px] !object-cover !object-center !rounded-xl"
+        />
       </div>
     </section>
   );

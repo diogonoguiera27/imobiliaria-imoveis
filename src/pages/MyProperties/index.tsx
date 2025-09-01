@@ -169,7 +169,11 @@ export default function MyProperties() {
           </SelectTrigger>
           <SelectContent>
             {Array.from(new Set(items.map((i) => i.cidade))).map((c) => (
-              <SelectItem key={c} value={c} className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100">
+              <SelectItem
+                key={c}
+                value={c}
+                className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100"
+              >
                 {c}
               </SelectItem>
             ))}
@@ -186,7 +190,11 @@ export default function MyProperties() {
           </SelectTrigger>
           <SelectContent>
             {TIPO_IMOVEL_OPCOES.map((t) => (
-              <SelectItem key={t} value={t} className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100">
+              <SelectItem
+                key={t}
+                value={t}
+                className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100"
+              >
                 {t}
               </SelectItem>
             ))}
@@ -203,7 +211,11 @@ export default function MyProperties() {
           </SelectTrigger>
           <SelectContent>
             {TIPO_NEGOCIO_OPCOES.map((n) => (
-              <SelectItem key={n} value={n} className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100">
+              <SelectItem
+                key={n}
+                value={n}
+                className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100"
+              >
                 {n === "venda" ? "Venda" : "Aluguel"}
               </SelectItem>
             ))}
@@ -254,7 +266,8 @@ export default function MyProperties() {
               <div className="!mt-4">{Filters}</div>
 
               <div className="!mt-6">
-                <div className="!flex !flex-wrap !gap-5 xl:!justify-between !justify-start">
+                {/* Grid atualizado */}
+                <div className="!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-3 xl:!grid-cols-4 !gap-24">
                   {filtered.map((it) => {
                     if (!it) return null; // segurança contra undefined
                     const highlight = Boolean(createdId && it.id === createdId);
@@ -262,9 +275,7 @@ export default function MyProperties() {
                     return (
                       <div
                         key={it.id}
-                        className={`!w-auto ${
-                          highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""
-                        }`}
+                        className={`${highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""}`}
                       >
                         <CardPropertiesAdmin
                           item={it}

@@ -17,7 +17,7 @@ export type CreatePropertyPayload = {
   banheiros: number;
   vagas: number;
   preco: number;
-  infoExtra?: string;
+  caracteristicas?: string[];
   descricao?: string;
 };
 
@@ -36,6 +36,12 @@ export async function buscarImoveisPorCidade(cidade: string): Promise<Imovel[]> 
   const { data } = await api.get<Imovel[]>("/property", { params: { cidade } });
   return data;
 }
+
+export async function buscarImoveisSimilares(id: number) {
+  const response = await api.get(`/property/similares/${id}`);
+  return response.data;
+}
+
 
 // 🔎 Buscar por ID
 export async function buscarImovelPorId(id: number): Promise<Imovel> {

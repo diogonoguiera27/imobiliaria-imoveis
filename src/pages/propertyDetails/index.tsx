@@ -1,49 +1,73 @@
+// src/pages/propertyDetails/index.tsx
 
-import img1 from "@/assets/a.jpg";
-import img2 from "@/assets/b.jpeg";
-import img3 from "@/assets/c.jpg";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { imoveis } from "@/data/imovel";
+import { buscarImovelPorId, buscarImoveisSimilares } from "@/service/propertyService";
+import { Imovel } from "@/types";
 
 import {
-  ImageGallery,
   MainCarousel,
   PropertyInfoAndContact,
   SimilarProperties,
 } from "@/components/PropertyDetails/";
 
-
-
 export function ImovelDetalhes() {
-  const imagens = [
-    { src: img1, alt: "Fachada" },
-    { src: img3, alt: "Sala" },
-  ];
+  const { id } = useParams<{ id: string }>();
+  const [imovel, setImovel] = useState<Imovel | null>(null);
+  const [similares, setSimilares] = useState<Imovel[]>([]);
 
-  const imagensInferiores = [
-    { src: img1, alt: "Cozinha 1" },
-    { src: img2, alt: "Cozinha 2" },
-    { src: img3, alt: "Quarto 1" },
-    { src: img3, alt: "Quarto 2" },
-  ];
+  useEffect(() => {
+    if (id) {
+      const carregarImovel = async () => {
+        try {
+          const dados = await buscarImovelPorId(Number(id));
+          setImovel(dados);
 
-  const imovelAtual = imoveis.find((imovel) => imovel.id === 1)!;
-  
+          const similares = await buscarImoveisSimilares(Number(id));
+          console.log("Similares encontrados:", similares);
+          setSimilares(similares);
+        } catch (err) {
+          console.error("Erro ao buscar imóvel:", err);
+        }
+      };
+
+      carregarImovel();
+    }
+  }, [id]);
+
+  if (!imovel) {
+    return (
+      <SidebarProvider>
+        <div className="flex !flex-col !w-screen !overflow-x-hidden">
+          <SidebarTrigger />
+          <main className="flex-grow">
+            <div className="w-full !max-w-[80%] !mx-auto px-4 !mt-6">
+              <p className="text-red-500">Carregando imóvel...</p>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      </SidebarProvider>
+    );
+  }
+
   return (
     <SidebarProvider>
       <div className="flex !flex-col !w-screen !overflow-x-hidden">
         <SidebarTrigger />
-        <main className="flex-grow">
-          <div className="w-full !max-w-[80%] !mx-auto px-4 !mt-6">
-            <MainCarousel imagens={imagens} />
-            <ImageGallery imagensInferiores={imagensInferiores} />
-            <PropertyInfoAndContact />
-            <SimilarProperties imovelAtual={imovelAtual} />
+        <main className="!flex-grow !mt-10">
+          <div className="w-full !max-w-[80%] !mx-auto !px-4 !mt-6">
+            <MainCarousel imagem={imovel.imagem} />
+            <PropertyInfoAndContact imovel={imovel} />
+            {similares.length > 0 && <SimilarProperties imoveis={similares} />}
           </div>
         </main>
-        <Footer />
+        <div className="!mt-4">
+          <Footer />
+        </div>
       </div>
     </SidebarProvider>
   );

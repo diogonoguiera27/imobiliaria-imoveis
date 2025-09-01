@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,11 +19,21 @@ import {
   SelectValue,
 } from "../ui/select";
 import type { Imovel, TipoImovel, TipoNegocio, CategoriaImovel } from "@/types";
+import { Upload } from "lucide-react";
 
 /* ========================= Opções ========================= */
-const TIPO_IMOVEL_OPCOES: TipoImovel[] = ["Apartamento", "Casa Residencial", "Condomínio"];
+const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
+  "Apartamento",
+  "Casa Residencial",
+  "Condomínio",
+];
 const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["aluguel", "venda"];
-const CATEGORIA_OPCOES: CategoriaImovel[] = ["venda", "destaque", "popular", "promocao"];
+const CATEGORIA_OPCOES: CategoriaImovel[] = [
+  "venda",
+  "destaque",
+  "popular",
+  "promocao",
+];
 
 /* ========================= Schemas ========================= */
 const createSchema = z.object({
@@ -51,7 +62,7 @@ const createSchema = z.object({
   banheiros: z.coerce.number().int().positive(),
   vagas: z.coerce.number().int().positive(),
   preco: z.coerce.number().positive(),
-  infoExtra: z.string().optional(),
+  caracteristicas: z.array(z.string()).optional(),
   descricao: z.string().optional(),
 });
 
@@ -61,7 +72,8 @@ const editSchema = createSchema.extend({
     .optional()
     .refine(
       (fl) =>
-        !fl || fl.length === 0 ||
+        !fl ||
+        fl.length === 0 ||
         ["image/jpeg", "image/png", "image/webp"].includes(fl[0]?.type ?? ""),
       "Formato inválido"
     )
@@ -80,6 +92,8 @@ export type PropertyFormProps = {
   mode?: "create" | "edit";
   initialData?: Imovel;
   onSuccess?: (id: number) => void;
+  /** envia para o pai a URL do preview (blob ou URL do backend) */
+  onImageSelect?: (url: string | null) => void;
 };
 
 /* ========================= Tipagem do erro backend ========================= */
@@ -100,6 +114,7 @@ export default function PropertyForm({
   mode = "create",
   initialData,
   onSuccess,
+  onImageSelect,
 }: PropertyFormProps) {
   const navigate = useNavigate();
   const schema = mode === "edit" ? editSchema : createSchema;
@@ -110,6 +125,7 @@ export default function PropertyForm({
     formState: { errors, isSubmitting },
     setError,
     control,
+    watch,
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues:
@@ -128,21 +144,54 @@ export default function PropertyForm({
             banheiros: initialData.banheiros,
             vagas: initialData.vagas,
             preco: initialData.preco,
-            infoExtra: initialData.infoExtra ?? "",
+            caracteristicas: initialData.caracteristicas ?? [],
             descricao: initialData.descricao ?? "",
           }
         : undefined,
   });
+
+  // observa o campo de arquivo
+  const selectedFile = watch("imagem");
+
+  // 🔁 Sempre que o arquivo mudar, gera o preview.
+  // No modo edição, se nenhum arquivo estiver selecionado, mostra a imagem do backend.
+  useEffect(() => {
+    if (!onImageSelect) return;
+
+    // 1) Usuário escolheu um novo arquivo => preview blob
+    if (selectedFile && (selectedFile as FileList).length > 0) {
+      const file = (selectedFile as FileList)[0];
+      const url = URL.createObjectURL(file);
+      onImageSelect(url);
+      return () => URL.revokeObjectURL(url); // cleanup do blob
+    }
+
+    // 2) Modo edição sem novo arquivo => usa imagem do backend
+    if (mode === "edit" && initialData?.imagem) {
+      onImageSelect(initialData.imagem);
+      return;
+    }
+
+    // 3) Nada selecionado => remove preview
+    onImageSelect(null);
+  }, [selectedFile, mode, initialData?.imagem, onImageSelect]);
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     try {
       if (mode === "create") {
         const fd = new FormData();
         fd.append("imagem", (values as CreateValues).imagem[0]);
+
         for (const [k, v] of Object.entries(values)) {
           if (k === "imagem") continue;
-          if (v !== undefined && v !== null) fd.append(k, String(v));
+
+          if (k === "caracteristicas" && Array.isArray(v)) {
+            fd.append("caracteristicas", JSON.stringify(v));
+          } else if (v !== undefined && v !== null) {
+            fd.append(k, String(v));
+          }
         }
+
         const created = await criarImovel(fd);
 
         if (onSuccess) {
@@ -154,6 +203,7 @@ export default function PropertyForm({
       }
 
       if (!initialData) throw new Error("ID do imóvel ausente para edição.");
+
       const hasNewImage =
         (values as EditValues).imagem &&
         (values as EditValues).imagem!.length > 0;
@@ -161,10 +211,17 @@ export default function PropertyForm({
       if (hasNewImage) {
         const fd = new FormData();
         fd.append("imagem", (values as EditValues).imagem![0]);
+
         for (const [k, v] of Object.entries(values)) {
           if (k === "imagem") continue;
-          if (v !== undefined && v !== null) fd.append(k, String(v));
+
+          if (k === "caracteristicas" && Array.isArray(v)) {
+            fd.append("caracteristicas", JSON.stringify(v));
+          } else if (v !== undefined && v !== null) {
+            fd.append(k, String(v));
+          }
         }
+
         const updated = await atualizarImovel(initialData.id, fd);
 
         if (onSuccess) {
@@ -222,21 +279,34 @@ export default function PropertyForm({
           <Label htmlFor="imagem" className="!text-sm !font-medium">
             Imagem
           </Label>
-          <Input
+
+          {/* Input escondido */}
+          <input
             id="imagem"
             type="file"
             accept="image/*"
-            className={withError(
-              "!h-10 !text-sm !w-full !rounded-full !border !border-neutral-300 !bg-white !px-4 focus:!ring-1 focus:!ring-red-500/40",
-              !!errors.imagem
-            )}
+            className="hidden"
             {...register("imagem")}
           />
+
+          {/* Label/“botão” no estilo do segundo print */}
+          <label
+            htmlFor="imagem"
+            className={withError(
+              "!h-10 !w-full !flex !items-center !justify-start !rounded-full !border !border-neutral-300 !bg-white !px-4 !text-sm !font-normal cursor-pointer hover:!bg-neutral-50",
+              !!errors.imagem
+            )}
+          >
+            <Upload className="!mr-2 !h-4 !w-4" />
+            {selectedFile?.length ? selectedFile[0].name : "Upload File"}
+          </label>
+
           {errors.imagem && (
             <p className="!text-xs !text-red-600">{errors.imagem.message}</p>
           )}
         </div>
 
+        {/* Bairro (igual estava antes) */}
         <div className="!space-y-1">
           <Label htmlFor="bairro" className="!text-sm !font-medium">
             Bairro
@@ -244,6 +314,7 @@ export default function PropertyForm({
           <Input
             id="bairro"
             type="text"
+            placeholder="Ex: Setor Oeste"
             className={withError(
               "!h-10 !text-sm !w-full !rounded-full !border !border-neutral-300 !bg-white !px-4 focus:!ring-1 focus:!ring-red-500/40",
               !!errors.bairro
@@ -265,6 +336,7 @@ export default function PropertyForm({
           <Input
             id="endereco"
             type="text"
+            placeholder="Ex: Rua das Flores, 123"
             className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("endereco")}
           />
@@ -363,6 +435,7 @@ export default function PropertyForm({
           <Input
             id="cidade"
             type="text"
+            placeholder="Ex: Goiânia"
             className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
             {...register("cidade")}
           />
@@ -417,7 +490,8 @@ export default function PropertyForm({
           <Input
             id="metragem"
             type="number"
-            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            placeholder="Ex: 250"
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             {...register("metragem")}
           />
           {errors.metragem && (
@@ -435,7 +509,9 @@ export default function PropertyForm({
           <Input
             id="areaConstruida"
             type="number"
-            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            placeholder="Ex: 120"
+            inputMode="numeric"
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             {...register("areaConstruida")}
           />
           {errors.areaConstruida && (
@@ -444,6 +520,7 @@ export default function PropertyForm({
             </p>
           )}
         </div>
+
         <div className="!space-y-1">
           <Label htmlFor="quartos" className="!text-sm !font-medium">
             Quartos
@@ -451,7 +528,8 @@ export default function PropertyForm({
           <Input
             id="quartos"
             type="number"
-            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            placeholder="Ex: 3"
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             {...register("quartos")}
           />
           {errors.quartos && (
@@ -465,7 +543,8 @@ export default function PropertyForm({
           <Input
             id="suites"
             type="number"
-            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            placeholder="Ex: 1"
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             {...register("suites")}
           />
           {errors.suites && (
@@ -483,7 +562,8 @@ export default function PropertyForm({
           <Input
             id="banheiros"
             type="number"
-            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            placeholder="Ex: 2"
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             {...register("banheiros")}
           />
           {errors.banheiros && (
@@ -497,7 +577,8 @@ export default function PropertyForm({
           <Input
             id="vagas"
             type="number"
-            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            placeholder="Ex: 2"
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             {...register("vagas")}
           />
           {errors.vagas && (
@@ -511,8 +592,9 @@ export default function PropertyForm({
           <Input
             id="preco"
             type="number"
+            placeholder="Ex: 350000"
             step="0.01"
-            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
+            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             {...register("preco")}
           />
           {errors.preco && (
@@ -524,15 +606,38 @@ export default function PropertyForm({
       {/* Linha 6: Info Extra + Descrição */}
       <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4">
         <div className="!space-y-1">
-          <Label htmlFor="infoExtra" className="!text-sm !font-medium">
-            Informação Extra
+          <Label htmlFor="caracteristicas" className="!text-sm !font-medium">
+            Características (separe por vírgulas)
           </Label>
-          <Input
-            id="infoExtra"
-            type="text"
-            className="!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4"
-            {...register("infoExtra")}
+          <Textarea
+            id="caracteristicas"
+            rows={2}
+            placeholder="Ex: Portão eletrônico, Quintal, Lavanderia, Área gourmet"
+            className="!text-sm !w-full !rounded-2xl !border !border-neutral-300 !px-4 !py-2 focus:!ring-1 focus:!ring-red-500/40"
+            style={{
+              resize: "none",
+              height: "6rem",
+              overflowY: "hidden",
+              maxHeight: "6rem",
+              minHeight: "6rem",
+            }}
+            {...register("caracteristicas", {
+              setValueAs: (val: unknown) =>
+                typeof val === "string"
+                  ? val
+                      .split(",")
+                      .map((s) => s.trim())
+                      .filter(Boolean)
+                  : Array.isArray(val)
+                    ? val.filter(Boolean)
+                    : [],
+            })}
           />
+          {errors.caracteristicas && (
+            <p className="!text-xs !text-red-600">
+              {errors.caracteristicas.message}
+            </p>
+          )}
         </div>
         <div className="!space-y-1">
           <Label htmlFor="descricao" className="!text-sm !font-medium">
@@ -541,7 +646,15 @@ export default function PropertyForm({
           <Textarea
             id="descricao"
             rows={3}
+            placeholder="Ex: Imóvel bem localizado, com ótima iluminação natural e próximo a comércios."
             className="!text-sm !w-full !rounded-2xl !border !border-neutral-300 !px-4 !py-2 focus:!ring-1 focus:!ring-red-500/40"
+            style={{
+              resize: "none",
+              overflowY: "hidden",
+              height: "6rem",
+              maxHeight: "6rem",
+              minHeight: "6rem",
+            }}
             {...register("descricao")}
           />
         </div>
@@ -553,8 +666,8 @@ export default function PropertyForm({
           {isSubmitting
             ? "Salvando..."
             : mode === "edit"
-            ? "Salvar alterações"
-            : "Salvar Imóvel"}
+              ? "Salvar alterações"
+              : "Salvar Imóvel"}
         </Button>
         <Button type="button" onClick={() => window.history.back()}>
           Cancelar

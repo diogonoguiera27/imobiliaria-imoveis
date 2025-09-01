@@ -18,6 +18,7 @@ export type CategoriaImovel =
 export type UsuarioResumo = {
   id: number;
   nome: string;
+  telefone: string;
 };
 
 export type Imovel = {
@@ -44,8 +45,10 @@ export type Imovel = {
   preco: number;
 
   // textos opcionais conforme backend
-  infoExtra?: string;
+  caracteristicas?: string[]; 
   descricao?: string;
+
+  
 
   // metadados
   userId?: number | null;

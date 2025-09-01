@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ImageIcon } from "lucide-react"; // 👈 ícone opcional
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Boneco from "@/assets/Boneco.png";
@@ -9,51 +10,52 @@ import PropertyForm from "@/components/PropertyForm/PropertyForm";
 export default function CreatePropertyPage() {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   return (
     <SidebarProvider>
       <div className="!w-screen ">
-        <SidebarTrigger  />
+        <SidebarTrigger />
 
-        <div className="!max-w-6xl !mx-auto !p-6 !mt-10">
-          <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-6">
+        <div className="!max-w-6xl !mx-auto !p-20">
+          <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-0">
             {/* Coluna Esquerda */}
             <div className="lg:!col-span-1 !bg-white !rounded-2xl !shadow-sm !border !border-neutral-200 !p-6 !flex !flex-col !items-center !justify-between">
               {/* Imagem do imóvel */}
               <div className="!w-full">
-                <img
-                  src="https://picsum.photos/400/300"
-                  alt="Imagem do Imóvel"
-                  className="!w-full !h-48 !object-cover !rounded-xl"
-                  onLoad={() => setImgLoaded(true)}
-                  onError={() => setImgError(true)}
-                />
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Preview do Imóvel"
+                    className="!w-full !h-48 !object-cover !rounded-xl"
+                    onLoad={() => setImgLoaded(true)}
+                    onError={() => setImgError(true)}
+                  />
+                ) : (
+                  // Placeholder quando não tem imagem
+                  <div className="!w-full !h-48 !rounded-xl !bg-neutral-100 !flex !items-center !justify-center">
+                    <ImageIcon className="!h-10 !w-10 !text-neutral-400" />
+                  </div>
+                )}
 
                 <div className="!mt-4">
                   <p className="!text-sm !font-medium">Imagem</p>
 
-                  {/* PLACEHOLDER enquanto carrega */}
-                  {!imgLoaded && !imgError && (
-                    <div className="!mt-2 !space-y-2">
-                      <div className="!w-3/4 !h-3 !bg-neutral-200 !rounded-full animate-pulse"></div>
-                      <div className="!w-1/2 !h-3 !bg-neutral-200 !rounded-full animate-pulse"></div>
-                    </div>
-                  )}
-
-                  {/* DICAS quando carregar */}
-                  {imgLoaded && !imgError && (
+                  {preview && imgLoaded && !imgError && (
                     <div className="!mt-2 !text-xs !text-neutral-500 !space-y-1">
-                      <p>Formatos: JPG, PNG, WEBP • Link público</p>
-                      <p>
-                        Recomendado: 1200×800 px • Foto nítida e bem iluminada
-                      </p>
+                      <p>Formatos aceitos: JPG, PNG ou WEBP</p>
+                      <p>Dica: escolha uma foto clara e em boa qualidade</p>
                     </div>
                   )}
-
-                  {/* ERRO de imagem */}
                   {imgError && (
                     <p className="!mt-2 !text-xs !text-red-600">
-                      Não foi possível carregar a imagem. Verifique a URL.
+                      Não foi possível carregar a imagem.
                     </p>
                   )}
                 </div>
@@ -87,7 +89,7 @@ export default function CreatePropertyPage() {
                   </p>
                 </CardHeader>
                 <CardContent className="!px-0 !py-0">
-                  <PropertyForm />
+                  <PropertyForm onImageSelect={setPreview} />
                 </CardContent>
               </Card>
             </div>
