@@ -112,9 +112,6 @@ const PropertyCard = ({
             <p className="!text-base !font-bold !text-gray-900">
               R$ {item.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
             </p>
-            {item.infoExtra && (
-              <p className="!text-xs !text-gray-500">{item.infoExtra}</p>
-            )}
           </div>
           <button
             onClick={handleToggleFavorite}

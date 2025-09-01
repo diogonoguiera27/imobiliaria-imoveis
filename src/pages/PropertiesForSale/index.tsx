@@ -27,13 +27,13 @@ export const ListaImoveisVenda = () => {
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
   useEffect(() => {
-      async function carregarImoveis() {
-        const todos = await buscarImoveis();
-        const venda = todos.filter((i) => i.categoria === "venda");
-        setImoveis(venda);
-      }
-      carregarImoveis();
-    }, []);
+    async function carregarImoveis() {
+      const todos = await buscarImoveis();
+      
+      setImoveis(todos);
+    }
+    carregarImoveis();
+  }, []);
 
   return (
     <SidebarProvider>
