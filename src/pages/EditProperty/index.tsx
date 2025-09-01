@@ -17,8 +17,6 @@ export default function EditProperty() {
   const navigate = useNavigate();
 
   const [property, setProperty] = useState<Imovel | null>(null);
-  const [loading, setLoading] = useState(true);
-
   const [preview, setPreview] = useState<string | null>(null);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -70,8 +68,6 @@ export default function EditProperty() {
           );
         }
         navigate("/meus-imoveis");
-      } finally {
-        if (isMounted) setLoading(false);
       }
     })();
 
@@ -82,22 +78,6 @@ export default function EditProperty() {
       }
     };
   }, [id, navigate]);
-
-  if (loading) {
-    return (
-      <SidebarProvider>
-        <div className="!min-h-screen !flex !flex-col">
-          <main className="!flex-1">
-            <SidebarTrigger />
-            <div className="!pt-[72px] !w-full !max-w-6xl !mx-auto !px-6 md:!px-10 !py-6">
-              <p className="!text-neutral-600">Carregando imóvel...</p>
-            </div>
-          </main>
-          <Footer />
-        </div>
-      </SidebarProvider>
-    );
-  }
 
   if (!property) {
     return (

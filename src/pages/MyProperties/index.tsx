@@ -30,7 +30,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 type BackendError = { message?: string; error?: string };
 
-// opções fixas
 const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
   "Apartamento",
   "Condomínio",
@@ -62,10 +61,8 @@ export default function MyProperties() {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  // mantido só para highlight do card recém-criado (sem banner)
   const createdId = useMemo(() => Number(params.get("createdId")), [params]);
 
-  // carregar imóveis do usuário
   useEffect(() => {
     let isMounted = true;
     (async () => {
@@ -73,7 +70,6 @@ export default function MyProperties() {
         const list = await buscarMeusImoveis();
         if (isMounted) {
           setItems(list);
-          toast.success("Imóveis carregados com sucesso!");
         }
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -99,7 +95,6 @@ export default function MyProperties() {
     };
   }, [navigate]);
 
-  // filtros
   const filtered = useMemo(() => {
     const txt = (applied.q || "").trim().toLowerCase();
     let list = [...items];
@@ -129,27 +124,24 @@ export default function MyProperties() {
     return list;
   }, [items, applied]);
 
-  // paginação
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = filtered.slice(startIndex, endIndex);
 
-  // handlers
   const handleView = (id: number) => navigate(`/imovel/${id}`);
   const handleEdit = (id: number) => navigate(`/imovel/editar/${id}`);
   const handleDelete = async (id: number) => {
-  try {
-    await deletarImovel(id);
-    setItems((prev) => prev.filter((i) => i.id !== id));
-    toast.success("Imóvel excluído com sucesso!");
-  } catch (err) {
-    console.error(err);
-    toast.error("Não foi possível excluir o imóvel.");
-  }
-};
+    try {
+      await deletarImovel(id);
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      toast.success("Imóvel excluído com sucesso!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Não foi possível excluir o imóvel.");
+    }
+  };
 
-  // aplicar filtros com feedback
   const handleApplyFilters = () => {
     setApplied({ q, cidade, tipo, negocio });
     setCurrentPage(1);
@@ -170,27 +162,6 @@ export default function MyProperties() {
     }
   };
 
-  // UI de loading
-  if (loading) {
-    return (
-      <SidebarProvider>
-        <div className="!min-h-screen !flex !flex-col !overflow-x-hidden">
-          <main className="!flex-1">
-            <SidebarTrigger />
-            <div className="!pt-[72px] !w-full">
-              <div className="!max-w-6xl !mx-auto !px-6 md:!px-10 !py-6">
-                Carregando...
-              </div>
-            </div>
-          </main>
-          <Footer />
-          <ToastContainer />
-        </div>
-      </SidebarProvider>
-    );
-  }
-
-  // Component de filtros (em card branco) — alinhamento preservado
   const Filters = (
     <div className="!rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200 ">
       <div className="!grid !grid-cols-1 md:!grid-cols-[1fr_180px_180px_180px_150px] !gap-4 !items-end !p-4 md:!p-5">
@@ -308,28 +279,37 @@ export default function MyProperties() {
               <div className="!mt-4">{Filters}</div>
 
               <div className="!mt-6">
-                {/* Grid dos cards (inalterado) */}
                 <div className="!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-3 xl:!grid-cols-4 !gap-24">
-                  {currentItems.map((it) => {
-                    const highlight = Boolean(createdId && it.id === createdId);
-                    return (
-                      <div
-                        key={it.id}
-                        className={`${highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""}`}
-                      >
-                        <CardPropertiesAdmin
-                          item={it}
-                          onView={() => handleView(it.id)}
-                          onEdit={() => handleEdit(it.id)}
-                          onDelete={() => handleDelete(it.id)}
+                  {loading
+                    ? Array.from({ length: 8 }).map((_, idx) => (
+                        <div
+                          key={idx}
+                          className="!h-64 !rounded-2xl !bg-neutral-100 animate-pulse"
                         />
-                      </div>
-                    );
-                  })}
+                      ))
+                    : currentItems.map((it) => {
+                        const highlight = Boolean(
+                          createdId && it.id === createdId
+                        );
+                        return (
+                          <div
+                            key={it.id}
+                            className={`${
+                              highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""
+                            }`}
+                          >
+                            <CardPropertiesAdmin
+                              item={it}
+                              onView={() => handleView(it.id)}
+                              onEdit={() => handleEdit(it.id)}
+                              onDelete={() => handleDelete(it.id)}
+                            />
+                          </div>
+                        );
+                      })}
                 </div>
 
-                {/* Paginação */}
-                {totalPages > 1 && (
+                {!loading && totalPages > 1 && (
                   <div className="!w-full !flex !mt-10 !justify-between">
                     <Pagination
                       currentPage={currentPage}
