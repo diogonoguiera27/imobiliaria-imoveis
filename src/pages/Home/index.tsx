@@ -1,3 +1,4 @@
+// src/pages/Home.tsx
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -6,27 +7,31 @@ import { Imovel } from "@/types";
 import Pagination from "@/components/Pagination";
 import { Dialog } from "@/components/ui/dialog";
 import MessageFormModal from "@/components/MessageFormModal";
-import PhoneContactModal from "@/components/PhoneContactModal";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { CardProperties } from "@/components/PropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
+import ContactPhoneModal from "@/components/PhoneContactModal";
+import { useContactContext } from "@/hooks/contact/ContactContext";
 
 const ITEMS_PER_PAGE = 12;
 
-// helpers locais para normalização e comparação de texto
 const norm = (s: string | null | undefined): string =>
   (s ?? "")
     .toString()
     .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "") // remove acentos
+    .replace(/\p{Diacritic}/gu, "")
     .toLowerCase()
     .trim()
     .replace(/\s+/g, " ");
 
-const contains = (hay: string | null | undefined, needle: string | null | undefined): boolean => {
+const contains = (
+  hay: string | null | undefined,
+  needle: string | null | undefined
+): boolean => {
   const n = norm(needle);
-  if (!n) return true; // filtro vazio não restringe
-  return norm(hay).includes(n); // substring insensitive
+  if (!n) return true;
+  return norm(hay).includes(n);
 };
 
 export function Home() {
@@ -35,13 +40,16 @@ export function Home() {
   const [imoveisFiltrados, setImoveisFiltrados] = useState<Imovel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [showContactModal, setShowContactModal] = useState(false);
-  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  // ✅ usando contexto para controlar modais
+  const {
+    showContactModal,
+    showPhoneModal,
+    closeModals,
+  } = useContactContext();
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // paginação derivada
   const totalPages = useMemo(
     () => Math.ceil(imoveisFiltrados.length / ITEMS_PER_PAGE) || 1,
     [imoveisFiltrados.length]
@@ -53,13 +61,11 @@ export function Home() {
     [imoveisFiltrados, startIndex, endIndex]
   );
 
-  // carrega imóveis da API
   useEffect(() => {
     async function carregarImoveis() {
       try {
         const imoveisAPI = await buscarImoveis();
         setTodosImoveis(imoveisAPI);
-        // se não houver filtro ativo, exibir todos
         if (!filtroAtivo) {
           setImoveisFiltrados(imoveisAPI);
         }
@@ -70,14 +76,12 @@ export function Home() {
     carregarImoveis();
   }, [filtroAtivo]);
 
-  // limpar filtro
   const handleLimparFiltro = useCallback(() => {
     setFiltroAtivo(false);
     setImoveisFiltrados(todosImoveis);
     setCurrentPage(1);
   }, [todosImoveis]);
 
-  // suporte a reset via query param / evento global
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const shouldReset = params.get("reset") === "true";
@@ -98,13 +102,10 @@ export function Home() {
     return () => window.removeEventListener("clear-filters", handleClear);
   }, [location.search, navigate, handleLimparFiltro]);
 
-  // -------------------------
-  // FILTRO (faixa + substring)
-  // -------------------------
   type Filtros = {
     cidade?: string;
     tipo?: string;
-    precoMax?: number; // usuário escolhe o teto; mínimo é fixo (50k)
+    precoMax?: number;
   };
 
   const handleFiltrar = (filtros: Filtros) => {
@@ -123,7 +124,6 @@ export function Home() {
       return okPreco && okTipo && okCidade;
     });
 
-    // ordenar do maior preço para o menor (mantido)
     resultado = resultado.sort((a, b) => b.preco - a.preco);
 
     setImoveisFiltrados(resultado);
@@ -138,7 +138,6 @@ export function Home() {
           <SidebarTrigger />
           <HeroBanner />
 
-          {/* Componente de busca/filtro */}
           <SearchFilter
             onFiltrar={handleFiltrar}
             onLimparFiltro={handleLimparFiltro}
@@ -169,12 +168,7 @@ export function Home() {
                         }`}
                       >
                         {currentImoveis.map((item) => (
-                          <CardProperties
-                            key={item.id}
-                            item={item}
-                            onOpenContactModal={() => setShowContactModal(true)}
-                            onOpenPhoneModal={() => setShowPhoneModal(true)}
-                          />
+                          <CardProperties key={item.id} item={item} />
                         ))}
                       </div>
                     </div>
@@ -191,19 +185,26 @@ export function Home() {
                   </>
                 )}
               </div>
-
-              <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
-                <MessageFormModal />
-              </Dialog>
-
-              <Dialog open={showPhoneModal} onOpenChange={setShowPhoneModal}>
-                <PhoneContactModal />
-              </Dialog>
             </section>
           ) : (
             <HighlightSection />
           )}
         </main>
+
+        {/* 🔒 Modais sempre montados (fora do condicional) */}
+        <Dialog
+          open={showContactModal}
+          onOpenChange={(open) => !open && closeModals()}
+        >
+          <MessageFormModal />
+        </Dialog>
+
+        <Dialog
+          open={showPhoneModal}
+          onOpenChange={(open) => !open && closeModals()}
+        >
+          <ContactPhoneModal />
+        </Dialog>
 
         <div className="!mt-8">
           <Footer />

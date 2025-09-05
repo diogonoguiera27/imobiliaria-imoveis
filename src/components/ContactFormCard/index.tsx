@@ -1,11 +1,13 @@
+// src/components/ContactFormCard/index.tsx
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Imovel } from "@/types"; // certifique-se de que isso está correto
+import { Imovel } from "@/types";
 import { Textarea } from "../ui/textarea";
+import { enviarContato } from "@/service/propertyService";
 
 const contatoSchema = z.object({
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -20,7 +22,8 @@ const contatoSchema = z.object({
 type ContatoFormData = z.infer<typeof contatoSchema>;
 
 interface ContatoCardProps {
-  imovel: Imovel; // deve conter imovel.user?.nome e imovel.user?.telefone
+  // 🔒 Deixa opcional para evitar crash no primeiro render do Dialog
+  imovel?: Imovel | null;
 }
 
 export function ContatoCard({ imovel }: ContatoCardProps) {
@@ -28,22 +31,47 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ContatoFormData>({
     resolver: zodResolver(contatoSchema),
   });
 
-  const onSubmit = (data: ContatoFormData) => {
-    const nomeProprietario = imovel.user?.nome || "proprietário";
-    const numeroWhatsapp = imovel.user?.telefone?.replace(/\D/g, "");
+  const onSubmit = async (data: ContatoFormData) => {
+    // 🛡️ Blindagem: se ainda não chegou o imóvel, pare com aviso amigável
+    if (!imovel?.id) {
+      alert("Imóvel não encontrado. Tente novamente.");
+      return;
+    }
 
+    const nomeProprietario = imovel.user?.nome ?? "proprietário";
+    const numeroWhatsapp = imovel.user?.telefone
+      ? imovel.user.telefone.replace(/\D/g, "")
+      : "";
+
+    // 1) Registrar contato no backend
+    try {
+      await enviarContato(imovel.id, data);
+      console.log("✅ Contato registrado no backend:", {
+        imovelId: imovel.id,
+        ...data,
+      });
+    } catch (err) {
+      console.error("❌ Erro ao registrar contato:", err);
+    }
+
+    // 2) Abrir WhatsApp (se houver número)
     if (!numeroWhatsapp) {
       alert("Número de WhatsApp do proprietário não disponível.");
       return;
     }
 
     const texto = `Olá, ${nomeProprietario}! Meu nome é ${data.nome}, meu e-mail é ${data.email}, meu telefone é ${data.telefone}. Mensagem: ${data.mensagem}`;
-    const url = `https://wa.me/55${numeroWhatsapp}?text=${encodeURIComponent(texto)}`;
+    const url = `https://wa.me/55${numeroWhatsapp}?text=${encodeURIComponent(
+      texto
+    )}`;
     window.open(url, "_blank");
+
+    reset();
   };
 
   return (
@@ -59,53 +87,70 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
 
           <form onSubmit={handleSubmit(onSubmit)} className="!space-y-4">
             <div>
-              <Label className="!block !text-sm !font-semibold !text-gray-700 !mb-1">Seu nome:</Label>
+              <Label className="!block !text-sm !font-semibold !text-gray-700 !mb-1">
+                Seu nome:
+              </Label>
               <Input
                 type="text"
                 placeholder="Digite seu nome"
                 {...register("nome")}
                 className="w-full !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
               />
-              {errors.nome && <p className="!text-xs text-red-500 !mt-1">{errors.nome.message}</p>}
+              {errors.nome && (
+                <p className="!text-xs text-red-500 !mt-1">{errors.nome.message}</p>
+              )}
             </div>
 
             <div className="grid !grid-cols-1 !md:grid-cols-2 !gap-4">
               <div>
-                <Label className="!block !text-sm !font-semibold !text-gray-700 !mb-1">E-mail:</Label>
+                <Label className="!block !text-sm !font-semibold !text-gray-700 !mb-1">
+                  E-mail:
+                </Label>
                 <Input
                   type="email"
                   placeholder="Digite seu e-mail"
                   {...register("email")}
                   className="w-full !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
-                {errors.email && <p className="text-xs text-red-500 !mt-1">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-xs text-red-500 !mt-1">{errors.email.message}</p>
+                )}
               </div>
 
               <div className="!space-y-2">
-                <Label className="!block !text-sm !font-semibold text-gray-700 mb-1">Celular:</Label>
+                <Label className="!block !text-sm !font-semibold text-gray-700 mb-1">
+                  Celular:
+                </Label>
                 <Input
                   type="tel"
                   placeholder="(xx) xxxxx-xxxx"
                   {...register("telefone")}
                   className="w-full !border !border-gray-300 !rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
                 />
-                {errors.telefone && <p className="text-xs text-red-500 !mt-1">{errors.telefone.message}</p>}
+                {errors.telefone && (
+                  <p className="text-xs text-red-500 !mt-1">{errors.telefone.message}</p>
+                )}
               </div>
             </div>
 
-             <div className="!space-y-2">
-              <Label className="!block !text-sm !font-semibold text-gray-700 mb-1">Mensagem:</Label>
+            <div className="!space-y-2">
+              <Label className="!block !text-sm !font-semibold text-gray-700 mb-1">
+                Mensagem:
+              </Label>
               <Textarea
                 placeholder="Escreva sua mensagem aqui..."
                 {...register("mensagem")}
                 className="w-full !h-24 !scrollbar-none !overflow-hidden !overflow-y-auto !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm !leading-relaxed focus:outline-none focus:ring-2 focus:ring-gray-400"
               />
-              {errors.mensagem && <p className="text-xs text-red-500 !mt-1">{errors.mensagem.message}</p>}
+              {errors.mensagem && (
+                <p className="text-xs text-red-500 !mt-1">{errors.mensagem.message}</p>
+              )}
             </div>
 
             <Button
               type="submit"
               className="w-full !bg-green-700 !hover:bg-green-700 !text-white !font-bold !py-2 !rounded-md !transition"
+              disabled={!imovel?.id} // 🔒 não deixa enviar se o imóvel ainda não chegou
             >
               Enviar Mensagem
             </Button>

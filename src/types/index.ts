@@ -29,7 +29,7 @@ export type Imovel = {
   endereco: string;
   bairro: string;
   cidade: string;
-
+  ativo: boolean;
   // classificação
   tipo: TipoImovel;
   tipoNegocio: TipoNegocio;

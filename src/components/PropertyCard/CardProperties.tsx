@@ -1,40 +1,40 @@
+// src/components/PropertyCard/index.tsx
 import { useState, useEffect } from "react";
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Imovel } from "@/types";
-
+import { useNavigate } from "react-router-dom";
 import { toggleFavorite } from "@/service/favoriteService";
 import { useAuth } from "@/hooks/auth";
+import { useContactContext } from "@/hooks/contact/ContactContext";
 
 interface PropertyCardProps {
   item: Imovel;
-  onOpenContactModal: () => void;
-  onOpenPhoneModal: () => void;
   variant?: "default" | "featured";
   isFavoritedInitially?: boolean;
 }
 
 const PropertyCard = ({
   item,
-  onOpenContactModal,
-  onOpenPhoneModal,
   variant = "default",
   isFavoritedInitially = false,
 }: PropertyCardProps) => {
   const isFeatured = variant === "featured";
   const { token } = useAuth();
+  const navigate = useNavigate();
+  const { openContactModal, openPhoneModal } = useContactContext();
 
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially);
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
-  // 🔁 Sincroniza favorito com o prop quando mudar
   useEffect(() => {
     setIsFavorited(isFavoritedInitially);
   }, [isFavoritedInitially]);
 
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
 
     if (!token) {
       console.warn("⚠️ Usuário não autenticado — não é possível favoritar.");
@@ -49,9 +49,13 @@ const PropertyCard = ({
     }
   };
 
+  const handleNavigateToDetails = () => {
+    navigate(`/imovel/${item.id}`);
+  };
+
   return (
     <div
-      onClick={() => (window.location.href = `/imovel/${item.id}`)}
+      onClick={handleNavigateToDetails}
       className={`${
         isFeatured ? "w-[460px]" : "w-[285px]"
       } !h-[460px] flex-shrink-0 flex flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer`}
@@ -67,7 +71,7 @@ const PropertyCard = ({
 
       {/* Conteúdo */}
       <div className="!p-4 !bg-gray-100 !border-t !border-gray-800 flex flex-col justify-between gap-4 !rounded-b-xl flex-1">
-        {/* Endereço e categoria */}
+        {/* Endereço */}
         <div className="flex flex-col gap-2 text-left">
           <h3 className="!text-base !font-semibold !text-gray-900 !leading-snug break-words">
             {item.bairro}, {item.cidade}
@@ -77,10 +81,10 @@ const PropertyCard = ({
             {item.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
           </p>
 
-          {/* Proprietário */}
           {item.user?.nome && (
             <p className="!text-xs !text-gray-700 !font-bold">
-              Proprietário: <span className="font-medium">{item.user.nome}</span>
+              Proprietário:{" "}
+              <span className="font-medium">{item.user.nome}</span>
             </p>
           )}
         </div>
@@ -110,7 +114,10 @@ const PropertyCard = ({
           <div>
             <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
             <p className="!text-base !font-bold !text-gray-900">
-              R$ {item.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+              R${" "}
+              {item.preco.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+              })}
             </p>
           </div>
           <button
@@ -128,9 +135,11 @@ const PropertyCard = ({
         <div className="flex justify-between gap-2 mt-4">
           <Button
             onClick={(e) => {
-              e.stopPropagation();
-              onOpenContactModal();
-            }}
+    e.stopPropagation();
+    e.preventDefault();
+    console.log("🟢 [DEBUG] Botão Mensagem clicado:", item);
+    openContactModal(item);
+  }}
             className="flex-1 !bg-red-500 !text-white !text-sm !rounded hover:!bg-red-700 transition-colors duration-200"
           >
             Mensagem
@@ -139,7 +148,8 @@ const PropertyCard = ({
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              onOpenPhoneModal();
+              e.preventDefault();
+              openPhoneModal(item); // ✅ abre via contexto
             }}
             className="flex-1 !bg-transparent !text-red-600 !text-sm !rounded hover:!bg-white"
           >

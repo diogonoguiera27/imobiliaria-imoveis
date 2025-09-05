@@ -1,12 +1,17 @@
 import React, { ReactNode } from "react";
 import { AuthProvider } from "./auth";
+import { ContactProvider } from "./contact/ContactContext";
 
 interface AppProviderProps {
   children: ReactNode;
 }
 
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => (
-  <AuthProvider>{children}</AuthProvider>
+  <AuthProvider>
+    <ContactProvider>
+    {children}
+    </ContactProvider>
+    </AuthProvider>
 );
 
 export default AppProvider;

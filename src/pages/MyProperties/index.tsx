@@ -6,7 +6,11 @@ import axios from "axios";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Footer } from "@/components/Footer";
 
-import { buscarMeusImoveis, deletarImovel } from "@/service/propertyService";
+import {
+  buscarMeusImoveis,
+  deletarImovel,
+  atualizarStatusImovel,
+} from "@/service/propertyService";
 import type { Imovel, TipoImovel, TipoNegocio } from "@/types";
 
 import { Button } from "@/components/ui/button";
@@ -57,12 +61,14 @@ export default function MyProperties() {
     cidade: undefined as string | undefined,
     tipo: undefined as TipoImovel | undefined,
     negocio: undefined as TipoNegocio | undefined,
+    ativo: undefined as boolean | undefined, // 👈 novo
   });
 
   const [currentPage, setCurrentPage] = useState(1);
 
   const createdId = useMemo(() => Number(params.get("createdId")), [params]);
 
+  // carrega imóveis do usuário
   useEffect(() => {
     let isMounted = true;
     (async () => {
@@ -95,6 +101,20 @@ export default function MyProperties() {
     };
   }, [navigate]);
 
+  // aplica filtro inicial por query param (?status=inactive|active)
+  useEffect(() => {
+    const status = params.get("status");
+    setApplied((prev) => ({
+      ...prev,
+      ativo:
+        status === "inactive"
+          ? false
+          : status === "active"
+          ? true
+          : undefined,
+    }));
+  }, [params]);
+
   const filtered = useMemo(() => {
     const txt = (applied.q || "").trim().toLowerCase();
     let list = [...items];
@@ -121,6 +141,10 @@ export default function MyProperties() {
       );
     }
 
+    if (typeof applied.ativo === "boolean") {
+      list = list.filter((p) => p.ativo === applied.ativo);
+    }
+
     return list;
   }, [items, applied]);
 
@@ -142,16 +166,40 @@ export default function MyProperties() {
     }
   };
 
+  const handleToggleAtivo = async (id: number, novoAtivo: boolean) => {
+    try {
+      await atualizarStatusImovel(id, novoAtivo);
+      setItems((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, ativo: novoAtivo } : p))
+      );
+      toast.success(novoAtivo ? "Imóvel ativado." : "Imóvel desativado.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Não foi possível atualizar o status do imóvel.");
+    }
+  };
+
   const handleApplyFilters = () => {
-    setApplied({ q, cidade, tipo, negocio });
+    setApplied({ q, cidade, tipo, negocio, ativo: applied.ativo });
     setCurrentPage(1);
     const count = (() => {
       const txt = (q || "").trim().toLowerCase();
       let list = [...items];
-      if (txt) list = list.filter((p) => `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt));
-      if (cidade) list = list.filter((p) => p.cidade.toLowerCase() === cidade.toLowerCase());
+      if (txt)
+        list = list.filter((p) =>
+          `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt)
+        );
+      if (cidade)
+        list = list.filter(
+          (p) => p.cidade.toLowerCase() === cidade.toLowerCase()
+        );
       if (tipo) list = list.filter((p) => p.tipo === tipo);
-      if (negocio) list = list.filter((p) => p.tipoNegocio.toLowerCase() === negocio.toLowerCase());
+      if (negocio)
+        list = list.filter(
+          (p) => p.tipoNegocio.toLowerCase() === negocio.toLowerCase()
+        );
+      if (typeof applied.ativo === "boolean")
+        list = list.filter((p) => p.ativo === applied.ativo);
       return list.length;
     })();
 
@@ -164,10 +212,12 @@ export default function MyProperties() {
 
   const Filters = (
     <div className="!rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200 ">
-      <div className="!grid !grid-cols-1 md:!grid-cols-[1fr_180px_180px_180px_150px] !gap-4 !items-end !p-4 md:!p-5">
+      <div className="!grid !grid-cols-1 md:!grid-cols-[1fr_180px_180px_180px_150px_150px] !gap-4 !items-end !p-4 md:!p-5">
         {/* Buscar */}
         <div className="!flex !flex-col !gap-1">
-          <label className="!text-xs !font-medium !text-neutral-600">Buscar</label>
+          <label className="!text-xs !font-medium !text-neutral-600">
+            Buscar
+          </label>
           <Input
             placeholder="Bairro ou cidade"
             value={q}
@@ -178,7 +228,9 @@ export default function MyProperties() {
 
         {/* Cidade */}
         <div className="!flex !flex-col !gap-1">
-          <label className="!text-xs !font-medium !text-neutral-600">Cidade</label>
+          <label className="!text-xs !font-medium !text-neutral-600">
+            Cidade
+          </label>
           <Select value={cidade} onValueChange={setCidade}>
             <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
               <SelectValue placeholder="Selecione" />
@@ -220,7 +272,9 @@ export default function MyProperties() {
 
         {/* Negócio */}
         <div className="!flex !flex-col !gap-1">
-          <label className="!text-xs !font-medium !text-neutral-600">Negócio</label>
+          <label className="!text-xs !font-medium !text-neutral-600">
+            Negócio
+          </label>
           <Select value={negocio} onValueChange={setNegocio}>
             <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
               <SelectValue placeholder="Selecione" />
@@ -235,6 +289,37 @@ export default function MyProperties() {
                   {n === "venda" ? "Venda" : "Aluguel"}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Status */}
+        <div className="!flex !flex-col !gap-1">
+          <label className="!text-xs !font-medium !text-neutral-600">
+            Status
+          </label>
+          <Select
+            value={
+              typeof applied.ativo === "boolean"
+                ? applied.ativo
+                  ? "active"
+                  : "inactive"
+                : "all"
+            }
+            onValueChange={(v) =>
+              setApplied((prev) => ({
+                ...prev,
+                ativo: v === "all" ? undefined : v === "active",
+              }))
+            }
+          >
+            <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="active">Ativos</SelectItem>
+              <SelectItem value="inactive">Inativos</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -295,7 +380,9 @@ export default function MyProperties() {
                           <div
                             key={it.id}
                             className={`${
-                              highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""
+                              highlight
+                                ? "!ring-2 !ring-green-400 !rounded-2xl"
+                                : ""
                             }`}
                           >
                             <CardPropertiesAdmin
@@ -303,6 +390,9 @@ export default function MyProperties() {
                               onView={() => handleView(it.id)}
                               onEdit={() => handleEdit(it.id)}
                               onDelete={() => handleDelete(it.id)}
+                              onToggleAtivo={(novo) =>
+                                handleToggleAtivo(it.id, novo)
+                              }
                             />
                           </div>
                         );

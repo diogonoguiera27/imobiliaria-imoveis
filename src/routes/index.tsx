@@ -13,7 +13,7 @@ import Favorites from "@/pages/Favorites";
 import CreateProperty from "@/pages/CreateProperty";
 import MyProperties from "@/pages/MyProperties";
 import EditProperty from "@/pages/EditProperty";
-
+import UserManagement from "@/pages/UserManagement";
 
 
 export const Rotas: React.FC = () => (
@@ -30,6 +30,9 @@ export const Rotas: React.FC = () => (
     <Route path="/profile" element={<ProfilePreview />} />
     <Route path="/minha-conta" element={<MinhaConta />} />
     <Route path="/favoritos" element={<Favorites/>} />
+     <Route path="/user-management" element={<UserManagement/>} />
+    
+    
     
 
     <Route path="*" element={<NoMatch />} />

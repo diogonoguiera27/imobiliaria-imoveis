@@ -25,10 +25,9 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-import  ContactInfoModal  from "@/components/ContactInfoModal";
+import ContactInfoModal from "@/components/ContactInfoModal";
 
 import { useAuth } from "@/hooks/auth";
-
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -219,7 +218,6 @@ function Sidebar({
   );
 }
 
-
 export default function SidebarTrigger({
   onClick,
   ...props
@@ -248,6 +246,7 @@ export default function SidebarTrigger({
 
   const goMyProperties = () => ensureAuth("/meus-imoveis");
   const goCreateProperty = () => ensureAuth("/imovel/novo");
+  const goUserManagement = () => ensureAuth("/user-management");
 
   return (
     <main className="fixed z-50 flex h-[60px] w-full items-center justify-between !px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
@@ -281,17 +280,32 @@ export default function SidebarTrigger({
             Home
           </button>
 
-          <button onClick={goMyProperties} className="hover:underline !cursor-pointer">
+          <button
+            onClick={goMyProperties}
+            className="hover:underline !cursor-pointer"
+          >
             Meus Imóveis
           </button>
 
-          <button onClick={goCreateProperty} className="hover:underline !cursor-pointer">
+          <button
+            onClick={goCreateProperty}
+            className="hover:underline !cursor-pointer"
+          >
             Cadastrar Imóveis
+          </button>
+
+          <button
+            onClick={goUserManagement}
+            className="hover:underline !cursor-pointer"
+          >
+            Gerenciar Usuários
           </button>
 
           <Dialog>
             <DialogTrigger asChild>
-              <button className="hover:underline !cursor-pointer">Contato</button>
+              <button className="hover:underline !cursor-pointer">
+                Contato
+              </button>
             </DialogTrigger>
             <DialogContent className="max-w-lg">
               <ContactInfoModal />
@@ -304,7 +318,6 @@ export default function SidebarTrigger({
     </main>
   );
 }
-
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar();

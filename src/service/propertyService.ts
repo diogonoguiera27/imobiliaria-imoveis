@@ -93,3 +93,18 @@ export async function buscarMeusImoveis(): Promise<Imovel[]> {
   const { data } = await api.get<Imovel[]>("/property/mine");
   return data;
 }
+
+export async function enviarContato(propertyId: number, data: {
+  nome?: string;
+  email?: string;
+  telefone?: string;
+  mensagem?: string;
+}) {
+  const response = await api.post(`/property/${propertyId}/contact`, data);
+  return response.data;
+}
+
+export async function atualizarStatusImovel(id: number, ativo: boolean): Promise<{ id: number; ativo: boolean }> {
+  const { data } = await api.patch<{ id: number; ativo: boolean }>(`/property/${id}/ativo`, { ativo });
+  return data;
+}
