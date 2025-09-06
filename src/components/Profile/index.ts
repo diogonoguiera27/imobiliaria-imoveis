@@ -1,4 +1,4 @@
-// src/components/Profile/index.ts
+
 
 export { default as ProfileEditForm } from "./ProfileEditForm";
 export { default as ProfileSidebar } from "./ProfileSidebar";
