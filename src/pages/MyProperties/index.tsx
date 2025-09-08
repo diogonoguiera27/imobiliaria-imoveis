@@ -1,3 +1,4 @@
+// src/pages/MyProperties.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -15,15 +16,12 @@ import type { Imovel, TipoImovel, TipoNegocio } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-// Componentes reutilizáveis
 import Filters, { AppliedFilters } from "@/components/MyProperties/Filters";
 import PropertiesGrid from "@/components/MyProperties/PropertiesGrid";
 
-// Toasts
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Types
 type BackendError = { message?: string; error?: string };
 
 const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
@@ -35,6 +33,38 @@ const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
 const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["venda", "aluguel"];
 const ITEMS_PER_PAGE = 12;
 
+
+function EmptyState({ onCreate }: { onCreate: () => void }) {
+  return (
+    <div className="!w-full !rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200 !px-8 !py-12 !flex !flex-col !items-center !justify-center text-center">
+      <div className="!text-2xl !font-semibold">
+        Você ainda não cadastrou imóveis
+      </div>
+      <p className="!mt-2 !text-neutral-500">
+        Assim que cadastrar, eles aparecerão aqui para você gerenciar.
+      </p>
+      <Button
+        className="!mt-6 !h-10 !rounded-lg !bg-red-600 hover:!opacity-95 !px-4 !font-medium !text-white"
+        onClick={onCreate}
+      >
+        <Plus className="!mr-2 !h-4 !w-4" />
+        Cadastrar Imóvel
+      </Button>
+    </div>
+  );
+}
+
+
+function NoResults() {
+  return (
+    <div className="!w-full !rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200 !px-8 !py-12 text-center">
+      <p className="!text-base !text-neutral-600">
+        Nenhum imóvel encontrado com os filtros aplicados.
+      </p>
+    </div>
+  );
+}
+
 export default function MyProperties() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -42,7 +72,7 @@ export default function MyProperties() {
   const [items, setItems] = useState<Imovel[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // filtros controlados
+  
   const [q, setQ] = useState("");
   const [cidade, setCidade] = useState<string | undefined>();
   const [tipo, setTipo] = useState<TipoImovel | undefined>();
@@ -65,9 +95,7 @@ export default function MyProperties() {
     (async () => {
       try {
         const list = await buscarMeusImoveis();
-        if (isMounted) {
-          setItems(list);
-        }
+        if (isMounted) setItems(list);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           const status = err.response?.status;
@@ -76,9 +104,7 @@ export default function MyProperties() {
             navigate("/login");
           } else {
             const data = err.response?.data as BackendError | undefined;
-            toast.error(
-              data?.message || data?.error || "Erro ao carregar seus imóveis."
-            );
+            toast.error(data?.message || data?.error || "Erro ao carregar seus imóveis.");
           }
         } else {
           toast.error("Erro inesperado ao carregar seus imóveis.");
@@ -87,9 +113,7 @@ export default function MyProperties() {
         if (isMounted) setLoading(false);
       }
     })();
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [navigate]);
 
   
@@ -97,41 +121,20 @@ export default function MyProperties() {
     const status = params.get("status");
     setApplied((prev) => ({
       ...prev,
-      ativo:
-        status === "inactive"
-          ? false
-          : status === "active"
-          ? true
-          : undefined,
+      ativo: status === "inactive" ? false : status === "active" ? true : undefined,
     }));
   }, [params]);
 
-  // lista filtrada
+  
   const filtered = useMemo(() => {
     const txt = (applied.q || "").trim().toLowerCase();
     let list = [...items];
 
-    if (txt) {
-      list = list.filter((p) =>
-        `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt)
-      );
-    }
-    if (applied.cidade) {
-      list = list.filter(
-        (p) => p.cidade.toLowerCase() === applied.cidade?.toLowerCase()
-      );
-    }
-    if (applied.tipo) {
-      list = list.filter((p) => p.tipo === applied.tipo);
-    }
-    if (applied.negocio) {
-      list = list.filter(
-        (p) => p.tipoNegocio.toLowerCase() === applied.negocio?.toLowerCase()
-      );
-    }
-    if (typeof applied.ativo === "boolean") {
-      list = list.filter((p) => p.ativo === applied.ativo);
-    }
+    if (txt) list = list.filter((p) => `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt));
+    if (applied.cidade) list = list.filter((p) => p.cidade.toLowerCase() === applied.cidade?.toLowerCase());
+    if (applied.tipo) list = list.filter((p) => p.tipo === applied.tipo);
+    if (applied.negocio) list = list.filter((p) => p.tipoNegocio.toLowerCase() === applied.negocio?.toLowerCase());
+    if (typeof applied.ativo === "boolean") list = list.filter((p) => p.ativo === applied.ativo);
 
     return list;
   }, [items, applied]);
@@ -149,20 +152,16 @@ export default function MyProperties() {
       await deletarImovel(id);
       setItems((prev) => prev.filter((i) => i.id !== id));
       toast.success("Imóvel excluído com sucesso!");
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Não foi possível excluir o imóvel.");
     }
   };
   const handleToggleAtivo = async (id: number, novoAtivo: boolean) => {
     try {
       await atualizarStatusImovel(id, novoAtivo);
-      setItems((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, ativo: novoAtivo } : p))
-      );
+      setItems((prev) => prev.map((p) => (p.id === id ? { ...p, ativo: novoAtivo } : p)));
       toast.success(novoAtivo ? "Imóvel ativado." : "Imóvel desativado.");
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Não foi possível atualizar o status do imóvel.");
     }
   };
@@ -175,30 +174,19 @@ export default function MyProperties() {
     const count = (() => {
       const txt = (q || "").trim().toLowerCase();
       let list = [...items];
-      if (txt)
-        list = list.filter((p) =>
-          `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt)
-        );
-      if (cidade)
-        list = list.filter(
-          (p) => p.cidade.toLowerCase() === cidade.toLowerCase()
-        );
+      if (txt) list = list.filter((p) => `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt));
+      if (cidade) list = list.filter((p) => p.cidade.toLowerCase() === cidade.toLowerCase());
       if (tipo) list = list.filter((p) => p.tipo === tipo);
-      if (negocio)
-        list = list.filter(
-          (p) => p.tipoNegocio.toLowerCase() === negocio.toLowerCase()
-        );
-      if (typeof applied.ativo === "boolean")
-        list = list.filter((p) => p.ativo === applied.ativo);
+      if (negocio) list = list.filter((p) => p.tipoNegocio.toLowerCase() === negocio.toLowerCase());
+      if (typeof applied.ativo === "boolean") list = list.filter((p) => p.ativo === applied.ativo);
       return list.length;
     })();
 
-    if (count === 0) {
-      toast.info("Nenhum imóvel encontrado com os filtros aplicados.");
-    } else {
-      toast.success(`${count} imóvel(is) encontrado(s).`);
-    }
+    if (count === 0) toast.info("Nenhum imóvel encontrado com os filtros aplicados.");
+    else toast.success(`${count} imóvel(is) encontrado(s).`);
   };
+
+  const hasAnyItem = items.length > 0;
 
   return (
     <SidebarProvider>
@@ -208,57 +196,68 @@ export default function MyProperties() {
           <section className="!pt-[72px] !w-full">
             <div className="!w-full !max-w-6xl !mx-auto !px-6 md:!px-10">
               
-              <div className="!pb-3 !flex !items-start !justify-between">
-                <div>
-                  <h1 className="!text-2xl !font-semibold">Meus Imóveis</h1>
-                  <p className="!text-sm !text-neutral-500">
-                    Gerencie seus anúncios
-                  </p>
+              {!loading && !hasAnyItem ? (
+                <div className="!mt-6">
+                  <EmptyState onCreate={() => navigate("/imovel/novo")} />
                 </div>
-                <Button
-                  className="!h-10 !rounded-lg !bg-red-600 hover:!opacity-95 !px-4 !font-medium !text-white md:!mt-0 !mt-3"
-                  onClick={() => navigate("/imovel/novo")}
-                >
-                  <Plus className="!mr-2 !h-4 !w-4" />
-                  Cadastrar Imóvel
-                </Button>
-              </div>
+              ) : (
+                <>
+                  
+                  <div className="!pb-3 !flex !items-start !justify-between">
+                    <div>
+                      <h1 className="!text-2xl !font-semibold">Meus Imóveis</h1>
+                      <p className="!text-sm !text-neutral-500">Gerencie seus anúncios</p>
+                    </div>
+                    <Button
+                      className="!h-10 !rounded-lg !bg-red-600 hover:!opacity-95 !px-4 !font-medium !text-white md:!mt-0 !mt-3"
+                      onClick={() => navigate("/imovel/novo")}
+                    >
+                      <Plus className="!mr-2 !h-4 !w-4" />
+                      Cadastrar Imóvel
+                    </Button>
+                  </div>
 
-              {/* Filtros */}
-              <div className="!mt-4">
-                <Filters
-                  q={q}
-                  setQ={setQ}
-                  cidade={cidade}
-                  setCidade={setCidade}
-                  tipo={tipo}
-                  setTipo={setTipo}
-                  negocio={negocio}
-                  setNegocio={setNegocio}
-                  applied={applied}
-                  setApplied={setApplied}
-                  items={items}
-                  onApply={handleApplyFilters}
-                  TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
-                  TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
-                />
-              </div>
+                  
+                  <div className="!mt-4">
+                    <Filters
+                      q={q}
+                      setQ={setQ}
+                      cidade={cidade}
+                      setCidade={setCidade}
+                      tipo={tipo}
+                      setTipo={setTipo}
+                      negocio={negocio}
+                      setNegocio={setNegocio}
+                      applied={applied}
+                      setApplied={setApplied}
+                      items={items}
+                      onApply={handleApplyFilters}
+                      TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
+                      TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
+                    />
+                  </div>
 
-              
-              <div className="!mt-6">
-                <PropertiesGrid
-                  loading={loading}
-                  items={currentItems}
-                  createdId={createdId}
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                  onView={handleView}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onToggleAtivo={handleToggleAtivo}
-                />
-              </div>
+                  
+                  <div className="!mt-6">
+                    {!loading && hasAnyItem && currentItems.length === 0 ? (
+                      <NoResults />
+                    ) : (
+                      <PropertiesGrid
+                        loading={loading}
+                        items={currentItems}
+                        createdId={createdId}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                        onView={handleView}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onToggleAtivo={handleToggleAtivo}
+                      />
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </section>
         </main>
