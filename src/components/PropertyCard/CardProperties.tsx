@@ -7,7 +7,7 @@ import { Imovel } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { toggleFavorite } from "@/service/favoriteService";
 import { useAuth } from "@/hooks/auth";
-import { useContactContext } from "@/hooks/contact/ContactContext";
+import { useContactContext } from "@/hooks/contact/useContact";
 
 export interface PropertyCardProps {
   item: Imovel;

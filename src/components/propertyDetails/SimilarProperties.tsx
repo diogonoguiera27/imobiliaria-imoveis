@@ -8,8 +8,9 @@ import { Dialog } from "../ui/dialog";
 import MessageFormModal from "@/components/MessageFormModal";
 
 import { Imovel } from "@/types";
-import { useContactContext } from "@/hooks/contact/ContactContext";
+
 import ContactPhoneModal from "../PhoneContactModal";
+import { useContactContext } from "@/hooks/contact/useContact";
 
 type SimilarPropertiesProps = {
   imoveis: Imovel[];

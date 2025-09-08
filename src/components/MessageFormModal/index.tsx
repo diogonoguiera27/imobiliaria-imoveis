@@ -4,7 +4,7 @@ import {
   DialogContent,
 } from "@/components/ui/dialog";
 import { ContatoCard } from "../ContactFormCard";
-import { useContactContext } from "@/hooks/contact/ContactContext";
+import { useContactContext } from "@/hooks/contact/useContact";
 
 function MessageFormModal() {
   const { selectedImovel } = useContactContext();

@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CardProperties } from "@/components/PropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
 import ContactPhoneModal from "@/components/PhoneContactModal";
-import { useContactContext } from "@/hooks/contact/ContactContext";
+import { useContactContext } from "@/hooks/contact/useContact";
 
 const ITEMS_PER_PAGE = 12;
 

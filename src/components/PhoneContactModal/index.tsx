@@ -1,7 +1,7 @@
 // src/components/ContactPhoneModal.tsx
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { FaPhoneAlt, FaWhatsapp, FaUserTie, FaClock } from "react-icons/fa";
-import { useContactContext } from "@/hooks/contact/ContactContext";
+import { useContactContext } from "@/hooks/contact/useContact";
 
 export function ContactPhoneModal() {
   const { selectedImovel } = useContactContext();
