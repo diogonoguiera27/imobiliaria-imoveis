@@ -1,9 +1,9 @@
-// src/service/dashboardService.ts
+
 import api from "./api";
 
-// helper para pegar token salvo
+
 function getAuthHeader() {
-  const token = localStorage.getItem("token"); // ou sessionStorage se preferir
+  const token = localStorage.getItem("token"); 
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 

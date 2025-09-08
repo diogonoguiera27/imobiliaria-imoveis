@@ -89,7 +89,7 @@ export default function UserManagement() {
     fetchData();
   }, []);
 
-  // ✅ Agora o EmptyState aparece se não houver imóveis cadastrados
+  
   const semDados = !loading && indicadores.totalImoveis === 0;
 
   return (
@@ -107,10 +107,10 @@ export default function UserManagement() {
           </div>
         ) : (
           <>
-            {/* Linha 1 - Indicadores */}
+            
             <Indicators indicadores={indicadores} loading={loading} />
 
-            {/* Linha 2 e 3 - Gráficos */}
+            
             <div className="!flex !flex-wrap !gap-6 !justify-center !mt-4">
               <ChartPropertyTypes data={tiposDeImoveisData} loading={loading} />
               <ChartPriceRange data={faixaPrecoData} />

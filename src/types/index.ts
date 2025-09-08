@@ -1,6 +1,6 @@
-// src/types/imovel.ts
 
-// Sugestões conhecidas + mantêm flexibilidade para qualquer string do backend
+
+
 export type TipoNegocio = "venda" | "aluguel" | (string & {});
 export type TipoImovel =
   | "Apartamento"
@@ -12,9 +12,9 @@ export type CategoriaImovel =
   | "promocao"
   | "destaque"
   | "venda"
-  | (string & {});
+  | (string & {});          
 
-// 👤 Tipo básico do usuário que vem junto no include
+
 export type UsuarioResumo = {
   id: number;
   nome: string;
@@ -24,37 +24,37 @@ export type UsuarioResumo = {
 export type Imovel = {
   id: number;
 
-  // campos principais
+  
   imagem: string;
   endereco: string;
   bairro: string;
   cidade: string;
   ativo: boolean;
-  // classificação
+ 
   tipo: TipoImovel;
   tipoNegocio: TipoNegocio;
   categoria: CategoriaImovel;
 
-  // numéricos (compatíveis com Prisma/rota)
+  
   metragem: number;
-  areaConstruida?: number | null; // Prisma permite opcional
+  areaConstruida?: number | null; 
   quartos: number;
-  suites?: number | null;         // Prisma permite opcional
+  suites?: number | null;         
   banheiros: number;
   vagas: number;
   preco: number;
 
-  // textos opcionais conforme backend
+  
   caracteristicas?: string[]; 
   descricao?: string;
 
   
 
-  // metadados
+  
   userId?: number | null;
   createdAt?: string;
   updatedAt?: string;
 
-  // 🚀 novo: dados do usuário (quando backend inclui)
+  
   user?: UsuarioResumo;
 };

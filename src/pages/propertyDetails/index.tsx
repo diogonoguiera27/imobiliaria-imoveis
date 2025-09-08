@@ -33,7 +33,7 @@ export function ImovelDetalhes() {
         try {
           const dados = await buscarImovelPorId(propertyId);
 
-          // 🔥 se o imóvel não existir ou estiver inativo → redireciona
+          
           if (!dados || !dados.ativo) {
             navigate("/home", { replace: true });
             return;
@@ -43,7 +43,7 @@ export function ImovelDetalhes() {
 
           const similaresAPI = await buscarImoveisSimilares(propertyId);
 
-          // 🔥 garante que só imóveis ativos aparecem nos similares
+          
           const ativos = similaresAPI.filter((s: Imovel) => s.ativo);
           setSimilares(ativos);
 
@@ -65,11 +65,11 @@ export function ImovelDetalhes() {
   }, [id, navigate]);
 
   if (loading) {
-    return null; // não mostra nada durante carregamento
+    return null; 
   }
 
   if (!imovel) {
-    return null; // não mostra nada se não encontrou (já redirecionou)
+    return null; 
   }
 
   return (

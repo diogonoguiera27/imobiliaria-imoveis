@@ -1,10 +1,7 @@
-// src/components/MessageFormModal/index.tsx
+
 import { useEffect } from "react";
 import {
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { ContatoCard } from "../ContactFormCard";
 import { useContactContext } from "@/hooks/contact/ContactContext";
@@ -23,18 +20,7 @@ function MessageFormModal() {
     }
   }, [selectedImovel]);
 
-  if (!selectedImovel) {
-    return (
-      <DialogContent className="!max-w-md !bg-white !p-6 rounded-xl shadow">
-        <DialogHeader>
-          <DialogTitle>⚠️ Nenhum imóvel selecionado</DialogTitle>
-          <DialogDescription>
-            Clique em "Mensagem" em um imóvel para abrir o formulário de contato.
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    );
-  }
+  if (!selectedImovel) return null;
 
   return (
     <DialogContent className="!max-w-md !bg-transparent !shadow-none">

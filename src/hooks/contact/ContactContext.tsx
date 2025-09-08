@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Imovel } from "@/types";
 
-/* 🔹 Tipagem do contexto */
+
 interface ContactContextType {
   selectedImovel: Imovel | null;
   showContactModal: boolean;
@@ -11,7 +11,7 @@ interface ContactContextType {
   closeModals: () => void;
 }
 
-/* 🔹 Criação do contexto */
+
 const ContactContext = createContext<ContactContextType | undefined>(undefined);
 
 export function ContactProvider({ children }: { children: ReactNode }) {
@@ -19,23 +19,23 @@ export function ContactProvider({ children }: { children: ReactNode }) {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
-  /* Abre modal de mensagem */
+  
   const openContactModal = (imovel: Imovel) => {
-    console.log("🟢 [DEBUG] Abrindo modal de contato com imóvel:", imovel);
+    
     setSelectedImovel(imovel);
     setShowContactModal(true);
   };
 
-  /* Abre modal de telefone */
+  
   const openPhoneModal = (imovel: Imovel) => {
-    console.log("🟢 [DEBUG] Abrindo modal de telefone com imóvel:", imovel);
+    
     setSelectedImovel(imovel);
     setShowPhoneModal(true);
   };
 
-  /* Fecha ambos os modais */
+  
   const closeModals = () => {
-    console.log("🟡 [DEBUG] Fechando modais de contato/telefone");
+    
     setShowContactModal(false);
     setShowPhoneModal(false);
     setSelectedImovel(null);
@@ -57,7 +57,7 @@ export function ContactProvider({ children }: { children: ReactNode }) {
   );
 }
 
-/* 🔹 Hook customizado */
+
 export function useContactContext() {
   const ctx = useContext(ContactContext);
   if (!ctx) {

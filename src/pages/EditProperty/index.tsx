@@ -21,7 +21,7 @@ export default function EditProperty() {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  // 👇 ref para guardar último preview e evitar warning do ESLint
+  
   const previewRef = useRef<string | null>(null);
   useEffect(() => {
     previewRef.current = preview;
@@ -42,7 +42,7 @@ export default function EditProperty() {
         if (isMounted) {
           setProperty(imovel);
 
-          // 🔥 Normaliza a URL da imagem vinda do backend
+          
           if (imovel.imagem) {
             let url = imovel.imagem;
 
@@ -106,7 +106,7 @@ export default function EditProperty() {
           <section className="!pt-[72px] !w-full">
             <div className="!max-w-6xl !mx-auto !p-20">
               <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-0">
-                {/* Coluna Esquerda - Preview */}
+                
                 <div className="lg:!col-span-1 !bg-white !rounded-2xl !shadow-sm !border !border-neutral-200 !p-6 !flex !flex-col !items-center !justify-between">
                   <div className="!w-full">
                     {preview ? (
@@ -153,7 +153,7 @@ export default function EditProperty() {
                   </div>
                 </div>
 
-                {/* Coluna Direita - Formulário */}
+                
                 <div className="lg:!col-span-2">
                   <Card className="!bg-white !rounded-2xl !shadow-sm !border !border-neutral-200">
                     <CardHeader className="!px-6 !py-4 !border-b !border-neutral-200">

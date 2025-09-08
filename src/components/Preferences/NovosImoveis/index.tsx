@@ -26,7 +26,7 @@ export default function NovoImoveisOptions() {
   const handleToggle = async (field: "porEmail" | "porPush", value: boolean) => {
     if (!token) return;
 
-    // Atualiza o estado imediatamente para feedback visual
+    
     if (field === "porEmail") setEmail(value);
     if (field === "porPush") setPush(value);
 
@@ -39,7 +39,7 @@ export default function NovoImoveisOptions() {
     try {
       await saveNotificationPreference(updated, token);
     } catch (error) {
-      // Se der erro, desfaz o toggle
+      
       if (field === "porEmail") setEmail((prev) => !prev);
       if (field === "porPush") setPush((prev) => !prev);
       console.error("Erro ao salvar preferência:", error);

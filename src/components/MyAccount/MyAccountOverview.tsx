@@ -27,7 +27,7 @@ export default function MyAccountOverview() {
 
   return (
     <div className="!space-y-6">
-      {/* Simulações */}
+      
       <div className="!bg-gradient-to-br !from-white !via-red-50 !to-red-100 !rounded-xl !p-6 !shadow-xl !border !border-red-100">
         <h3 className="!text-lg !font-semibold !mb-2 !text-gray-800">Simulações</h3>
         {simulacoes.length > 0 ? (
@@ -55,7 +55,7 @@ export default function MyAccountOverview() {
         )}
       </div>
 
-      {/* Dados pessoais */}
+      
       <div className="!bg-gradient-to-br !from-white !via-red-50 !to-red-100 !rounded-xl !p-6 !shadow-xl !border !border-red-100">
         <h3 className="!text-lg !font-semibold !mb-2 !text-gray-800">Dados pessoais</h3>
         <p className="!text-sm !text-gray-700">
@@ -65,7 +65,7 @@ export default function MyAccountOverview() {
         </p>
       </div>
 
-      {/* Dados de acesso */}
+      
       <div className="!bg-gradient-to-br !from-white !via-red-50 !to-red-100 !rounded-xl !p-6 !shadow-xl !border !border-red-100">
         <h3 className="!text-lg !font-semibold !mb-2 !text-gray-800">Dados de acesso</h3>
         <p className="!text-sm !text-gray-700">

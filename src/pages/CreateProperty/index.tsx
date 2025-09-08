@@ -6,7 +6,7 @@ import { LeftPanel, RightPanel } from "@/components/CreateProperty";
 export default function CreatePropertyPage() {
   const [preview, setPreview] = useState<string | null>(null);
 
-  // Revoga URL de preview quando desmonta
+  
   useEffect(() => {
     return () => {
       if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
@@ -20,10 +20,10 @@ export default function CreatePropertyPage() {
 
         <div className="!max-w-6xl !mx-auto !p-20">
           <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-0">
-            {/* Coluna Esquerda */}
+            
             <LeftPanel previewSrc={preview} />
 
-            {/* Coluna Direita */}
+            
             <RightPanel onImageSelect={setPreview} />
           </div>
         </div>

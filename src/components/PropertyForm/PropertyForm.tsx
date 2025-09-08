@@ -23,7 +23,7 @@ import {
 import type { Imovel, TipoImovel, TipoNegocio, CategoriaImovel } from "@/types";
 import { Upload } from "lucide-react";
 
-/* ========================= Opções ========================= */
+
 const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
   "Apartamento",
   "Casa Residencial",
@@ -37,7 +37,7 @@ const CATEGORIA_OPCOES: CategoriaImovel[] = [
   "promocao",
 ];
 
-/* ========================= Schemas ========================= */
+
 const createSchema = z.object({
   imagem: z
     .instanceof(FileList, { message: "Selecione uma imagem" })
@@ -89,7 +89,7 @@ type CreateValues = z.infer<typeof createSchema>;
 type EditValues = z.infer<typeof editSchema>;
 type FormValues = CreateValues | EditValues;
 
-/* ========================= Props ========================= */
+
 export type PropertyFormProps = {
   mode?: "create" | "edit";
   initialData?: Imovel;
@@ -97,7 +97,7 @@ export type PropertyFormProps = {
   onImageSelect?: (url: string | null) => void;
 };
 
-/* ========================= Tipagem do erro backend ========================= */
+
 type BackendFieldErrors = Record<string, string[] | undefined>;
 type BackendError = {
   message?: string;
@@ -105,12 +105,12 @@ type BackendError = {
   errors?: BackendFieldErrors;
 };
 
-/* ========================= Helper ========================= */
+
 function withError(base: string, hasError?: boolean) {
   return `${base} ${hasError ? "!border-red-500 !ring-1 !ring-red-500/60" : ""}`;
 }
 
-/* ========================= Componente ========================= */
+
 export default function PropertyForm({
   mode = "create",
   initialData,
@@ -153,11 +153,11 @@ export default function PropertyForm({
 
   const selectedFile = watch("imagem");
 
-  /* ========== Preview da imagem ========== */
+  
   useEffect(() => {
     if (!onImageSelect) return;
 
-    // Usuário selecionou nova imagem
+    
     if (selectedFile && (selectedFile as FileList).length > 0) {
       const file = (selectedFile as FileList)[0];
       const url = URL.createObjectURL(file);
@@ -165,11 +165,11 @@ export default function PropertyForm({
       return () => URL.revokeObjectURL(url);
     }
 
-    // Modo edição → usar imagem já cadastrada
+   
     if (mode === "edit" && initialData?.imagem) {
       let url = initialData.imagem;
 
-      // garante que a URL seja completa
+     
       if (!url.startsWith("http")) {
         url = `${import.meta.env.VITE_API_URL}/uploads/${url.replace(
           /^\/?uploads\/?/,
@@ -182,13 +182,13 @@ export default function PropertyForm({
       return;
     }
 
-    // Criar sem imagem → vazio
+    
     if (mode === "create") {
       onImageSelect(null);
     }
   }, [selectedFile, mode, initialData?.imagem, onImageSelect]);
 
-  /* ========== Submit ========== */
+  
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     try {
       if (mode === "create") {
@@ -297,14 +297,14 @@ export default function PropertyForm({
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        {/* Linha 1: Imagem + Bairro */}
+        
         <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="imagem" className="!text-sm !font-medium">
               Imagem
             </Label>
 
-            {/* Input escondido */}
+            
             <input
               id="imagem"
               type="file"
@@ -313,7 +313,7 @@ export default function PropertyForm({
               {...register("imagem")}
             />
 
-            {/* Label/“botão” no estilo do segundo print */}
+            
             <label
               htmlFor="imagem"
               className={withError(
@@ -330,7 +330,7 @@ export default function PropertyForm({
             )}
           </div>
 
-          {/* Bairro (igual estava antes) */}
+          
           <div className="!space-y-1">
             <Label htmlFor="bairro" className="!text-sm !font-medium">
               Bairro
@@ -351,7 +351,7 @@ export default function PropertyForm({
           </div>
         </div>
 
-        {/* Linha 2: Endereço + Categoria + Tipo de Negócio */}
+       
         <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="endereco" className="!text-sm !font-medium">
@@ -371,7 +371,7 @@ export default function PropertyForm({
             )}
           </div>
 
-          {/* Categoria - Select */}
+          
           <div className="!space-y-1">
             <Label htmlFor="categoria" className="!text-sm !font-medium">
               Categoria
@@ -412,7 +412,7 @@ export default function PropertyForm({
             )}
           </div>
 
-          {/* Tipo de Negócio - Select */}
+          
           <div className="!space-y-1">
             <Label htmlFor="tipoNegocio" className="!text-sm !font-medium">
               Tipo de Negócio
@@ -454,7 +454,7 @@ export default function PropertyForm({
           </div>
         </div>
 
-        {/* Linha 3: Cidade + Tipo + Metragem */}
+       
         <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="cidade" className="!text-sm !font-medium">
@@ -472,7 +472,7 @@ export default function PropertyForm({
             )}
           </div>
 
-          {/* Tipo - Select */}
+                                                           
           <div className="!space-y-1">
             <Label htmlFor="tipo" className="!text-sm !font-medium">
               Tipo
@@ -530,7 +530,7 @@ export default function PropertyForm({
           </div>
         </div>
 
-        {/* Linha 4: Área construída + Quartos + Suítes */}
+       
         <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="areaConstruida" className="!text-sm !font-medium">
@@ -583,7 +583,7 @@ export default function PropertyForm({
           </div>
         </div>
 
-        {/* Linha 5: Banheiros + Vagas + Preço */}
+        
         <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="banheiros" className="!text-sm !font-medium">
@@ -635,7 +635,7 @@ export default function PropertyForm({
           </div>
         </div>
 
-        {/* Linha 6: Info Extra + Descrição */}
+        
         <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="caracteristicas" className="!text-sm !font-medium">

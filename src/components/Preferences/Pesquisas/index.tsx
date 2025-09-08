@@ -26,7 +26,7 @@ export default function PesquisaOptions() {
   const handleToggle = async (field: "porEmail" | "porPush", value: boolean) => {
     if (!user || !token) return;
 
-    // Atualiza o estado imediatamente para feedback visual
+    
     if (field === "porPush") setPushEnabled(value);
     if (field === "porEmail") setEmailEnabled(value);
 
@@ -39,7 +39,7 @@ export default function PesquisaOptions() {
     try {
       await saveNotificationPreference(updated, token);
     } catch (error) {
-      // Se der erro, desfaz o toggle
+      
       if (field === "porPush") setPushEnabled((prev) => !prev);
       if (field === "porEmail") setEmailEnabled((prev) => !prev);
       console.error("Erro ao salvar preferência:", error);

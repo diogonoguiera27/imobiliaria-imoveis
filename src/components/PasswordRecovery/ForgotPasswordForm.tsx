@@ -1,4 +1,4 @@
-// src/components/ForgotPassword/ForgotPasswordForm.tsx
+
 import { useState } from 'react'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'

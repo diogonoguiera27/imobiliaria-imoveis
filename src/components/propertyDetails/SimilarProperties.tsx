@@ -1,4 +1,4 @@
-// src/components/PropertyDetails/SimilarProperties.tsx
+
 
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -37,14 +37,14 @@ function SimilarProperties({ imoveis }: SimilarPropertiesProps) {
   return (
     <section className="w-full flex justify-center !mt-12 !mb-12">
       <div className="w-full !max-w-[1280px] !mx-auto !px-4 relative">
-        {/* Título */}
+        
         <div className="flex !justify-center">
           <h2 className="!text-2xl !font-semibold !mb-4 text-center">
             Imóveis Similares
           </h2>
         </div>
 
-        {/* Botão voltar */}
+        
         {currentPage > 0 && (
           <button
             onClick={() => scrollToPage(currentPage - 1)}
@@ -54,7 +54,7 @@ function SimilarProperties({ imoveis }: SimilarPropertiesProps) {
           </button>
         )}
 
-        {/* Cards */}
+        
         <div
           ref={containerRef}
           className="flex gap-4 overflow-x-hidden scroll-smooth items-center w-full"
@@ -65,7 +65,7 @@ function SimilarProperties({ imoveis }: SimilarPropertiesProps) {
           ))}
         </div>
 
-        {/* Botão avançar */}
+        
         {currentPage < totalPages - 1 && (
           <button
             onClick={() => scrollToPage(currentPage + 1)}
@@ -75,7 +75,7 @@ function SimilarProperties({ imoveis }: SimilarPropertiesProps) {
           </button>
         )}
 
-        {/* ✅ Modais controlados pelo contexto */}
+        
         <Dialog open={showContactModal} onOpenChange={(open) => !open && closeModals()}>
           <MessageFormModal />
         </Dialog>

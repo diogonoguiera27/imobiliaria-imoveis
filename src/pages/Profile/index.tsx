@@ -86,7 +86,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex-1 flex flex-col gap-6">
-              {/* 🔍 Resumo de Atividades */}
+              
               {loadingResumo ? (
                 <div className="text-gray-500 text-sm">
                   Carregando resumo de atividades...

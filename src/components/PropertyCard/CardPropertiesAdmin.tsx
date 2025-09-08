@@ -1,4 +1,4 @@
-// src/components/PropertyCard/CardPropertiesAdmin.tsx
+
 import { Imovel } from "@/types";
 import { Button } from "@/components/ui/button";
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
@@ -8,7 +8,7 @@ interface PropertyCardAdminProps {
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  onToggleAtivo?: (novo: boolean) => void; // 👈 novo
+  onToggleAtivo?: (novo: boolean) => void; 
 }
 
 export default function CardPropertiesAdmin({
@@ -33,7 +33,7 @@ export default function CardPropertiesAdmin({
           alt={`${item.tipo} em ${item.bairro}, ${item.cidade}`}
           className="!w-full !h-full !object-cover !block"
         />
-        {/* Badge de status */}
+        
         <span
           className={`absolute top-2 left-2 px-2 py-1 text-[11px] font-semibold rounded ${
             item.ativo ? "bg-green-600 text-white" : "bg-gray-400 text-white"
@@ -43,9 +43,9 @@ export default function CardPropertiesAdmin({
         </span>
       </div>
 
-      {/* Conteúdo */}
+      
       <div className="!p-4 !flex !flex-col !justify-between !gap-3 !flex-1">
-        {/* Localização */}
+        
         <div className="!flex !flex-col !gap-1 !text-left">
           <h3 className="!text-base !font-semibold !text-gray-900 !leading-snug !break-words">
             {item.bairro}, {item.cidade}
@@ -56,7 +56,7 @@ export default function CardPropertiesAdmin({
           </p>
         </div>
 
-        {/* Dados resumidos */}
+        
         <div className="!flex !flex-wrap !gap-x-3 !gap-y-2 !text-gray-600 !text-sm">
           <div className="!flex !items-center !gap-2">
             <FaRulerCombined className="!text-[15px]" />
@@ -76,7 +76,7 @@ export default function CardPropertiesAdmin({
           </div>
         </div>
 
-        {/* Preço */}
+       
         <div>
           <p className="!text-xs !text-gray-800 !font-bold !mb-1">{item.tipo}</p>
           <p className="!text-base !font-bold !text-gray-900">
@@ -84,7 +84,7 @@ export default function CardPropertiesAdmin({
           </p>
         </div>
 
-        {/* Botões de Ação */}
+        
         <div className="!flex !flex-col !gap-2 !mt-2">
           <div className="!flex !justify-between !gap-2">
             <Button

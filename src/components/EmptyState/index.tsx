@@ -14,13 +14,13 @@ export function EmptyState({ message, actionLabel, redirectTo }: EmptyStateProps
 
   return (
     <div className="!flex !flex-col !items-center !justify-center !h-full !text-center !text-slate-500 !py-6">
-      {/* Ícone ilustrativo */}
+      
       <PlusCircle className="!h-10 !w-10 !text-slate-400 !mb-3" />
 
-      {/* Mensagem amigável */}
+      
       <p className="!text-base !font-medium !mb-3">{message}</p>
 
-      {/* Botão de ação opcional */}
+      
       {actionLabel && redirectTo && (
         <Button
           variant="outline"

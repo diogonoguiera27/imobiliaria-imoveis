@@ -1,12 +1,12 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Imovel } from "@/types"; // 👈 adicione isso aqui
+import { Imovel } from "@/types"; 
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// 🔹 Nova função utilitária
+
 export function priorizarImoveisDaCidade(imoveis: Imovel[], cidade: string): Imovel[] {
   const cidadeLower = cidade.toLowerCase();
 

@@ -88,7 +88,7 @@ export default function Filters({
           </Select>
         </div>
 
-        {/* Tipo */}
+        
         <div className="!flex !flex-col !gap-1">
           <label className="!text-xs !font-medium !text-neutral-600">
             Tipo
@@ -111,7 +111,7 @@ export default function Filters({
           </Select>
         </div>
 
-        {/* Negócio */}
+        
         <div className="!flex !flex-col !gap-1">
           <label className="!text-xs !font-medium !text-neutral-600">
             Negócio
@@ -134,7 +134,7 @@ export default function Filters({
           </Select>
         </div>
 
-        {/* Status */}
+       
         <div className="!flex !flex-col !gap-1">
           <label className="!text-xs !font-medium !text-neutral-600">
             Status
@@ -180,7 +180,7 @@ export default function Filters({
           </Select>
         </div>
 
-        {/* Aplicar */}
+        
         <div className="!flex">
           <Button
             className="!h-10 !rounded-lg !bg-blue-600 hover:!bg-blue-700"

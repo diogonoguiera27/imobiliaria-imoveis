@@ -33,7 +33,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ Envia a busca para o backend
+    
     if (tipo || cidade) {
       try {
         await api.post("/property/busca", { tipo, cidade });

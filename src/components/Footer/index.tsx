@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaWhatsapp } from "react-icons/fa";
 
-// Schema de validação com zod
+
 const emailSchema = z.object({
   email: z.string().email("E-mail inválido"),
 });

@@ -13,7 +13,7 @@ interface Props {
     telefone?: string;
     email: string;
     cidade: string;
-    avatarUrl?: string; // ✅ Mantenha o avatarUrl se necessário
+    avatarUrl?: string; 
   };
 }
 
@@ -44,17 +44,17 @@ export default function ProfileEditForm({ user }: Props) {
         telefone,
         email,
         cidade,
-        avatarUrl: user.avatarUrl // ✅ Mantenha o avatarUrl se necessário
+        avatarUrl: user.avatarUrl 
       });
 
-      // Atualiza o contexto com os novos dados
+      
       updateUser({
         id: user.id,
         nome,
         telefone,
         email,
         cidade,
-        avatarUrl: user.avatarUrl // ✅ Mantenha o avatarUrl se necessário
+        avatarUrl: user.avatarUrl 
       });
 
       toast.success("Perfil atualizado com sucesso!");

@@ -1,4 +1,4 @@
-// src/components/ContactFormCard/index.tsx
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,7 +22,7 @@ const contatoSchema = z.object({
 type ContatoFormData = z.infer<typeof contatoSchema>;
 
 interface ContatoCardProps {
-  // 🔒 Deixa opcional para evitar crash no primeiro render do Dialog
+  
   imovel?: Imovel | null;
 }
 
@@ -37,7 +37,7 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
   });
 
   const onSubmit = async (data: ContatoFormData) => {
-    // 🛡️ Blindagem: se ainda não chegou o imóvel, pare com aviso amigável
+    
     if (!imovel?.id) {
       alert("Imóvel não encontrado. Tente novamente.");
       return;
@@ -48,7 +48,7 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
       ? imovel.user.telefone.replace(/\D/g, "")
       : "";
 
-    // 1) Registrar contato no backend
+    
     try {
       await enviarContato(imovel.id, data);
       console.log("✅ Contato registrado no backend:", {
@@ -59,7 +59,7 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
       console.error("❌ Erro ao registrar contato:", err);
     }
 
-    // 2) Abrir WhatsApp (se houver número)
+    
     if (!numeroWhatsapp) {
       alert("Número de WhatsApp do proprietário não disponível.");
       return;
@@ -150,7 +150,7 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
             <Button
               type="submit"
               className="w-full !bg-green-700 !hover:bg-green-700 !text-white !font-bold !py-2 !rounded-md !transition"
-              disabled={!imovel?.id} // 🔒 não deixa enviar se o imóvel ainda não chegou
+              disabled={!imovel?.id} 
             >
               Enviar Mensagem
             </Button>

@@ -28,7 +28,7 @@ export default function FavoritosOptions() {
   ) => {
     if (!user || !token) return;
 
-    // Atualiza o estado imediatamente para feedback visual
+    
     if (field === "porEmail") setEmailEnabled(value);
     if (field === "porPush") setPushEnabled(value);
 
@@ -41,7 +41,7 @@ export default function FavoritosOptions() {
     try {
       await saveNotificationPreference(updated, token);
     } catch (error) {
-      // Se der erro, desfaz o toggle
+      
       if (field === "porEmail") setEmailEnabled((prev) => !prev);
       if (field === "porPush") setPushEnabled((prev) => !prev);
       console.error("Erro ao salvar preferência:", error);

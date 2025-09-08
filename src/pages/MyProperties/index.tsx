@@ -1,4 +1,4 @@
-// src/pages/MyProperties.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";

@@ -10,7 +10,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
     <section className="w-full !flex !justify-start !px-4 !mt-2">
       <div className="w-full !max-w-5xl !pl-4 !bg-white !rounded-xl !shadow-md border !border-gray-200 p-6 !text-gray-800 space-y-8">
         
-        {/* Título + Endereço */}
+        
         <div className="!space-y-1">
           <h2 className=" !text-lg !font-semibold">
             {`${imovel.tipo} com ${imovel.quartos} quartos à venda em ${imovel.bairro} - ${imovel.cidade}`}
@@ -20,7 +20,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
           </p>
         </div>
 
-        {/* Preço e dados mockados (por enquanto) */}
+        
         <div className="!mt-4">
           <h3 className="!text-2xl !font-bold !text-gray-900">
             {imovel.preco.toLocaleString("pt-BR", {
@@ -30,7 +30,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
           </h3>
         </div>
 
-        {/* Métricas principais */}
+        
         <div className="grid !grid-cols-3 !sm:grid-cols-3 !md:grid-cols-4 !gap-4 !text-sm !text-gray-700 !mt-4">
           <div className="!flex !items-center !gap-2">
             <Ruler className="text-pink-600 !w-4 !h-4" />
@@ -67,7 +67,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
           </div>
         </div>
 
-        {/* Sobre o imóvel */}
+        
         <div className="!space-y-3">
           <hr className="w-full !border-t !border-gray-300 !my-4 !mt-4" />
           <h4 className="!text-base !font-semibold">Sobre o imóvel</h4>

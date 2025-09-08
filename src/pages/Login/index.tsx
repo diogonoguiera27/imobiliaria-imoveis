@@ -1,4 +1,4 @@
-// src/pages/Login/index.tsx
+
 import { useState } from 'react'
 import LoginLayout from '@/components/Login/LoginLayout'
 import LoginForm from '@/components/Login/LoginForm'
@@ -69,7 +69,7 @@ export default function LoginPage() {
               Crie uma nova senha para sua conta.
             </p>
 
-            {/* >>> Passando o email aqui agora <<< */}
+            
             <ResetPasswordForm
               email={email}
               onDone={() => setStep('login')}

@@ -6,13 +6,7 @@ import { useContactContext } from "@/hooks/contact/ContactContext";
 export function ContactPhoneModal() {
   const { selectedImovel } = useContactContext();
 
-  if (!selectedImovel) {
-    return (
-      <DialogContent className="!max-w-md !rounded-xl !p-6">
-        <p className="!text-red-500 !text-sm">⚠️ Nenhum imóvel selecionado.</p>
-      </DialogContent>
-    );
-  }
+   if (!selectedImovel) return null;
 
   const nomeProprietario = selectedImovel.user?.nome || "Proprietário";
   const telefoneOriginal = selectedImovel.user?.telefone || null;

@@ -1,4 +1,4 @@
-// src/components/ForgotPassword/VerifyCodeForm.tsx
+
 import { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

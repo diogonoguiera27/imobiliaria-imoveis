@@ -21,7 +21,7 @@ export default function MyAccountAccessData() {
         </h3>
 
         <div className="!grid !grid-cols-1 sm:!grid-cols-2 !gap-4">
-          {/* E-mail */}
+          
           <div className="!bg-white !rounded-lg !p-4 !border !border-red-100 !shadow-sm hover:!shadow-md !transition">
             <p className="!text-xs !text-gray-500 !mb-1">E-mail</p>
             <div className="!flex !justify-between !items-center">
@@ -39,7 +39,7 @@ export default function MyAccountAccessData() {
             </div>
           </div>
 
-          {/* Senha */}
+          
           <div className="!bg-white !rounded-lg !p-4 !border !border-red-100 !shadow-sm hover:!shadow-md !transition">
             <p className="!text-xs !text-gray-500 !mb-1">Senha</p>
             <div className="!flex !justify-between !items-center">

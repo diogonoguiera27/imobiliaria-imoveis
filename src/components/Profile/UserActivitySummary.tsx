@@ -2,8 +2,8 @@ import { Heart, Clock, Calendar } from "lucide-react";
 
 interface UserActivitySummaryProps {
   favoritosCount: number;
-  ultimoAcesso: string; // ex: 'Hoje', 'Ontem', etc
-  membroDesde: string;  // ex: 'Jul/2024'
+  ultimoAcesso: string; 
+  membroDesde: string; 
 }
 
 export default function UserActivitySummary({

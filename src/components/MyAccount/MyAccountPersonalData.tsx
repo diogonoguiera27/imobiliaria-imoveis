@@ -32,7 +32,7 @@ export default function MyAccountPersonalData() {
         {
           ...formData,
           email: user.email,
-          avatarUrl: user.avatarUrl || "", // mantém avatar
+          avatarUrl: user.avatarUrl || "", 
         },
         token
       );

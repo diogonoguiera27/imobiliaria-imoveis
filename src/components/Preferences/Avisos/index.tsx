@@ -16,8 +16,8 @@ export default function AvisosOptions() {
     if (!user || !token) return;
 
     getNotificationPreferences("Avisos", token).then((pref) => {
-      setStatusEnabled(pref?.porPush ?? false); // status = push
-      setAprovacoesEnabled(pref?.porEmail ?? true); // aprovações = email
+      setStatusEnabled(pref?.porPush ?? false); 
+      setAprovacoesEnabled(pref?.porEmail ?? true); 
       isFirstLoad.current = false;
     });
   }, [user, token]);
@@ -25,7 +25,7 @@ export default function AvisosOptions() {
   const handleToggle = async (field: "porEmail" | "porPush", value: boolean) => {
     if (!user || !token) return;
 
-    // Atualiza o estado imediatamente para feedback visual
+   
     if (field === "porPush") setStatusEnabled(value);
     if (field === "porEmail") setAprovacoesEnabled(value);
 
@@ -38,7 +38,7 @@ export default function AvisosOptions() {
     try {
       await saveNotificationPreference(updated, token);
     } catch (error) {
-      // Se der erro, desfaz o toggle
+      
       if (field === "porPush") setStatusEnabled((prev) => !prev);
       if (field === "porEmail") setAprovacoesEnabled((prev) => !prev);
       console.error("Erro ao salvar preferência:", error);

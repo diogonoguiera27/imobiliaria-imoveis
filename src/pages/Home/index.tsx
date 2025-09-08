@@ -1,4 +1,4 @@
-// src/pages/Home.tsx
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -40,7 +40,7 @@ export function Home() {
   const [imoveisFiltrados, setImoveisFiltrados] = useState<Imovel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // ✅ usando contexto para controlar modais
+
   const {
     showContactModal,
     showPhoneModal,
@@ -191,7 +191,7 @@ export function Home() {
           )}
         </main>
 
-        {/* 🔒 Modais sempre montados (fora do condicional) */}
+        
         <Dialog
           open={showContactModal}
           onOpenChange={(open) => !open && closeModals()}

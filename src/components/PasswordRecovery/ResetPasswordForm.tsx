@@ -1,4 +1,4 @@
-// src/components/ResetPassword/ResetPasswordForm.tsx
+
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -35,7 +35,7 @@ export default function ResetPasswordForm({ email, onDone }: Props) {
     try {
       await resetPassword(email, password)
       toast.success('Senha alterada com sucesso!')
-      onDone?.() // volta pro login (ou redireciona) após sucesso
+      onDone?.() 
     } catch (err: unknown) {
       let msg = 'Erro ao redefinir senha. Tente novamente.'
       if (err && typeof err === 'object' && 'response' in err) {
@@ -51,7 +51,7 @@ export default function ResetPasswordForm({ email, onDone }: Props) {
 
   return (
     <>
-      {/* Pode ter vários ToastContainer na app; se já houver um global, pode remover este. */}
+      
       <ToastContainer position="top-right" />
       <form onSubmit={handleSubmit} className="w-full !space-y-5">
         <div>

@@ -12,7 +12,7 @@ export default function LeftPanel({ previewSrc }: Props) {
 
   return (
     <div className="lg:!col-span-1 !bg-white !rounded-2xl !shadow-sm !border !border-neutral-200 !p-6 !flex !flex-col !items-center !justify-between">
-      {/* Imagem */}
+      
       <div className="!w-full">
         {previewSrc ? (
           <img
@@ -46,7 +46,7 @@ export default function LeftPanel({ previewSrc }: Props) {
         </div>
       </div>
 
-      {/* Texto institucional */}
+      
       <div className="!mt-6 !text-center">
         <p className="!text-base !font-semibold !text-neutral-800">
           Cadastre seu imóvel com rapidez e segurança 🚀
@@ -56,7 +56,7 @@ export default function LeftPanel({ previewSrc }: Props) {
         </p>
       </div>
 
-      {/* Boneco */}
+      
       <div className="!mt-8">
         <img src={Boneco} alt="Ilustração" className="!w-40 !h-auto" />
       </div>

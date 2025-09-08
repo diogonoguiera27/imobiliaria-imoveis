@@ -119,7 +119,7 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
             )}
           </div>
 
-          {/* Nova senha */}
+          
           <div>
             <Label className="!text-sm !font-semibold !text-gray-700 !mb-1">
               Nova senha:
@@ -144,7 +144,7 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
             )}
           </div>
 
-          {/* Confirmação */}
+         
           <div>
             <Label className="!text-sm !font-semibold !text-gray-700 !mb-1">
               Confirmar nova senha:
@@ -169,7 +169,7 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
             )}
           </div>
 
-          {/* Botões */}
+          
           <div className="!flex !justify-end !gap-2">
             <Button
               type="button"

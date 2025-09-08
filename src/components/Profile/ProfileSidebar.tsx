@@ -1,24 +1,24 @@
-// components/Profile/ProfileSidebar.tsx
+
 import { useState } from "react";
 import {  Pencil } from "lucide-react";
 import defaultAvatar from "@/assets/defaultAvatar.jpg";
 import UploadAvatarModal from "../UploadAvatarModal";
 import { useAuth } from "@/hooks/auth";
- // ← importante para manter dados atualizados
+
 
 export default function ProfileSidebar() {
   const [modalOpen, setModalOpen] = useState(false);
-  const { user } = useAuth(); // ← pega direto do contexto global
+  const { user } = useAuth(); 
 
   if (!user) return null;
 
   const avatar = user.avatarUrl
-  ? `http://localhost:3333${user.avatarUrl}` // ✅ Caminho completo
+  ? `http://localhost:3333${user.avatarUrl}` 
   : defaultAvatar;
 
   return (
     <div className="!w-full md:!w-[320px] !flex !flex-col !gap-6">
-      {/* Card do perfil */}
+     
       <div className="!bg-gradient-to-br !from-white !via-red-50 !to-red-100 !rounded-xl !p-6 !shadow-xl !text-center">
         <div className="!relative !w-24 !h-24 !mx-auto !mb-4">
           <img
@@ -57,7 +57,7 @@ export default function ProfileSidebar() {
       
   
 
-      {/* Modal de Upload */}
+    
       <UploadAvatarModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );

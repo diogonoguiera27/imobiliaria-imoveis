@@ -35,7 +35,7 @@ const MainCarouselPropertyCard = ({ imovel }: PropertyHighlightCardProps) => {
             {imovel.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
           </p>
 
-          {/* Proprietário */}
+          
           {imovel.user?.nome && (
             <p className="!text-xs !text-gray-700 !font-bold">
               Proprietário: <span className="font-medium">{imovel.user.nome}</span>
