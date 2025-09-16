@@ -10,5 +10,5 @@ export function useAuth() {
   return context;
 }
 
-// opcional: também exportar default para cobrir imports default antigos
+
 export default useAuth;

@@ -45,7 +45,7 @@ export default function PerfilUsuarioModal() {
               {user.nome}
             </h3>
 
-            {/* Para e-mails longos: quebrar ou truncar */}
+            
             <p
               className="!text-sm !text-neutral-500 break-all sm:truncate"
               title={user.username || user.email}
@@ -63,7 +63,7 @@ export default function PerfilUsuarioModal() {
           </Button>
         </div>
 
-        {/* Links rápidos */}
+        
         <div className="!space-y-4">
           <div
             onClick={() => navigate("/minha-conta")}

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 interface EmptyStateProps {
   message: string;
   actionLabel?: string;
-  redirectTo?: string; // rota para onde deve ir
+  redirectTo?: string; 
 }
 
 export function EmptyState({ message, actionLabel, redirectTo }: EmptyStateProps) {

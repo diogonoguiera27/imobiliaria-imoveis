@@ -66,7 +66,7 @@ export function NovaSimulacaoModal({
       toast.success("Simulação salva com sucesso!");
       resetForm();
       setOpen(false);
-      onSimulacaoSalva?.(); // recarrega a lista no pai, se fornecido
+      onSimulacaoSalva?.(); 
     } catch {
       toast.error("Erro ao salvar simulação.");
     }

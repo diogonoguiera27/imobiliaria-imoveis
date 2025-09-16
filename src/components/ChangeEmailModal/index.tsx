@@ -17,7 +17,7 @@ import { updateEmail } from "@/service/authService";
 import { toast } from "react-toastify";
 import { useAuth } from "@/hooks/auth";
 
-// ⛔ Removido campo de senha
+
 const emailSchema = z.object({
   newEmail: z.string().email("E-mail inválido"),
   motivo: z.string().min(3, "Por favor informe o motivo da alteração"),

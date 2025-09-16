@@ -94,7 +94,7 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="!space-y-4">
-          {/* Senha atual */}
+          
           <div>
             <Label className="!text-sm !font-semibold !text-gray-700 !mb-1">
               Senha atual:

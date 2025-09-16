@@ -26,7 +26,7 @@ export default function CardPropertiesAdmin({
 
   return (
     <div className="!w-[285px] !h-[470px] !flex-shrink-0 !flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200 hover:!scale-[1.01] !transition !cursor-default">
-      {/* Imagem */}
+     
       <div className="!w-full !h-[180px] !overflow-hidden relative">
         <img
           src={imageUrl}

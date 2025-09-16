@@ -23,16 +23,16 @@ const MainCarouselPropertyCard = ({ imovel }: PropertyHighlightCardProps) => {
       role="article"
       aria-label={`Imóvel em ${imovel.bairro}, ${imovel.cidade}`}
     >
-      {/* imagem (topo) */}
+      
       <img
         src={`${API_URL}${imovel.imagem}`}
         alt={`${imovel.tipo} em ${imovel.bairro}, ${imovel.cidade}`}
         className="!w-full !h-[200px] !object-cover !block"
       />
 
-      {/* corpo do card */}
+      
       <div className="!bg-gray-100 !border-t !border-gray-800 !px-4 !pt-4 !pb-3">
-        {/* bloco de informações */}
+        
         <div className="!flex !flex-col !gap-2 !text-left">
           <p className="!text-xs !text-black !font-semibold !uppercase">
             {imovel.tipo}
@@ -56,7 +56,7 @@ const MainCarouselPropertyCard = ({ imovel }: PropertyHighlightCardProps) => {
           )}
         </div>
 
-        {/* specs + preço */}
+        
         <div className="!flex !flex-wrap !gap-x-3 !gap-y-2 !text-gray-700 !text-sm !mt-3 !mb-3">
           <div className="!flex !items-center !gap-1">
             <FaRulerCombined className="!text-[15px]" />
@@ -81,7 +81,7 @@ const MainCarouselPropertyCard = ({ imovel }: PropertyHighlightCardProps) => {
           </div>
         </div>
 
-        {/* botão 100% dentro do card */}
+        
         <div className="!w-full">
           <Button
             type="button"

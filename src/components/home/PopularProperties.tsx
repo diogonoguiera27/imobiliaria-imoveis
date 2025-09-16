@@ -106,8 +106,7 @@ const ImoveisPopulares = () => {
                   key={item.id}
                   item={item}
                   isFavoritedInitially={favoritedIds.includes(item.id)}
-                  // ❌ não passamos mais onOpenContactModal/onOpenPhoneModal
-                  // o Card usa o contexto internamente para abrir os modais
+                  
                 />
               ))}
             </div>
@@ -124,7 +123,7 @@ const ImoveisPopulares = () => {
         </div>
       </div>
 
-      {/* ✅ monta cada Dialog somente quando ativo — evita overlay duplicado */}
+      
       {showContactModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />
