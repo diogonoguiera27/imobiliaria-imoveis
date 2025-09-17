@@ -52,7 +52,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForgotPassword }) => {
   return (
     <>
       <ToastContainer />
-      <h2 className="!text-3xl !font-bold !mb-10 !mt-7">Login</h2>
+      <h2 className="!text-2xl !sm:text-3xl !font-bold !mb-6 !sm:mb-10 !mt-4 !sm:mt-7">Login</h2>
 
       <form className="!space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <div>
@@ -62,7 +62,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForgotPassword }) => {
             type="text"
             placeholder="Digite seu e-mail"
             {...register('email')}
-            className="w-full !px-4 !py-2 !bg-red-800 !text-white border !border-red-300 !rounded-full  !placeholder-red-300 !focus:outline-none"
+            className="w-full !px-4 !py-2 !sm:py-3 !bg-red-800 !text-white border !border-red-300 !rounded-full  !placeholder-red-300 !focus:outline-none"
           />
           {errors.email && (
             <p className="!text-sm text-red-300 !mt-2">{errors.email.message}</p>
@@ -76,7 +76,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForgotPassword }) => {
             type="password"
             placeholder="Digite sua senha"
             {...register('senha')}
-            className="w-full !px-4 !py-2 !bg-red-800 !text-white border !border-red-300 !rounded-full placeholder-red-300 !focus:outline-none"
+            className="w-full !px-4 !py-2 !sm:py-3 !bg-red-800 !text-white border !border-red-300 !rounded-full placeholder-red-300 !focus:outline-none"
           />
           {errors.senha && (
             <p className="!text-sm text-red-300 !mt-2">{errors.senha.message}</p>
@@ -95,7 +95,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleForgotPassword }) => {
 
         <Button
           type="submit"
-          className="w-full !bg-white !text-red-900 !font-bold !py-2 !rounded-full !hover:bg-red-200"
+          className="w-full !bg-white !text-red-900 !font-bold !py-2 !sm:py-3 !rounded-full !hover:bg-red-200"
         >
           Entrar na Plataforma
         </Button>

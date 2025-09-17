@@ -161,7 +161,7 @@ export function Home() {
                   </div>
                 ) : (
                   <>
-                    <div className="w-full flex justify-center mt-6">
+                    <div className="w-full flex justify-center mt-6 ">
                       <div
                         className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6 ${
                           totalPages <= 1 ? "!mb-12" : ""
