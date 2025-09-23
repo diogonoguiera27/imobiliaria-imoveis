@@ -1,8 +1,8 @@
+// src/pages/ProfilePage.tsx
 import {
   ProfileSidebar,
   ProfileEditForm,
   UserActivitySummary,
-  
 } from "@/components/Profile";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -22,10 +22,9 @@ export default function ProfilePage() {
   const [loadingResumo, setLoadingResumo] = useState(true);
   const [erroResumo, setErroResumo] = useState<string | null>(null);
 
+  // ✅ reset de estado quando usuário/tokens mudam
   useEffect(() => {
     if (!user || !token) return;
-
-    
     setFavoritosCount(null);
     setUltimoAcesso("");
     setMembroDesde("");
@@ -33,6 +32,7 @@ export default function ProfilePage() {
     setLoadingResumo(true);
   }, [user, token]);
 
+  // ✅ busca do overview do usuário
   useEffect(() => {
     if (!user || !token) return;
 
@@ -66,6 +66,7 @@ export default function ProfilePage() {
     carregarResumo();
   }, [user, token]);
 
+  // ✅ caso não autenticado
   if (!user) {
     return (
       <div className="text-center mt-20 text-red-500 font-semibold">
@@ -79,28 +80,33 @@ export default function ProfilePage() {
       <div className="flex flex-col min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-white via-red-50 to-red-100 text-gray-900">
         <SidebarTrigger />
 
-        <main className="flex-grow flex justify-center px-4 !pt-20 pb-10">
-          <div className="w-full max-w-6xl flex flex-col md:flex-row gap-8">
+        <main className="flex-grow flex justify-center !px-4 !pt-20 pb-10">
+          <div
+            className="
+              w-full max-w-6xl flex flex-col md:flex-row gap-8
+              md:items-start items-center
+            "
+          >
+            {/* Sidebar de navegação do perfil */}
             <div className="w-full md:w-[320px] flex-shrink-0">
               <ProfileSidebar />
             </div>
 
-            <div className="flex-1 flex flex-col gap-6">
-              
-              {loadingResumo ? (
-                <div className="text-gray-500 text-sm">
-                  Carregando resumo de atividades...
-                </div>
-              ) : erroResumo ? (
+            {/* Conteúdo principal */}
+            <div className="flex-1 flex flex-col gap-6 w-full">
+              {/* 🔹 Resumo de atividades com Skeleton */}
+              {erroResumo ? (
                 <div className="text-red-500 text-sm">{erroResumo}</div>
               ) : (
                 <UserActivitySummary
+                  loading={loadingResumo}
                   favoritosCount={favoritosCount ?? 0}
                   ultimoAcesso={ultimoAcesso}
                   membroDesde={membroDesde}
                 />
               )}
 
+              {/* 🔹 Formulário de edição do perfil */}
               <ProfileEditForm
                 user={{
                   id: user.id,
@@ -111,8 +117,6 @@ export default function ProfilePage() {
                   avatarUrl: user.avatarUrl,
                 }}
               />
-
-              
             </div>
           </div>
         </main>

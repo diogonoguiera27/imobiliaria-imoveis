@@ -6,17 +6,13 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
   BarChart,
   CartesianGrid,
-  XAxis,
   YAxis,
   Bar,
   LabelList,
+  ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 
 interface ChartNeighborhoodsProps {
@@ -25,62 +21,69 @@ interface ChartNeighborhoodsProps {
 
 export function ChartNeighborhoods({ data }: ChartNeighborhoodsProps) {
   return (
-    <Card className="!bg-red-50 !border-red-200 !shadow-md !rounded-xl !p-4 !w-[500px] !h-[330px]">
-      <CardHeader className="!pb-2">
-        <CardTitle className="!text-sm !font-medium !text-black">
+    <Card
+      className="!bg-red-50 !border-red-200 !shadow-md !rounded-xl"
+      style={{ width: "100%", maxWidth: 500, height: 320, padding: "16px" }}
+    >
+      <CardHeader style={{ paddingBottom: "8px" }}>
+        <CardTitle style={{ fontSize: "14px", fontWeight: 500, color: "#000" }}>
           Imóveis por Localização
         </CardTitle>
-        <CardDescription className="!text-slate-700">
+        <CardDescription style={{ color: "#334155" }}>
           Top 5 bairros com mais imóveis cadastrados
         </CardDescription>
       </CardHeader>
-      <CardContent className="!h-full">
-        <ChartContainer
-          config={{
-            value: { label: "Qtd", color: "hsl(var(--chart-2))" },
-          }}
-        >
+
+      <CardContent
+        style={{
+          height: "240px",
+          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}
-            margin={{ top: 20, right: 20, left: -20, bottom: 30 }}
+            margin={{ top: 10, right: 5, left: -45, bottom: 10 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#fecaca" />
-            <XAxis
-              dataKey="bairro"
-              stroke="#991b1b"
-              tick={{ fill: "#991b1b", fontSize: 11 }}
-              axisLine={false}
-              interval={0}
-              tickLine={false}
-              angle={-15}
-              textAnchor="end"
-            />
+            
+            {/* Remove eixo X para não exibir nomes */}
+            {/* <XAxis ... /> */}
+
             <YAxis
               stroke="#991b1b"
               tick={{ fill: "#991b1b", fontSize: 12 }}
               axisLine={false}
             />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent className="!rounded-md !border !border-slate-200 !bg-white !px-3 !py-2 !shadow-sm text-xs" />
-              }
+
+            <Tooltip
+              cursor={{ fill: "rgba(0,0,0,0.05)" }}
+              contentStyle={{
+                borderRadius: "6px",
+                border: "1px solid #e2e8f0",
+                fontSize: "12px",
+              }}
             />
+
             <Bar
               dataKey="value"
               fill="#ef4444"
-              radius={[4, 4, 0, 0]}
+              radius={[6, 6, 0, 0]}
+              barSize={40}
               isAnimationActive
-              animationDuration={1200}
+              animationDuration={1000}
             >
               <LabelList
                 dataKey="value"
                 position="top"
-                className="!ill-black"
-                fontSize={12}
+                style={{ fill: "#000", fontSize: "12px" }}
               />
             </Bar>
           </BarChart>
-        </ChartContainer>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );

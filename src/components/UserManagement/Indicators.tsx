@@ -13,17 +13,22 @@ interface IndicatorsProps {
 
 export function Indicators({ indicadores, loading }: IndicatorsProps) {
   const items = [
-    { label: "Total de Imóveis", value: indicadores.totalImoveis, color: "text-black" },
-    { label: "Imóveis Ativos", value: indicadores.ativos, color: "text-green-600" },
-    { label: "Imóveis Inativos", value: indicadores.inativos, color: "text-gray-600" },
-    { label: "Visualizações", value: indicadores.totalVisualizacoes, color: "text-blue-600" },
-    { label: "Contatos Recebidos", value: indicadores.contatosRecebidos, color: "text-purple-600" },
+    { label: "Total de Imóveis", value: indicadores.totalImoveis, color: "!text-black" },
+    { label: "Imóveis Ativos", value: indicadores.ativos, color: "!text-green-600" },
+    { label: "Imóveis Inativos", value: indicadores.inativos, color: "!text-gray-600" },
+    { label: "Visualizações", value: indicadores.totalVisualizacoes, color: "!text-blue-600" },
+    { label: "Contatos Recebidos", value: indicadores.contatosRecebidos, color: "!text-purple-600" },
   ];
 
   return (
-    <div className="flex !flex-wrap !justify-center !gap-4 !mt-20">
+    <div className="!flex !flex-wrap !justify-center !gap-4 !mt-10">
       {items.map(({ label, value, color }, i) => (
-        <Card key={i} className="!bg-red-50 !border-red-200 !shadow-md !rounded-xl !p-4 !w-[200px]">
+        <Card
+          key={i}
+          className="!bg-red-50 !border-red-200 !shadow-md !rounded-xl 
+                     !p-4 
+                     !w-full sm:!w-1/2 lg:!w-[200px]"
+        >
           <CardTitle className="!text-sm !font-medium !text-black">
             {label}
           </CardTitle>

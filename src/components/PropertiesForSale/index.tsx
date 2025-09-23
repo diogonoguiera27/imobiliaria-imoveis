@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/auth";
 
 type PropertyListSectionProps = {
   imoveisVenda: Imovel[];
+  loading?: boolean;
   showContactModal: boolean;
   showPhoneModal: boolean;
   setShowContactModal: (open: boolean) => void;
@@ -18,8 +19,15 @@ type PropertyListSectionProps = {
   onOpenPhoneModal: () => void;
 };
 
+// ✅ Mesmo tipo que o backend retorna em /favorites
+type FavoriteIdentifier = {
+  propertyId: number;
+  propertyUuid?: string | null;
+};
+
 const PropertyListSection: FC<PropertyListSectionProps> = ({
   imoveisVenda,
+  loading = false,
   showContactModal,
   showPhoneModal,
   setShowContactModal,
@@ -28,14 +36,20 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
   onOpenPhoneModal,
 }) => {
   const { token } = useAuth();
-  const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
+  const [favoritedIds, setFavoritedIds] = useState<number[]>([]); // apenas IDs numéricos
 
   useEffect(() => {
     async function carregarFavoritos() {
       if (!token) return;
       try {
-        const favoritos = await getUserFavorites(token);
-        setFavoritedIds(favoritos);
+        const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
+
+        // ✅ Extrai apenas os IDs numéricos para comparação no includes
+        const ids = favoritos
+          .map((f) => f.propertyId)
+          .filter((id): id is number => typeof id === "number");
+
+        setFavoritedIds(ids);
       } catch (error) {
         console.error("Erro ao buscar favoritos:", error);
       }
@@ -53,19 +67,31 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
       </div>
 
       <div className="w-full flex justify-center">
-        <div className="max-w-[1300px] w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center mx-auto">
-          {imoveisVenda.map((item) => (
-            <CardProperties
-              key={item.id}
-              item={item}
-              isFavoritedInitially={favoritedIds.includes(item.id)}
-              onOpenContactModal={onOpenContactModal}
-              onOpenPhoneModal={onOpenPhoneModal}
-            />
-          ))}
+        <div
+          className="
+            max-w-[1300px] w-full
+            grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
+            gap-6 justify-items-center mx-auto
+          "
+        >
+          {loading
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <CardProperties key={`skeleton-${i}`} loading />
+              ))
+            : imoveisVenda.map((item) => (
+                <CardProperties
+                  key={item.id}
+                  item={item}
+                  // ✅ Verifica se o ID interno do imóvel está na lista
+                  isFavoritedInitially={favoritedIds.includes(item.id)}
+                  onOpenContactModal={onOpenContactModal}
+                  onOpenPhoneModal={onOpenPhoneModal}
+                />
+              ))}
         </div>
       </div>
 
+      {/* Modais de contato */}
       <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
         <MessageFormModal />
       </Dialog>

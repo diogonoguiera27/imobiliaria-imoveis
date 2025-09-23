@@ -1,11 +1,10 @@
-// src/pages/propertyDetails/index.tsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
-  buscarImovelPorId,
+  buscarImovel,             // ✅ função já existente
   buscarImoveisSimilares,
 } from "@/service/propertyService";
 import { registrarVisualizacao } from "@/service/dashboardService";
@@ -18,7 +17,8 @@ import {
 } from "@/components/PropertyDetails/";
 
 export function ImovelDetalhes() {
-  const { id } = useParams<{ id: string }>();
+  // ⚡ agora pode ser UUID ou número
+  const { id: identifier } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [imovel, setImovel] = useState<Imovel | null>(null);
@@ -26,63 +26,55 @@ export function ImovelDetalhes() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id) {
-      const propertyId = Number(id);
+    if (!identifier) return;
 
-      const carregarImovel = async () => {
-        try {
-          const dados = await buscarImovelPorId(propertyId);
+    const carregarImovel = async () => {
+      try {
+        // ✅ busca por identifier (uuid ou id)
+        const dados = await buscarImovel(identifier);
 
-          
-          if (!dados || !dados.ativo) {
-            navigate("/home", { replace: true });
-            return;
-          }
-
-          setImovel(dados);
-
-          const similaresAPI = await buscarImoveisSimilares(propertyId);
-
-          
-          const ativos = similaresAPI.filter((s: Imovel) => s.ativo);
-          setSimilares(ativos);
-
-          await registrarVisualizacao(propertyId);
-        } catch (err: unknown) {
-          if (err instanceof Error) {
-            console.error("Erro ao buscar imóvel:", err.message);
-          } else {
-            console.error("Erro desconhecido ao buscar imóvel:", err);
-          }
+        if (!dados || !dados.ativo) {
           navigate("/home", { replace: true });
-        } finally {
-          setLoading(false);
+          return;
         }
-      };
 
-      carregarImovel();
-    }
-  }, [id, navigate]);
+        setImovel(dados);
 
-  if (loading) {
-    return null; 
-  }
+        // ✅ também aceita identifier (id ou uuid)
+        const similaresAPI = await buscarImoveisSimilares(identifier);
+        const ativos = similaresAPI.filter((s: Imovel) => s.ativo);
+        setSimilares(ativos);
 
-  if (!imovel) {
-    return null; 
-  }
+        await registrarVisualizacao(identifier);
+      } catch (err: unknown) {
+        console.error("Erro ao buscar imóvel:", err);
+        navigate("/home", { replace: true });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    carregarImovel();
+  }, [identifier, navigate]);
+
+  if (loading || !imovel) return null;
 
   return (
     <SidebarProvider>
-      <div className="flex !flex-col !w-screen !overflow-x-hidden">
+      <div className="flex flex-col !w-full !overflow-x-hidden">
         <SidebarTrigger />
-        <main className="!flex-grow !mt-10">
-          <div className="w-full !max-w-[80%] !mx-auto !px-4 !mt-6">
+
+        <main className="flex-grow !mt-10">
+          {/* 🚀 Wrapper que força responsividade */}
+          <div className="!w-full !px-3 sm:!px-4 md:!max-w-6xl md:!mx-auto">
             <MainCarousel imagem={imovel.imagem} />
             <PropertyInfoAndContact imovel={imovel} />
-            {similares.length > 0 && <SimilarProperties imoveis={similares} />}
+            {similares.length > 0 && (
+              <SimilarProperties imoveis={similares} />
+            )}
           </div>
         </main>
+
         <div className="!mt-4">
           <Footer />
         </div>

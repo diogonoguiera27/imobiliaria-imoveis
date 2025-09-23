@@ -19,13 +19,18 @@ interface ChartPriceRangeProps {
 
 export function ChartPriceRange({ data }: ChartPriceRangeProps) {
   return (
-    <Card className="!bg-red-50 !border-red-200 !shadow-md !rounded-xl !w-[650px] !h-[390px] !p-4">
+    <Card
+      className="!bg-red-50 !border-red-200 !shadow-md !rounded-xl 
+                 !p-4 
+                 !w-full sm:!w-1/2 lg:!w-[650px] 
+                 !h-[300px] lg:!h-[390px]"
+    >
       <CardHeader className="!pb-1">
         <CardTitle className="!text-sm !font-medium !text-black">
           Distribuição por Faixa de Preço
         </CardTitle>
       </CardHeader>
-      <CardContent className="!p-0 !relative" style={{ height: "280px" }}>
+      <CardContent className="!p-0 !relative !h-[220px] lg:!h-[280px]">
         <ChartContainer config={{ value: { label: "Qtd", color: "#ef4444" } }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, VariantProps } from "class-variance-authority";
-import logoImg from "@/assets/luxuryy.png";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -23,11 +24,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import ContactInfoModal from "@/components/ContactInfoModal";
 
 import { useAuth } from "@/hooks/auth";
+import {
+  Building2,
+  Home,
+  LayoutDashboard,
+  Phone,
+  PlusSquare,
+  Users,
+} from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "./dialog";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -218,22 +227,16 @@ function Sidebar({
   );
 }
 
-export default function SidebarTrigger({
-  onClick,
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar();
+export default function SidebarTrigger() {
   const navigate = useNavigate();
   const location = useLocation();
   const { token } = useAuth();
 
-  const HOME_PATH = "/home";
-
   const goHome = () => {
-    if (location.pathname !== HOME_PATH || location.search) {
-      navigate({ pathname: HOME_PATH, search: "" });
+    if (location.pathname !== "/home" || location.search) {
+      navigate({ pathname: "/home", search: "" });
+      window.dispatchEvent(new Event("clear-filters"));
     }
-    window.dispatchEvent(new Event("clear-filters"));
   };
 
   const ensureAuth = (path: string) => {
@@ -244,68 +247,142 @@ export default function SidebarTrigger({
     navigate(path);
   };
 
-  const goMyProperties = () => ensureAuth("/meus-imoveis");
-  const goCreateProperty = () => ensureAuth("/imovel/novo");
-  const goUserManagement = () => ensureAuth("/user-management");
-
   return (
-    <main className="fixed z-50 flex h-[60px] w-full items-center justify-between !px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
-      {/* ESQUERDA: logo + botão de abrir sidebar */}
+    <main
+      className="fixed z-50 flex h-[60px] w-full items-center justify-between
+                 px-4 sm:px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl"
+    >
+      {/* ===== ESQUERDA ===== */}
       <div className="flex items-center gap-4">
-        <img
-          src={logoImg}
-          alt={import.meta.env.VITE_COMPANY_NAME}
-          className="!h-10 w-auto cursor-pointer"
-          onClick={goHome}
-        />
+        {/* ☰ Hamburger → mobile */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden !text-white size-7 !bg-transparent"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="!w-6 !h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </Button>
+          </SheetTrigger>
 
-        <Button
-          data-sidebar="trigger"
-          data-slot="sidebar-trigger"
-          variant="ghost"
-          size="icon"
-          className="!text-white size-7 !bg-transparent"
-          onClick={(event) => {
-            onClick?.(event);
-            toggleSidebar();
-          }}
-          {...props}
-        />
+          {/* Drawer lateral */}
+          <SheetContent
+            side="left"
+            className="!p-6 w-[80%] max-w-xs h-full 
+                       bg-gradient-to-r from-red-400 to-red-700 text-white"
+          >
+            <nav className="flex flex-col gap-2 font-semibold">
+              <button
+                onClick={goHome}
+                className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+              >
+                <Home className="w-5 h-5" />
+                Home
+              </button>
+              <hr />
+
+              <button
+                onClick={() => ensureAuth("/meus-imoveis")}
+                className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+              >
+                <Building2 className="w-5 h-5" />
+                Meus Imóveis
+              </button>
+              <hr />
+
+              <button
+                onClick={() => ensureAuth("/imovel/novo")}
+                className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+              >
+                <PlusSquare className="w-5 h-5" />
+                Cadastrar Imóveis
+              </button>
+              <hr />
+
+              <button
+                onClick={() => ensureAuth("/dashboard")}
+                className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                Dashboard
+              </button>
+              <hr />
+
+              <button
+                onClick={() => ensureAuth("/users")}
+                className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+              >
+                <Users className="w-5 h-5" />
+                Gerenciar Usuários
+              </button>
+              <hr />
+
+              {/* Contato abre modal */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition">
+                    <Phone className="w-5 h-5" />
+                    Contato
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <ContactInfoModal />
+                </DialogContent>
+              </Dialog>
+              <hr />
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
 
-      {/* DIREITA: navegação principal */}
+      {/* ===== DIREITA ===== */}
       <div className="flex items-center gap-6">
+        {/* Menu Desktop */}
         <nav className="hidden md:flex gap-6 items-center !text-white !text-sm !font-semibold">
-          <button onClick={goHome} className="hover:underline !cursor-pointer">
+          <button onClick={goHome} className="hover:underline">
             Home
           </button>
-
           <button
-            onClick={goMyProperties}
-            className="hover:underline !cursor-pointer"
+            onClick={() => ensureAuth("/meus-imoveis")}
+            className="hover:underline"
           >
             Meus Imóveis
           </button>
-
           <button
-            onClick={goCreateProperty}
-            className="hover:underline !cursor-pointer"
+            onClick={() => ensureAuth("/imovel/novo")}
+            className="hover:underline"
           >
             Cadastrar Imóveis
           </button>
-
           <button
-            onClick={goUserManagement}
-            className="hover:underline !cursor-pointer"
+            onClick={() => ensureAuth("/dashboard")}
+            className="hover:underline"
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => ensureAuth("/users")}
+            className="hover:underline"
           >
             Gerenciar Usuários
           </button>
-
           <Dialog>
             <DialogTrigger asChild>
-              <button className="hover:underline !cursor-pointer">
-                Contato
-              </button>
+              <button className="hover:underline">Contato</button>
             </DialogTrigger>
             <DialogContent className="max-w-lg">
               <ContactInfoModal />
@@ -313,7 +390,9 @@ export default function SidebarTrigger({
           </Dialog>
         </nav>
 
-        <PerfilUsuarioModal />
+        <div className="!mr-2 sm:!mr-4">
+          <PerfilUsuarioModal />
+        </div>
       </div>
     </main>
   );

@@ -17,25 +17,78 @@ export default function MyAccountSidebar({
   tabs,
 }: MyAccountSidebarProps) {
   return (
-    <div className="!bg-gradient-to-br !from-white !via-red-50 !to-red-100 !rounded-xl !p-4 !shadow-xl !border !border-red-100">
-      <ul className="!space-y-1">
-        {tabs.map(({ label, icon: Icon }) => (
-          <li key={label}>
-            <button
-              onClick={() => onTabChange(label)}
-              className={`!w-full !flex !items-center !gap-3 !py-3 !px-4 !rounded-lg !transition ${
-                activeTab === label
-                  ? "!bg-red-500 !text-white"
-                  : "hover:!bg-purple-50 !text-gray-700"
-              }`}
-            >
-              <Icon size={18} />
-              <span className="!text-sm !font-medium">{label}</span>
-              {activeTab === label && <span className="!ml-auto">›</span>}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div>
+      {/* ====== MOBILE ≤ 460px → BARRA HORIZONTAL FIXA COM ÍCONES ====== */}
+      <div
+        className="
+          max-[460px]:block hidden
+          !sticky !top-[60px] !z-40
+          !w-full
+          !bg-gradient-to-r !from-red-500 !to-red-600
+          !shadow-md
+        "
+      >
+        <ul className="!grid !grid-cols-5">
+          {tabs.map(({ label, icon: Icon }) => {
+            const isActive = activeTab === label;
+            return (
+              <li key={label}>
+                <button
+                  onClick={() => onTabChange(label)}
+                  className={`
+                    !relative !w-full !h-12
+                    !flex !items-center !justify-center
+                    !transition
+                    ${isActive
+                      ? "!text-white !bg-white/10"
+                      : "!text-white/80 hover:!text-white"}
+                  `}
+                >
+                  <Icon size={22} />
+                  {/* Indicador ativo */}
+                  {isActive && (
+                    <span className="!absolute !bottom-0 !left-2 !right-2 !h-[3px] !bg-white/90 !rounded-full" />
+                  )}
+                  <span className="sr-only">{label}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* ====== DESKTOP / TABLETS > 460px → SIDEBAR VERTICAL ====== */}
+      <div
+        className="
+          max-[460px]:hidden
+          !bg-gradient-to-br !from-white !via-red-50 !to-red-100
+          !rounded-xl !p-4 !shadow-xl !border !border-red-100
+        "
+      >
+        <ul className="!space-y-1">
+          {tabs.map(({ label, icon: Icon }) => {
+            const isActive = activeTab === label;
+            return (
+              <li key={label}>
+                <button
+                  onClick={() => onTabChange(label)}
+                  className={`
+                    !w-full !flex !items-center !gap-3
+                    !py-3 !px-4 !rounded-lg !transition
+                    ${isActive
+                      ? "!bg-red-500 !text-white"
+                      : "hover:!bg-red-50 !text-gray-700"}
+                  `}
+                >
+                  <Icon size={18} />
+                  <span className="!text-sm !font-medium">{label}</span>
+                  {isActive && <span className="!ml-auto">›</span>}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 }

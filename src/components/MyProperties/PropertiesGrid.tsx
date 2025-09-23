@@ -32,17 +32,14 @@ export default function PropertiesGrid({
       <div className="!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-3 xl:!grid-cols-4 !gap-24">
         {loading
           ? Array.from({ length: 8 }).map((_, idx) => (
-              <div
-                key={idx}
-                className="!h-64 !rounded-2xl !bg-neutral-100 animate-pulse"
-              />
+              <CardPropertiesAdmin key={idx} loading />
             ))
           : items.map((it) => {
               const highlight = Boolean(createdId && it.id === createdId);
               return (
                 <div
                   key={it.id}
-                  className={`${highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""}`}
+                  className={highlight ? "!ring-2 !ring-green-400 !rounded-2xl" : ""}
                 >
                   <CardPropertiesAdmin
                     item={it}

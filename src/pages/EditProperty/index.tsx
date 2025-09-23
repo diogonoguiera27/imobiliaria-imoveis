@@ -1,3 +1,4 @@
+// src/pages/propertyDetails/EditProperty.tsx (ou src/pages/EditProperty/index.tsx)
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -8,7 +9,7 @@ import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import type { Imovel } from "@/types";
-import { buscarImovelPorId } from "@/service/propertyService";
+import { buscarImovel } from "@/service/propertyService"; // ✅ atualizado
 import PropertyForm from "@/components/PropertyForm/PropertyForm";
 import Boneco from "@/assets/Boneco.png";
 
@@ -21,7 +22,6 @@ export default function EditProperty() {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  
   const previewRef = useRef<string | null>(null);
   useEffect(() => {
     previewRef.current = preview;
@@ -32,20 +32,22 @@ export default function EditProperty() {
 
     (async () => {
       if (!id) {
-        alert("ID do imóvel não informado.");
+        alert("Identificador do imóvel não informado.");
         navigate("/meus-imoveis");
         return;
       }
+
       try {
-        const imovel = await buscarImovelPorId(Number(id));
+        // ✅ agora usa a função genérica que aceita id numérico ou uuid
+        const imovel = await buscarImovel(id);
 
         if (isMounted) {
           setProperty(imovel);
 
-          
           if (imovel.imagem) {
             let url = imovel.imagem;
 
+            // normaliza URL da imagem
             if (!url.startsWith("http")) {
               if (url.startsWith("/uploads")) {
                 url = `${import.meta.env.VITE_API_URL}${url}`;
@@ -66,6 +68,8 @@ export default function EditProperty() {
               err.response?.data?.error ||
               "Erro ao carregar imóvel"
           );
+        } else {
+          alert("Erro ao carregar imóvel");
         }
         navigate("/meus-imoveis");
       }
@@ -104,56 +108,63 @@ export default function EditProperty() {
           <SidebarTrigger />
 
           <section className="!pt-[72px] !w-full">
-            <div className="!max-w-6xl !mx-auto !p-20">
-              <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-0">
-                
-                <div className="lg:!col-span-1 !bg-white !rounded-2xl !shadow-sm !border !border-neutral-200 !p-6 !flex !flex-col !items-center !justify-between">
-                  <div className="!w-full">
-                    {preview ? (
-                      <img
-                        src={preview}
-                        alt="Preview do Imóvel"
-                        className="!w-full !h-48 !object-cover !rounded-xl"
-                        onLoad={() => setImgLoaded(true)}
-                        onError={() => setImgError(true)}
-                      />
-                    ) : (
-                      <div className="!w-full !h-48 !rounded-xl !bg-neutral-100 !flex !items-center !justify-center">
-                        <ImageIcon className="!h-10 !w-10 !text-neutral-400" />
-                      </div>
-                    )}
-
-                    <div className="!mt-4">
-                      <p className="!text-sm !font-medium">Imagem</p>
-                      {preview && imgLoaded && !imgError && (
-                        <div className="!mt-2 !text-xs !text-neutral-500 !space-y-1">
-                          <p>Formatos aceitos: JPG, PNG ou WEBP</p>
-                          <p>Dica: escolha uma foto clara e em boa qualidade</p>
+            <div className="!max-w-6xl !mx-auto !p-6 lg:!p-20">
+              {/* GRID responsivo */}
+              <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-0 lg:!items-stretch lg:!h-full !mt-4">
+                {/* Painel esquerdo (oculto no mobile) */}
+                <div className="hidden lg:!block lg:!col-span-1">
+                  <div className="!h-full !bg-white !rounded-2xl !shadow-sm !border !border-neutral-200 !p-6 !flex !flex-col !items-center !justify-between">
+                    <div className="!w-full">
+                      {preview ? (
+                        <img
+                          src={preview}
+                          alt="Preview do Imóvel"
+                          className="!w-full !h-48 !object-cover !rounded-xl"
+                          onLoad={() => setImgLoaded(true)}
+                          onError={() => setImgError(true)}
+                        />
+                      ) : (
+                        <div className="!w-full !h-48 !rounded-xl !bg-neutral-100 !flex !items-center !justify-center">
+                          <ImageIcon className="!h-10 !w-10 !text-neutral-400" />
                         </div>
                       )}
-                      {imgError && (
-                        <p className="!mt-2 !text-xs !text-red-600">
-                          Não foi possível carregar a imagem.
-                        </p>
-                      )}
+
+                      <div className="!mt-4">
+                        <p className="!text-sm !font-medium">Imagem</p>
+                        {preview && imgLoaded && !imgError && (
+                          <div className="!mt-2 !text-xs !text-neutral-500 !space-y-1">
+                            <p>Formatos aceitos: JPG, PNG ou WEBP</p>
+                            <p>Dica: escolha uma foto clara e em boa qualidade</p>
+                          </div>
+                        )}
+                        {imgError && (
+                          <p className="!mt-2 !text-xs !text-red-600">
+                            Não foi possível carregar a imagem.
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="!mt-6 !text-center">
-                    <p className="!text-base !font-semibold !text-neutral-800">
-                      Atualize as informações do seu imóvel 🛠️
-                    </p>
-                    <p className="!text-sm !text-neutral-500 !mt-2">
-                      Mantenha seu anúncio sempre atualizado 📢
-                    </p>
-                  </div>
+                    <div className="!mt-6 !text-center">
+                      <p className="!text-base !font-semibold !text-neutral-800">
+                        Atualize as informações do seu imóvel 🛠️
+                      </p>
+                      <p className="!text-sm !text-neutral-500 !mt-2">
+                        Mantenha seu anúncio sempre atualizado 📢
+                      </p>
+                    </div>
 
-                  <div className="!mt-8">
-                    <img src={Boneco} alt="Ilustração" className="!w-40 !h-auto" />
+                    <div className="!mt-8">
+                      <img
+                        src={Boneco}
+                        alt="Ilustração"
+                        className="!w-40 !h-auto"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                
+                {/* Painel direito (formulário) */}
                 <div className="lg:!col-span-2">
                   <Card className="!bg-white !rounded-2xl !shadow-sm !border !border-neutral-200">
                     <CardHeader className="!px-6 !py-4 !border-b !border-neutral-200">

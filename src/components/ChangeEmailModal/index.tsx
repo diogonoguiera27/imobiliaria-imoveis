@@ -17,7 +17,6 @@ import { updateEmail } from "@/service/authService";
 import { toast } from "react-toastify";
 import { useAuth } from "@/hooks/auth";
 
-
 const emailSchema = z.object({
   newEmail: z.string().email("E-mail inválido"),
   motivo: z.string().min(3, "Por favor informe o motivo da alteração"),
@@ -31,7 +30,11 @@ interface Props {
   currentEmail: string;
 }
 
-export default function AlterarEmailModal({ open, onClose, currentEmail }: Props) {
+export default function AlterarEmailModal({
+  open,
+  onClose,
+  currentEmail,
+}: Props) {
   const {
     register,
     handleSubmit,
@@ -61,8 +64,8 @@ export default function AlterarEmailModal({ open, onClose, currentEmail }: Props
       const msg =
         err instanceof Error
           ? err.message
-          : (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
-            "Erro ao atualizar e-mail";
+          : (err as { response?: { data?: { error?: string } } })?.response
+              ?.data?.error || "Erro ao atualizar e-mail";
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -71,9 +74,18 @@ export default function AlterarEmailModal({ open, onClose, currentEmail }: Props
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="!bg-white !text-gray-800 !rounded-xl !shadow-xl !max-w-md !p-6">
+      <DialogContent
+        className="
+      !bg-white !text-gray-800 !rounded-xl !shadow-xl 
+      !max-w-md !p-6 
+      w-[92vw] sm:w-[90vw] md:w-[480px] 
+      !mx-auto
+    "
+      >
         <DialogHeader>
-          <DialogTitle className="!text-xl !font-bold">Alterar e-mail</DialogTitle>
+          <DialogTitle className="!text-xl !font-bold">
+            Alterar e-mail
+          </DialogTitle>
           <p className="!text-sm !text-gray-500">
             Por motivos de segurança, nossa equipe validará a alteração.
           </p>

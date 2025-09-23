@@ -1,4 +1,4 @@
-
+// src/pages/Home.tsx
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -7,9 +7,9 @@ import { Imovel } from "@/types";
 import Pagination from "@/components/Pagination";
 import { Dialog } from "@/components/ui/dialog";
 import MessageFormModal from "@/components/MessageFormModal";
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { CardProperties } from "@/components/PropertyCard";
+import { Skeleton } from "@/components/ui/skeleton";
 import { buscarImoveis } from "@/service/propertyService";
 import ContactPhoneModal from "@/components/PhoneContactModal";
 import { useContactContext } from "@/hooks/contact/useContact";
@@ -39,14 +39,9 @@ export function Home() {
   const [filtroAtivo, setFiltroAtivo] = useState(false);
   const [imoveisFiltrados, setImoveisFiltrados] = useState<Imovel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true); // ✅ novo estado
 
-
-  const {
-    showContactModal,
-    showPhoneModal,
-    closeModals,
-  } = useContactContext();
-
+  const { showContactModal, showPhoneModal, closeModals } = useContactContext();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -64,6 +59,7 @@ export function Home() {
   useEffect(() => {
     async function carregarImoveis() {
       try {
+        setLoading(true);
         const imoveisAPI = await buscarImoveis();
         setTodosImoveis(imoveisAPI);
         if (!filtroAtivo) {
@@ -71,6 +67,8 @@ export function Home() {
         }
       } catch (error) {
         console.error("Erro ao buscar imóveis da API:", error);
+      } finally {
+        setLoading(false);
       }
     }
     carregarImoveis();
@@ -102,11 +100,7 @@ export function Home() {
     return () => window.removeEventListener("clear-filters", handleClear);
   }, [location.search, navigate, handleLimparFiltro]);
 
-  type Filtros = {
-    cidade?: string;
-    tipo?: string;
-    precoMax?: number;
-  };
+  type Filtros = { cidade?: string; tipo?: string; precoMax?: number };
 
   const handleFiltrar = (filtros: Filtros) => {
     const PRECO_MIN = 50_000;
@@ -114,7 +108,7 @@ export function Home() {
 
     const teto =
       typeof filtros.precoMax === "number" && Number.isFinite(filtros.precoMax)
-        ? filtros.precoMax!
+        ? filtros.precoMax
         : PRECO_MAX_DEFAULT;
 
     let resultado = todosImoveis.filter((imovel) => {
@@ -131,6 +125,27 @@ export function Home() {
     setCurrentPage(1);
   };
 
+  // 🔹 Skeleton placeholder para o grid
+  const GridSkeleton = () => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div
+          key={i}
+          className="!w-[285px] !h-[460px] !bg-white !rounded-xl !shadow-md !border !border-gray-200 !p-4 mx-auto"
+        >
+          <Skeleton className="!w-full !h-[180px] !mb-4" />
+          <div className="!flex !flex-col !gap-2">
+            <Skeleton className="!h-4 !w-3/4" />
+            <Skeleton className="!h-4 !w-1/2" />
+            <Skeleton className="!h-4 !w-2/3" />
+            <Skeleton className="!h-4 !w-1/3" />
+            <Skeleton className="!h-6 !w-1/2" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <SidebarProvider>
       <div className="!min-h-screen flex !flex-col !overflow-x-hidden">
@@ -138,30 +153,39 @@ export function Home() {
           <SidebarTrigger />
           <HeroBanner />
 
-          <SearchFilter
-            onFiltrar={handleFiltrar}
-            onLimparFiltro={handleLimparFiltro}
-            filtroAtivo={filtroAtivo}
-          />
+          {/* 🚀 Filtro */}
+          <div
+            className="w-full !mx-auto !px-4 md:!px-0 
+                       !max-w-[1412px] md:!max-w-[1412px] sm:!w-[95%]"
+          >
+            <SearchFilter
+              onFiltrar={handleFiltrar}
+              onLimparFiltro={handleLimparFiltro}
+              filtroAtivo={filtroAtivo}
+            />
+          </div>
 
           {filtroAtivo ? (
             <section className="w-full px-4 pt-0 !mt-8">
-              <div className="w-full !max-w-[80%] !mx-auto">
-                {currentImoveis.length > 0 && (
+              <div className="w-full !max-w-[1412px] !mx-auto">
+                {" "}
+                {/* ✅ largura fixa */}
+                {currentImoveis.length > 0 && !loading && (
                   <div className="w-full !flex !justify-center !mb-4 mt-8">
                     <h2 className="!text-black !text-xl !font-bold !text-center !max-w-screen-lg !mt-2">
                       Resultados filtrados
                     </h2>
                   </div>
                 )}
-
-                {currentImoveis.length === 0 ? (
+                {loading ? (
+                  <GridSkeleton />
+                ) : currentImoveis.length === 0 ? (
                   <div className="text-center text-gray-600 text-lg font-semibold mt-12 mb-24">
                     Nenhum imóvel encontrado
                   </div>
                 ) : (
                   <>
-                    <div className="w-full flex justify-center mt-6 ">
+                    <div className="w-full flex justify-center mt-6">
                       <div
                         className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6 ${
                           totalPages <= 1 ? "!mb-12" : ""
@@ -191,18 +215,14 @@ export function Home() {
           )}
         </main>
 
-        
         <Dialog
           open={showContactModal}
-          onOpenChange={(open) => !open && closeModals()}
+          onOpenChange={(o) => !o && closeModals()}
         >
           <MessageFormModal />
         </Dialog>
 
-        <Dialog
-          open={showPhoneModal}
-          onOpenChange={(open) => !open && closeModals()}
-        >
+        <Dialog open={showPhoneModal} onOpenChange={(o) => !o && closeModals()}>
           <ContactPhoneModal />
         </Dialog>
 

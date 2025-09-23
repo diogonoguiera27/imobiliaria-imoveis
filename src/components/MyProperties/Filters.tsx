@@ -52,9 +52,33 @@ export default function Filters({
   TIPO_NEGOCIO_OPCOES,
 }: Props) {
   return (
-    <div className="!rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200">
-      <div className="!grid !grid-cols-1 md:!grid-cols-[1fr_180px_180px_180px_150px_150px] !gap-4 !items-end !p-4 md:!p-5">
-        <div className="!flex !flex-col !gap-1">
+    <div
+      className="
+        w-[285px]
+        md:w-full        /* 🔹 mesma largura dos cards em <640px */
+        sm:w-auto        /* 🔹 em >=640px usa largura automática */
+        mx-auto          /* 🔹 centraliza no mobile */
+        !rounded-2xl
+        !bg-white
+        !shadow-sm
+        !ring-1
+        !ring-neutral-200
+        
+      "
+    >
+      <div
+        className="
+          !grid
+          !grid-cols-1
+          md:!grid-cols-[2fr_1fr_1fr_1fr_1fr_auto]
+          !gap-4
+          !items-end
+          !p-4
+          md:!p-5
+        "
+      >
+        {/* Buscar */}
+        <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Buscar
           </label>
@@ -62,16 +86,17 @@ export default function Filters({
             placeholder="Bairro ou cidade"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm focus:!ring-2 focus:!ring-blue-500/30"
+            className="!h-10 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm focus:!ring-2 focus:!ring-blue-500/30"
           />
         </div>
 
-        <div className="!flex !flex-col !gap-1">
+        {/* Cidade */}
+        <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Cidade
           </label>
           <Select value={cidade} onValueChange={setCidade}>
-            <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
+            <SelectTrigger className="!h-10 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
@@ -88,13 +113,13 @@ export default function Filters({
           </Select>
         </div>
 
-        
-        <div className="!flex !flex-col !gap-1">
+        {/* Tipo */}
+        <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Tipo
           </label>
           <Select value={tipo} onValueChange={setTipo}>
-            <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
+            <SelectTrigger className="!h-10 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
@@ -111,13 +136,13 @@ export default function Filters({
           </Select>
         </div>
 
-        
-        <div className="!flex !flex-col !gap-1">
+        {/* Negócio */}
+        <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Negócio
           </label>
           <Select value={negocio} onValueChange={setNegocio}>
-            <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
+            <SelectTrigger className="!h-10 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
@@ -134,8 +159,8 @@ export default function Filters({
           </Select>
         </div>
 
-       
-        <div className="!flex !flex-col !gap-1">
+        {/* Status */}
+        <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Status
           </label>
@@ -154,7 +179,7 @@ export default function Filters({
               }))
             }
           >
-            <SelectTrigger className="!h-10 !px-3 !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
+            <SelectTrigger className="!h-10 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
@@ -180,10 +205,10 @@ export default function Filters({
           </Select>
         </div>
 
-        
-        <div className="!flex">
+        {/* Botão */}
+        <div className="!flex !w-full md:!w-auto">
           <Button
-            className="!h-10 !rounded-lg !bg-blue-600 hover:!bg-blue-700"
+            className="!h-10 !w-full md:!w-auto !rounded-lg !bg-blue-600 hover:!bg-blue-700"
             onClick={onApply}
           >
             Aplicar filtros

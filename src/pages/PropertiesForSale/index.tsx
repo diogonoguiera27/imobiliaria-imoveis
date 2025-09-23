@@ -8,15 +8,16 @@ import PhoneContactModal from "@/components/PhoneContactModal";
 import Pagination from "@/components/Pagination";
 import { Imovel } from "@/types";
 
-import  PropertyListSection  from "@/components/PropertiesForSale";
+import PropertyListSection from "@/components/PropertiesForSale";
 import { buscarImoveis } from "@/service/propertyService";
 
-
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 8;
 
 export const ListaImoveisVenda = () => {
-  const [imoveis, setImoveis] = useState<Imovel[]>([]); 
+  const [imoveis, setImoveis] = useState<Imovel[]>([]);
+  const [loading, setLoading] = useState(true); // ✅ estado para skeleton
   const [currentPage, setCurrentPage] = useState(1);
+
   const totalPages = Math.ceil(imoveis.length / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -28,21 +29,32 @@ export const ListaImoveisVenda = () => {
 
   useEffect(() => {
     async function carregarImoveis() {
-      const todos = await buscarImoveis();
-      
-      setImoveis(todos);
+      try {
+        setLoading(true); // inicia skeleton
+        const todos = await buscarImoveis();
+        // Filtrar apenas imóveis de venda, se necessário:
+        const somenteVenda = todos.filter(
+          (i) => i.tipoNegocio === "venda" || i.tipoNegocio === "Venda"
+        );
+        setImoveis(somenteVenda);
+      } catch (err) {
+        console.error("Erro ao buscar imóveis:", err);
+      } finally {
+        setLoading(false); // encerra skeleton
+      }
     }
     carregarImoveis();
   }, []);
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden ">
+      <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
         <SidebarTrigger />
 
         <main className="flex-grow !pt-[60px]">
           <PropertyListSection
             imoveisVenda={currentImoveis}
+            loading={loading}                          // ✅ passa o estado
             showContactModal={showContactModal}
             showPhoneModal={showPhoneModal}
             setShowContactModal={setShowContactModal}
@@ -51,14 +63,18 @@ export const ListaImoveisVenda = () => {
             onOpenPhoneModal={() => setShowPhoneModal(true)}
           />
 
-          <div className="!w-full !flex  !mt-10 !justify-between">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          </div>
+          {/* Paginação (esconde enquanto carrega) */}
+          {!loading && totalPages > 1 && (
+            <div className="w-full flex mt-10 justify-center">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          )}
 
+          {/* Modais */}
           <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
             <MessageFormModal />
           </Dialog>
@@ -72,3 +88,5 @@ export const ListaImoveisVenda = () => {
     </SidebarProvider>
   );
 };
+
+export default ListaImoveisVenda;

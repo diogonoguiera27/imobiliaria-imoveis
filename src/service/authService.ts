@@ -1,8 +1,8 @@
 import api from "./api";
 
-
 export interface User {
-  id: number;
+  id: number;          // ID interno (nunca exiba no front)
+  uuid?: string;       // ✅ UUID seguro para rotas públicas
   nome: string;
   email: string;
   cidade: string;
@@ -43,9 +43,9 @@ export interface UpdateEmailResponse {
   user: User;
 }
 
-
 export interface Simulation {
   id: number;
+  uuid?: string; // ✅ Agora o backend também retorna uuid
   title: string;
   entry: number;
   installments: number;
@@ -59,49 +59,76 @@ export interface UserOverview {
   favoritosCount: number;
 }
 
-
+/**
+ * Define ou remove o token de autenticação globalmente
+ */
 export function setAuthToken(token: string | null) {
   if (token) {
-    
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
     delete api.defaults.headers.common["Authorization"];
   }
 }
 
-
-export async function login(email: string, senha: string): Promise<LoginResponse> {
-  const response = await api.post<LoginResponse>("/users/login", { email, senha });
+/**
+ * Login do usuário
+ */
+export async function login(
+  email: string,
+  senha: string
+): Promise<LoginResponse> {
+  const response = await api.post<LoginResponse>("/users/login", {
+    email,
+    senha,
+  });
   return response.data;
 }
 
-
+/**
+ * Retorna os dados do usuário logado (com uuid)
+ */
 export async function getMe(): Promise<User> {
   const { data } = await api.get<User>("/users/me");
   return data;
 }
 
-
+/**
+ * Registro de novo usuário
+ */
 export async function registerUser(data: RegisterData) {
   const response = await api.post("/users/register", data);
   return response.data;
 }
 
+/**
+ * Atualiza os dados do usuário autenticado
+ * ⚡ Ainda usa ID interno porque é uma rota protegida e já exige token
+ */
 export async function updateUser(
   id: number,
   data: UpdateUserData,
   token: string
 ): Promise<User> {
-  const response = await api.put<{ message: string; user: User }>(`/users/${id}`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await api.put<{ message: string; user: User }>(
+    `/users/${id}`,
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data.user;
 }
 
-
-export async function uploadAvatar(userId: number, file: File): Promise<string> {
+/**
+ * Upload de avatar
+ * ⚡ Continua usando ID porque é uma rota autenticada
+ */
+export async function uploadAvatar(
+  userId: number,
+  file: File
+): Promise<string> {
   const formData = new FormData();
   formData.append("avatar", file);
 
@@ -116,7 +143,9 @@ export async function uploadAvatar(userId: number, file: File): Promise<string> 
   return response.data.avatarUrl;
 }
 
-
+/**
+ * Atualiza e-mail do usuário
+ */
 export async function updateEmail(
   userId: number,
   data: UpdateEmailPayload,
@@ -134,7 +163,9 @@ export async function updateEmail(
   return response.data;
 }
 
-
+/**
+ * Atualiza senha do usuário
+ */
 export async function updatePassword(
   userId: number,
   data: { currentPassword: string; newPassword: string },
@@ -152,17 +183,28 @@ export async function updatePassword(
   return response.data;
 }
 
-
-export async function getUserOverview(userId: number, token: string): Promise<UserOverview> {
-  const response = await api.get<UserOverview>(`/users/${userId}/overview`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+/**
+ * Resumo do usuário para painel
+ * ⚡ Se disponível, use UUID em vez de ID (mais seguro para links públicos)
+ */
+export async function getUserOverview(
+  identifier: number | string,
+  token: string
+): Promise<UserOverview> {
+  const response = await api.get<UserOverview>(
+    `/users/${identifier}/overview`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data;
 }
 
-
+/**
+ * Fluxo de recuperação de senha
+ */
 export async function sendForgotPassword(email: string) {
   const { data } = await api.post<{ message: string }>(
     "/auth/forgot-password",

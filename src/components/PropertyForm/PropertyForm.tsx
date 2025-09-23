@@ -384,7 +384,7 @@ export default function PropertyForm({
                   <SelectTrigger
                     id="categoria"
                     className={withError(
-                      "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40 cursor-pointer",
+                      "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40 cursor-pointer !w-full",
                       !!errors.categoria
                     )}
                     aria-invalid={!!errors.categoria}
@@ -425,7 +425,7 @@ export default function PropertyForm({
                   <SelectTrigger
                     id="tipoNegocio"
                     className={withError(
-                      "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40 cursor-pointer ",
+                      "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40 cursor-pointer !w-full",
                       !!errors.tipoNegocio
                     )}
                     aria-invalid={!!errors.tipoNegocio}
@@ -485,7 +485,7 @@ export default function PropertyForm({
                   <SelectTrigger
                     id="tipo"
                     className={withError(
-                      "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40 curso",
+                      "!h-10 !text-sm !rounded-full !border !border-neutral-300 !px-4 !bg-white focus:!ring-1 focus:!ring-red-500/40 curso !w-full",
                       !!errors.tipo
                     )}
                     aria-invalid={!!errors.tipo}

@@ -1,12 +1,17 @@
-
 import api from "./api";
 
-
+/**
+ * Retorna o header com o token JWT armazenado.
+ */
 function getAuthHeader() {
-  const token = localStorage.getItem("token"); 
+  const token = localStorage.getItem("token");
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+/**
+ * Busca o resumo do Dashboard do usuário logado.
+ * Backend já retorna IDs e UUIDs quando disponível.
+ */
 export async function getDashboardSummary() {
   const response = await api.get("/dashboard/summary", {
     headers: getAuthHeader(),
@@ -14,10 +19,16 @@ export async function getDashboardSummary() {
   return response.data;
 }
 
-export async function registrarVisualizacao(propertyId: number) {
+/**
+ * Registra uma visualização para um imóvel.
+ * 🔑 Aceita tanto ID numérico quanto UUID (prefira UUID no front).
+ */
+export async function registrarVisualizacao(
+  identifier: number | string
+): Promise<void> {
   try {
     await api.post(
-      `/property/${propertyId}/view`,
+      `/property/${identifier}/view`,
       {},
       {
         headers: getAuthHeader(),

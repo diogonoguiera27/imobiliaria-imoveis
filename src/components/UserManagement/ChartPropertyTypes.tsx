@@ -11,7 +11,11 @@ interface ChartPropertyTypesProps {
 
 export function ChartPropertyTypes({ data, loading }: ChartPropertyTypesProps) {
   return (
-    <Card className="!bg-red-50 !border-red-200 !shadow-md !rounded-xl !p-4 !w-[400px] !h-[390px]">
+    <Card
+      className="!bg-red-50 !border-red-200 !shadow-md !rounded-xl !p-4 
+                 !w-full sm:!w-1/2 lg:!w-[400px] 
+                 !h-[350px] lg:!h-[390px]"
+    >
       <CardHeader>
         <CardTitle className="!text-sm !font-medium !text-black">
           Tipos de Imóveis

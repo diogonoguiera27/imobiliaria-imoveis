@@ -66,7 +66,7 @@ export function NovaSimulacaoModal({
       toast.success("Simulação salva com sucesso!");
       resetForm();
       setOpen(false);
-      onSimulacaoSalva?.(); 
+      onSimulacaoSalva?.();
     } catch {
       toast.error("Erro ao salvar simulação.");
     }
@@ -92,7 +92,13 @@ export function NovaSimulacaoModal({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="!max-w-md !rounded-2xl !px-6 !py-5">
+      <DialogContent
+        className="
+          !bg-white !text-gray-800 !rounded-xl !shadow-xl 
+          w-[92vw] sm:w-[90vw] md:w-[600px] 
+          !mx-auto !p-6
+        "
+      >
         <DialogHeader>
           <DialogTitle className="!text-xl !font-bold !text-gray-800">
             Nova Simulação

@@ -75,8 +75,8 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
       const msg =
         err instanceof Error
           ? err.message
-          : (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
-            "Erro ao alterar senha";
+          : (err as { response?: { data?: { error?: string } } })?.response
+              ?.data?.error || "Erro ao alterar senha";
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -85,16 +85,25 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="!bg-white !text-gray-800 !rounded-xl !shadow-xl !max-w-md !p-6">
+      <DialogContent
+        className="
+      !bg-white !text-gray-800 !rounded-xl !shadow-xl 
+      !max-w-md !p-6 
+      w-[92vw] sm:w-[90vw] md:w-[480px] 
+      !mx-auto
+    "
+      >
         <DialogHeader>
-          <DialogTitle className="!text-xl !font-bold">Alterar Senha</DialogTitle>
+          <DialogTitle className="!text-xl !font-bold">
+            Alterar Senha
+          </DialogTitle>
           <p className="!text-sm !text-gray-500">
             Informe sua senha atual e a nova senha para continuar.
           </p>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="!space-y-4">
-          
+          {/* Senha atual */}
           <div>
             <Label className="!text-sm !font-semibold !text-gray-700 !mb-1">
               Senha atual:
@@ -119,7 +128,7 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
             )}
           </div>
 
-          
+          {/* Nova senha */}
           <div>
             <Label className="!text-sm !font-semibold !text-gray-700 !mb-1">
               Nova senha:
@@ -144,7 +153,7 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
             )}
           </div>
 
-         
+          {/* Confirmar nova senha */}
           <div>
             <Label className="!text-sm !font-semibold !text-gray-700 !mb-1">
               Confirmar nova senha:
@@ -169,7 +178,7 @@ export default function AlterarSenhaModal({ open, onClose }: Props) {
             )}
           </div>
 
-          
+          {/* Botões */}
           <div className="!flex !justify-end !gap-2">
             <Button
               type="button"

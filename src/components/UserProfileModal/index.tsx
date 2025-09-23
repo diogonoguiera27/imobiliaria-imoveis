@@ -1,17 +1,24 @@
+// src/components/PerfilUsuarioModal.tsx
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, HeartIcon } from "lucide-react";
 import defaultAvatar from "@/assets/defaultAvatar.jpg";
 import { useAuth } from "@/hooks/auth";
-
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PerfilUsuarioModal() {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
 
-  if (!user) return null;
+  // Se ainda não carregou o usuário → exibe skeleton
+  if (!user) {
+    return (
+      <div className="!w-10 !h-10">
+        <Skeleton className="!w-10 !h-10 !rounded-full" />
+      </div>
+    );
+  }
 
   const avatar = user.avatarUrl
     ? user.avatarUrl.startsWith("http")
@@ -30,40 +37,55 @@ export default function PerfilUsuarioModal() {
       </DialogTrigger>
 
       <DialogContent className="!w-[92vw] !max-w-md !p-6 !bg-gradient-to-br !from-white !via-red-50 !to-red-100 !text-gray-900 !rounded-xl">
-        <div className="!w-full !flex !items-start !gap-4 !mb-4 !pr-16 relative">
-          <img
-            src={avatar}
-            alt={user.nome}
-            className="!w-14 !h-14 !rounded-full !object-cover flex-shrink-0"
-          />
+        {/* Cabeçalho do usuário */}
+        <div className="!w-full flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-3 !mb-4">
+          {/* Avatar + Nome + Email */}
+          <div className="flex items-start gap-3 flex-1 min-w-0">
+            <img
+              src={avatar}
+              alt={user.nome}
+              className="!w-14 !h-14 !rounded-full !object-cover flex-shrink-0"
+            />
 
-          <div className="min-w-0 flex-1 overflow-hidden">
-            <h3
-              className="!text-lg !font-bold !leading-tight truncate"
-              title={user.nome}
-            >
-              {user.nome}
-            </h3>
-
-            
-            <p
-              className="!text-sm !text-neutral-500 break-all sm:truncate"
-              title={user.username || user.email}
-            >
-              {user.username || user.email}
-            </p>
+            <div className="min-w-0 flex-1">
+              <h3
+                className="!text-base !font-bold !leading-tight truncate"
+                title={user.nome}
+              >
+                {user.nome || <Skeleton className="!h-4 !w-32" />}
+              </h3>
+              <p
+                className="!text-sm !text-neutral-500 max-w-[200px] sm:max-w-[240px] md:max-w-[300px] truncate"
+                title={user.username || user.email}
+              >
+                {user.username || user.email || (
+                  <Skeleton className="!h-3 !w-40" />
+                )}
+              </p>
+            </div>
           </div>
 
-          <Button
-            size="sm"
-            className="absolute top-0 right-4 !px-3 !py-1 !text-xs !text-white !bg-red-600 !hover:bg-red-500 whitespace-nowrap"
-            onClick={() => navigate("/profile")}
-          >
-            VER PERFIL
-          </Button>
+          {/* Botão "Ver Perfil" */}
+          <div className="w-full sm:w-auto">
+            {user ? (
+              <Button
+                size="sm"
+                className="
+                  !px-6 !py-3 !text-sm !font-bold
+                  !text-white !bg-red-600 !hover:bg-red-500
+                  w-full sm:w-auto sm:!px-3 sm:!py-1 sm:!text-xs
+                "
+                onClick={() => navigate("/profile")}
+              >
+                VER PERFIL
+              </Button>
+            ) : (
+              <Skeleton className="!h-9 !w-24 !rounded-md" />
+            )}
+          </div>
         </div>
 
-        
+        {/* Menu */}
         <div className="!space-y-4">
           <div
             onClick={() => navigate("/minha-conta")}
@@ -94,6 +116,7 @@ export default function PerfilUsuarioModal() {
 
         <hr className="!my-4 !border-neutral-300" />
 
+        {/* Logout */}
         <button
           onClick={() => {
             signOut();
