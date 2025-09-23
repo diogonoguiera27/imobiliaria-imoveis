@@ -195,21 +195,27 @@ export default function MyProperties() {
   const filtered = useMemo(() => {
     const txt = (applied.q || "").trim().toLowerCase();
     let list = [...items];
+
     if (txt)
       list = list.filter((p) =>
-        `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt)
+        `${p.bairro} ${p.cidade ?? ""}`.toLowerCase().includes(txt)
       );
+
     if (applied.cidade)
       list = list.filter(
-        (p) => p.cidade.toLowerCase() === applied.cidade?.toLowerCase()
+        (p) => (p.cidade ?? "").toLowerCase() === applied.cidade?.toLowerCase()
       );
+
     if (applied.tipo) list = list.filter((p) => p.tipo === applied.tipo);
+
     if (applied.negocio)
       list = list.filter(
         (p) => p.tipoNegocio.toLowerCase() === applied.negocio?.toLowerCase()
       );
+
     if (typeof applied.ativo === "boolean")
       list = list.filter((p) => p.ativo === applied.ativo);
+
     return list;
   }, [items, applied]);
 
@@ -218,7 +224,6 @@ export default function MyProperties() {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = filtered.slice(startIndex, endIndex);
 
-  // ✅ agora aceita uuid ou id
   const handleView = (identifier: string | number) =>
     navigate(`/imovel/${identifier}`);
   const handleEdit = (identifier: string | number) =>
@@ -226,7 +231,7 @@ export default function MyProperties() {
 
   const handleDelete = async (id: number) => {
     try {
-      await deletarImovel(id); // exclusão ainda exige ID interno
+      await deletarImovel(id);
       setItems((prev) => prev.filter((i) => i.id !== id));
       toast.success("Imóvel excluído com sucesso!");
     } catch {
@@ -236,7 +241,7 @@ export default function MyProperties() {
 
   const handleToggleAtivo = async (id: number, novoAtivo: boolean) => {
     try {
-      await atualizarStatusImovel(id, novoAtivo); // toggle também usa ID
+      await atualizarStatusImovel(id, novoAtivo);
       setItems((prev) =>
         prev.map((p) => (p.id === id ? { ...p, ativo: novoAtivo } : p))
       );
@@ -249,26 +254,34 @@ export default function MyProperties() {
   const handleApplyFilters = () => {
     setApplied({ q, cidade, tipo, negocio, ativo: applied.ativo });
     setCurrentPage(1);
+
     const count = (() => {
       const txt = (q || "").trim().toLowerCase();
       let list = [...items];
+
       if (txt)
         list = list.filter((p) =>
-          `${p.bairro} ${p.cidade}`.toLowerCase().includes(txt)
+          `${p.bairro} ${p.cidade ?? ""}`.toLowerCase().includes(txt)
         );
+
       if (cidade)
         list = list.filter(
-          (p) => p.cidade.toLowerCase() === cidade.toLowerCase()
+          (p) => (p.cidade ?? "").toLowerCase() === cidade.toLowerCase()
         );
+
       if (tipo) list = list.filter((p) => p.tipo === tipo);
+
       if (negocio)
         list = list.filter(
           (p) => p.tipoNegocio.toLowerCase() === negocio.toLowerCase()
         );
+
       if (typeof applied.ativo === "boolean")
         list = list.filter((p) => p.ativo === applied.ativo);
+
       return list.length;
     })();
+
     if (count === 0)
       toast.info("Nenhum imóvel encontrado com os filtros aplicados.");
     else toast.success(`${count} imóvel(is) encontrado(s).`);
@@ -376,7 +389,7 @@ export default function MyProperties() {
                   </div>
 
                   
-                  <div className="!mt-4">
+                  <div className="!mt-4 flex !justify-center">
                     <Filters
                       q={q}
                       setQ={setQ}
@@ -455,7 +468,7 @@ export default function MyProperties() {
                           )}
                         </div>
 
-                        {/* 📱 Mobile */}
+                        
                         <div className="flex md:hidden !flex-col !items-center">
                           {viewMode === "grid" ? (
                             loading ? (

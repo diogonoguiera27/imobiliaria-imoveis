@@ -3,6 +3,16 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import api from "@/service/api";
+import type { Imovel } from "@/types";
+
+// Função utilitária para normalizar (sem acentos + minúsculo)
+function normalize(str: string) {
+  return str
+    .normalize("NFD") // separa acentos
+    .replace(/[\u0300-\u036f]/g, "") // remove acentos
+    .toLowerCase()
+    .trim();
+}
 
 type Props = {
   onFiltrar: (filtro: {
@@ -19,7 +29,38 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   const [tipo, setTipo] = useState<string>("");
   const [cidade, setCidade] = useState<string>("");
 
-  // 🔹 Reseta os filtros quando o evento global "clear-filters" é disparado
+  const [cidadesDisponiveis, setCidadesDisponiveis] = useState<string[]>([]);
+
+  // 🔹 Carregar cidades únicas a partir dos imóveis existentes
+  useEffect(() => {
+    api
+      .get("/property")
+      .then((res) => {
+        const lista = res.data as Imovel[];
+
+        const nomes = lista
+          .map((p) => (p.cidade ?? "").trim())
+          .filter((nome) => nome.length > 0);
+
+        const unicasMap = new Map<string, string>();
+
+        nomes.forEach((nome) => {
+          const chave = normalize(nome);
+          if (!unicasMap.has(chave)) {
+            unicasMap.set(chave, nome); // mantém a primeira forma encontrada
+          }
+        });
+
+        const unicas = Array.from(unicasMap.values()).sort((a, b) =>
+          a.localeCompare(b, "pt-BR")
+        );
+
+        setCidadesDisponiveis(unicas);
+      })
+      .catch((err) => console.error("Erro ao carregar cidades:", err));
+  }, []);
+
+  // 🔹 Resetar filtros via evento global
   useEffect(() => {
     const onClear = () => {
       setValorMax(3_000_000);
@@ -31,7 +72,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
     return () => window.removeEventListener("clear-filters", onClear);
   }, [onLimparFiltro]);
 
-  // 🔹 Envia os filtros para o backend e para a Home
+  // 🔹 Envia filtros
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -50,7 +91,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
     });
   };
 
-  // 🔹 Limpa localmente os campos + callback externo
+  // 🔹 Limpa filtros
   const handleLimpar = () => {
     setValorMax(3_000_000);
     setTipo("");
@@ -69,7 +110,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
           !border !border-gray-200
         "
       >
-        {/* Faixa de preço */}
+        {/* Preço */}
         <div className="!flex !flex-col !w-full sm:!w-[400px]">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Filtrar por Preço
@@ -88,7 +129,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
           </div>
         </div>
 
-        {/* Tipo de Imóvel */}
+        {/* Tipo */}
         <div className="!flex !flex-col !w-full sm:!w-[200px]">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Tipo de Imóvel
@@ -124,10 +165,11 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
             "
           >
             <option value="">Selecionar</option>
-            <option value="Senador Canedo">Senador Canedo</option>
-            <option value="Aparecida de Goiânia">Aparecida de Goiânia</option>
-            <option value="Goiania">Goiânia</option>
-            <option value="Rio de Janeiro">Rio de Janeiro</option>
+            {cidadesDisponiveis.map((nome, idx) => (
+              <option key={idx} value={nome}>
+                {nome}
+              </option>
+            ))}
           </select>
         </div>
 

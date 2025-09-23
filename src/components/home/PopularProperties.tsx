@@ -13,7 +13,6 @@ import { useContactContext } from "@/hooks/contact/useContact";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
-// ✅ Mesmo tipo retornado pelo backend em /favorites
 type FavoriteIdentifier = {
   propertyId: number;
   propertyUuid?: string | null;
@@ -21,17 +20,16 @@ type FavoriteIdentifier = {
 
 const ImoveisPopulares = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
-  const [favoritedIds, setFavoritedIds] = useState<number[]>([]); // apenas IDs numéricos
+  const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const { token, user } = useAuth();
 
-  // 🔗 estado global dos modais via contexto
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
-  // 🔄 Carregar imóveis
+  // Carregar imóveis
   useEffect(() => {
     async function carregarImoveis() {
       try {
@@ -51,12 +49,9 @@ const ImoveisPopulares = () => {
         if (token) {
           try {
             const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
-
-            // ✅ Extrair apenas os IDs numéricos
             const ids = favoritos
               .map((f) => f.propertyId)
               .filter((id): id is number => typeof id === "number");
-
             setFavoritedIds(ids);
           } catch (err) {
             console.error("Erro ao buscar favoritos:", err);
@@ -70,7 +65,7 @@ const ImoveisPopulares = () => {
     carregarImoveis();
   }, [token, user]);
 
-  // 👉 Prefetch da próxima imagem
+  // Prefetch da próxima imagem
   useEffect(() => {
     if (imoveis.length === 0) return;
     const nextIndex = (currentPage + 1) % imoveis.length;
@@ -81,13 +76,23 @@ const ImoveisPopulares = () => {
     }
   }, [currentPage, imoveis]);
 
-  // funções das setas no mobile
+  // Setas no mobile
   const prevSlide = () => {
     setCurrentPage((prev) => (prev > 0 ? prev - 1 : imoveis.length - 1));
   };
 
   const nextSlide = () => {
     setCurrentPage((prev) => (prev < imoveis.length - 1 ? prev + 1 : 0));
+  };
+
+  // Scroll horizontal no desktop
+  const scrollDesktop = (direction: "left" | "right") => {
+    if (!containerRef.current) return;
+    const distance = 300; // ajuste de acordo com a largura dos cards
+    containerRef.current.scrollBy({
+      left: direction === "left" ? -distance : distance,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -102,6 +107,15 @@ const ImoveisPopulares = () => {
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
           <div className="!relative !max-w-[1412px] !w-full">
+            {/* Botão PREV */}
+            <button
+              onClick={() => scrollDesktop("left")}
+              className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+            >
+              <ChevronLeft className="!w-5 !h-5 !cursor-pointer" />
+            </button>
+
             <div
               ref={containerRef}
               className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar"
@@ -115,15 +129,23 @@ const ImoveisPopulares = () => {
                     <CardProperties
                       key={item.id}
                       item={item}
-                      // ✅ Verifica se o ID interno está favoritado
                       isFavoritedInitially={favoritedIds.includes(item.id)}
                     />
                   ))}
             </div>
+
+            {/* Botão NEXT */}
+            <button
+              onClick={() => scrollDesktop("right")}
+              className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+            >
+              <ChevronRight className="!w-5 !h-5 !cursor-pointer" />
+            </button>
           </div>
         </div>
 
-        {/* 📱 Mobile - apenas 1 card + setas */}
+        {/* 📱 Mobile */}
         <div className="md:!hidden !w-full !flex !flex-col !items-center !mt-6">
           {loading ? (
             <div className="!w-[90%] !flex !justify-center">

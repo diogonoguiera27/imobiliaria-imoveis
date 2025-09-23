@@ -1,5 +1,6 @@
 // src/components/CarrosselDestaques/index.tsx
 import React, { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Imovel } from "@/types";
 import MainCarouselPropertyCard from "../PropertyCard/MainCarouselPropertyCard";
 import { buscarImoveis } from "@/service/propertyService";
@@ -96,7 +97,7 @@ const CarrosselDestaques: React.FC = () => {
     }
   }, [currentIndex, imoveis]);
 
-  // Funções de swipe
+  // Funções de swipe (mobile)
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -115,13 +116,23 @@ const CarrosselDestaques: React.FC = () => {
     touchStartX.current = null;
   };
 
-  // setas manuais
+  // Setas manuais mobile
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : imoveis.length - 1));
   };
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev < imoveis.length - 1 ? prev + 1 : 0));
+  };
+
+  // Scroll manual desktop
+  const scrollDesktop = (direction: "left" | "right") => {
+    if (!containerRef.current) return;
+    const distance = 300; // ajuste conforme a largura dos cards
+    containerRef.current.scrollBy({
+      left: direction === "left" ? -distance : distance,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -136,6 +147,15 @@ const CarrosselDestaques: React.FC = () => {
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center">
           <div className="!relative !max-w-[1412px] !w-full">
+            {/* Botão PREV */}
+            <button
+              onClick={() => scrollDesktop("left")}
+              className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+            >
+              <ChevronLeft className="!w-5 !h-5 !cursor-pointer"  />
+            </button>
+
             <div
               ref={containerRef}
               className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center !w-full hide-scrollbar"
@@ -149,9 +169,17 @@ const CarrosselDestaques: React.FC = () => {
                     <MainCarouselPropertyCard key={imovel.id} imovel={imovel} />
                   ))}
             </div>
+
+            {/* Botão NEXT */}
+            <button
+              onClick={() => scrollDesktop("right")}
+              className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+            >
+              <ChevronRight className="!w-5 !h-5 !cursor-pointer" />
+            </button>
           </div>
         </div>
-
 
         {/* 📱 Mobile */}
         <div className="md:!hidden !w-full !flex !flex-col !items-center">

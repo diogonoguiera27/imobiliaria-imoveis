@@ -20,14 +20,12 @@ type FavoriteIdentifier = {
 
 const ImoveisPromocao = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
-  const [favoritedIds, setFavoritedIds] = useState<number[]>([]); // apenas IDs internos
+  const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const { token, user } = useAuth();
-
-  // 🔗 estado global dos modais via contexto
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
   useEffect(() => {
@@ -46,12 +44,9 @@ const ImoveisPromocao = () => {
         if (token) {
           try {
             const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
-
-            // ✅ extrai somente os IDs numéricos
             const ids = favoritos
               .map((f) => f.propertyId)
               .filter((id): id is number => typeof id === "number");
-
             setFavoritedIds(ids);
           } catch (err) {
             console.error("Erro ao buscar favoritos:", err);
@@ -65,13 +60,23 @@ const ImoveisPromocao = () => {
     carregarImoveis();
   }, [token, user]);
 
-  // funções das setas no mobile
+  // Setas no mobile
   const prevSlide = () => {
     setCurrentPage((prev) => (prev > 0 ? prev - 1 : imoveis.length - 1));
   };
 
   const nextSlide = () => {
     setCurrentPage((prev) => (prev < imoveis.length - 1 ? prev + 1 : 0));
+  };
+
+  // Scroll horizontal no desktop
+  const scrollDesktop = (direction: "left" | "right") => {
+    if (!containerRef.current) return;
+    const distance = 300; // ajuste conforme a largura dos cards
+    containerRef.current.scrollBy({
+      left: direction === "left" ? -distance : distance,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -86,6 +91,15 @@ const ImoveisPromocao = () => {
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
           <div className="!relative !max-w-[1412px] !w-full">
+            {/* Botão PREV */}
+            <button
+              onClick={() => scrollDesktop("left")}
+              className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+            >
+              <ChevronLeft className="!w-5 !h-5" />
+            </button>
+
             <div
               ref={containerRef}
               className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar"
@@ -99,11 +113,19 @@ const ImoveisPromocao = () => {
                     <CardProperties
                       key={item.id}
                       item={item}
-                      // ✅ agora confere se o ID interno está favoritado
                       isFavoritedInitially={favoritedIds.includes(item.id)}
                     />
                   ))}
             </div>
+
+            {/* Botão NEXT */}
+            <button
+              onClick={() => scrollDesktop("right")}
+              className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+            >
+              <ChevronRight className="!w-5 !h-5" />
+            </button>
           </div>
         </div>
 
@@ -130,14 +152,14 @@ const ImoveisPromocao = () => {
                     onClick={prevSlide}
                     className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
                   >
-                    <ChevronLeft className="!w-5 !h-5" />
+                    <ChevronLeft className="!w-5 !h-5 !cursor-pointer" />
                   </button>
 
                   <button
                     onClick={nextSlide}
                     className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
                   >
-                    <ChevronRight className="!w-5 !h-5" />
+                    <ChevronRight className="!w-5 !h-5 !cursor-pointer" />
                   </button>
                 </div>
               </>

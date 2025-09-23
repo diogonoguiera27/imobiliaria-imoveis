@@ -17,23 +17,33 @@ export type CategoriaImovel =
   | "venda"
   | (string & {});
 
-
+// ------------------------------
+// Usuários
+// ------------------------------
 export type UsuarioResumo = {
-  id: number;          
-  uuid?: string;       
+  id: number;
+  uuid?: string;
   nome: string;
   telefone: string;
+  email?: string;
+  avatarUrl?: string | null;
+  cidade?: string; // 🔹 cidade agora é string simples
 };
 
-
+// ------------------------------
+// Imóveis
+// ------------------------------
 export type Imovel = {
-  id: number;          
-  uuid?: string;       
+  id: number;
+  uuid?: string;
 
   imagem: string;
   endereco: string;
   bairro: string;
-  cidade: string;
+
+  // 🔹 Cidade como string (única fonte da verdade)
+  cidade?: string;
+
   ativo: boolean;
 
   tipo: TipoImovel;
