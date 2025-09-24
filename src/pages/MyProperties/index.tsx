@@ -25,7 +25,7 @@ import {
 import Filters, { AppliedFilters } from "@/components/MyProperties/Filters";
 import PropertiesGrid from "@/components/MyProperties/PropertiesGrid";
 import PropertiesList from "@/components/MyProperties/PropertiesList";
-import PropertiesCardsList from "@/components/MyProperties/PropertiesCardsList";
+
 import CardPropertiesAdmin from "@/components/PropertyCard/CardPropertiesAdmin";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -469,7 +469,7 @@ export default function MyProperties() {
                         </div>
 
                         
-                        <div className="flex md:hidden !flex-col !items-center">
+                        <div className="flex md:hidden !flex-col !items-center ">
                           {viewMode === "grid" ? (
                             loading ? (
                               <>
@@ -533,7 +533,7 @@ export default function MyProperties() {
                               ))}
                             </div>
                           ) : (
-                            <PropertiesCardsList
+                            <PropertiesList
                               loading={loading}
                               items={currentItems}
                               currentPage={currentPage}

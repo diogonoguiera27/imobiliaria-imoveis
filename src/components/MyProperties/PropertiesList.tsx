@@ -1,5 +1,13 @@
 import type { Imovel } from "@/types";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 type Props = {
   loading: boolean;
@@ -38,84 +46,121 @@ export default function PropertiesList({
 
   return (
     <div className="!w-full">
-      {/* 🖥️ Tabela no Desktop apenas */}
-      <div className="!hidden md:!block !overflow-x-auto">
-        <table className="!w-full !border-collapse !bg-white !rounded-lg !shadow-sm !text-sm">
-          <thead className="!bg-gray-100">
-            <tr>
-              <th className="!py-3 !px-4 !text-left">Endereço</th>
-              <th className="!py-3 !px-4 !text-left">Cidade</th>
-              <th className="!py-3 !px-4 !text-left">Tipo</th>
-              <th className="!py-3 !px-4 !text-left">Negócio</th>
-              <th className="!py-3 !px-4 !text-left">Preço</th>
-              <th className="!py-3 !px-4 !text-center">Status</th>
-              <th className="!py-3 !px-4 !text-center">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id} className="hover:!bg-gray-50">
-                <td className="!py-3 !px-4">
-                  <div className="!font-medium">
-                    {item.bairro || "Bairro não informado"}
-                  </div>
-                </td>
-                <td className="!py-3 !px-4">{item.cidade}</td>
-                <td className="!py-3 !px-4">{item.tipo}</td>
-                <td className="!py-3 !px-4 capitalize">{item.tipoNegocio}</td>
-                <td className="!py-3 !px-4">
-                  {item.preco
-                    ? `R$ ${Number(item.preco).toLocaleString("pt-BR")}`
-                    : "-"}
-                </td>
-                <td className="!py-3 !px-4 !text-center">
-                  <span
-                    className={`!px-2 !py-1 !rounded-full !text-xs ${
-                      item.ativo
-                        ? "!bg-green-100 !text-green-700"
-                        : "!bg-red-100 !text-red-700"
-                    }`}
-                  >
-                    {item.ativo ? "Ativo" : "Inativo"}
-                  </span>
-                </td>
-                <td className="!py-3 !px-4 !flex !justify-center !gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onView(item.id)}
-                  >
-                    Ver
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onEdit(item.id)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onToggleAtivo(item.id, !item.ativo)}
-                  >
-                    {item.ativo ? "Desativar" : "Ativar"}
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => onDelete(item.id)}
-                  >
-                    Excluir
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* 🖥️/📱 Tabela responsiva */}
+      <div className="!overflow-hidden !shadow-md !rounded-2xl !border !border-gray-200 !bg-white">
+        <Table className="!min-w-full !border-collapse !bg-white !rounded-lg !shadow-sm !text-sm">
+          <TableHeader className="!bg-gradient-to-r from-red-400 to-red-600 !text-white !uppercase">
+            <TableRow>
+              <TableHead className="!py-3 !px-4 !text-left !text-gray-100">
+                Endereço
+              </TableHead>
+              <TableHead className="!py-3 !px-4 !text-left !text-gray-100">
+                Cidade
+              </TableHead>
+              <TableHead className="!py-3 !px-4 !text-left !text-gray-100">
+                Tipo
+              </TableHead>
+              <TableHead className="!py-3 !px-4 !text-left !text-gray-100">
+                Negócio
+              </TableHead>
+              <TableHead className="!py-3 !px-4 !text-left !text-gray-100">
+                Preço
+              </TableHead>
+              <TableHead className="!py-3 !px-4 !text-center !text-gray-100">
+                Status
+              </TableHead>
+              <TableHead className="!py-3 !px-4 !text-center !text-gray-100">
+                Ações
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items.map((item) => {
+              const isActive = !!item.ativo;
+
+              return (
+                <TableRow key={item.id} className="hover:!bg-gray-50">
+                  <TableCell className="!py-3 !px-4">
+                    <div className="!font-medium">
+                      {item.bairro || "Bairro não informado"}
+                    </div>
+                  </TableCell>
+                  <TableCell className="!py-3 !px-4">{item.cidade}</TableCell>
+                  <TableCell className="!py-3 !px-4">{item.tipo}</TableCell>
+                  <TableCell className="!py-3 !px-4 capitalize">
+                    {item.tipoNegocio}
+                  </TableCell>
+                  <TableCell className="!py-3 !px-4">
+                    {item.preco
+                      ? `R$ ${Number(item.preco).toLocaleString("pt-BR")}`
+                      : "-"}
+                  </TableCell>
+                  <TableCell className="!py-3 !px-4 !text-center">
+                    <span
+                      className={`!px-2 !py-1 !rounded-full !text-xs ${
+                        isActive
+                          ? "!bg-green-100 !text-green-700"
+                          : "!bg-red-100 !text-red-700"
+                      }`}
+                    >
+                      {isActive ? "Ativo" : "Inativo"}
+                    </span>
+                  </TableCell>
+                  <TableCell className="!py-3 !px-4 !flex !justify-center !gap-2">
+                    {/* Ver */}
+                    <Button
+                      size="sm"
+                      onClick={() => onView(item.id)}
+                      className="!w-[80px] !py-2 !bg-gradient-to-r !from-sky-500 !to-blue-600 !text-white !font-semibold !rounded-full !transition-transform hover:!scale-105 hover:!shadow-lg"
+                    >
+                      Ver
+                    </Button>
+
+                    {/* Editar → desativado se imóvel estiver inativo */}
+                    <Button
+                      size="sm"
+                      onClick={() => isActive && onEdit(item.id)}
+                      disabled={!isActive}
+                      title={!isActive ? "Ative o imóvel para editar" : undefined}
+                      className={`!w-[80px] !py-2 !font-semibold !rounded-full !transition-transform ${
+                        isActive
+                          ? "!bg-gradient-to-r !from-amber-400 !to-orange-500 !text-white hover:!scale-105 hover:!shadow-lg"
+                          : "!bg-gray-300 !text-gray-500 cursor-not-allowed"
+                      }`}
+                    >
+                      Editar
+                    </Button>
+
+                    {/* Ativar / Desativar */}
+                    <Button
+                      size="sm"
+                      onClick={() => onToggleAtivo(item.id, !isActive)}
+                      className={`!w-[100px] !py-2 !text-white !font-semibold !rounded-full !transition-transform hover:!scale-105 hover:!shadow-lg ${
+                        isActive
+                          ? "!bg-gradient-to-r !from-gray-400 !to-gray-600"
+                          : "!bg-gradient-to-r !from-green-500 !to-emerald-600"
+                      }`}
+                    >
+                      {isActive ? "Desativar" : "Ativar"}
+                    </Button>
+
+                    {/* Excluir */}
+                    <Button
+                      size="sm"
+                      onClick={() => onDelete(item.id)}
+                      className="!w-[90px] !py-2 !bg-gradient-to-r !from-red-500 !to-pink-600 !text-white !font-semibold !rounded-full !transition-transform hover:!scale-105 hover:!shadow-lg"
+                    >
+                      Excluir
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </div>
 
-      {/* 📑 Paginação (desktop) */}
+      {/* 📑 Paginação */}
       {totalPages > 1 && (
         <div className="!flex !justify-center !items-center !gap-2 !mt-4">
           <Button
@@ -132,9 +177,7 @@ export default function PropertiesList({
           <Button
             variant="outline"
             size="sm"
-            onClick={() =>
-              onPageChange(Math.min(totalPages, currentPage + 1))
-            }
+            onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
           >
             Próximo

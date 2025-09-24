@@ -134,7 +134,7 @@ export default function CardPropertiesAdmin({
               Ver
             </Button>
 
-            {/* Botão Editar desativado se inativo */}
+            
             <Button
               onClick={onEdit}
               disabled={!isActive}
