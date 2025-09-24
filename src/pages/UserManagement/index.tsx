@@ -1,8 +1,7 @@
 // src/pages/UserManagement/index.tsx
 import { useEffect, useState } from "react";
 import { getUsers, User, PaginatedUsers } from "@/service/userService";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import SidebarTrigger from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"; // ✅ import corrigido
 import { Footer } from "@/components/Footer";
 import {
   Pagination,
@@ -14,7 +13,14 @@ import {
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatPhone } from "@/lib/phone";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -51,126 +57,96 @@ const UserManagement = () => {
               Gerenciamento de Usuários
             </h1>
 
-            {/* Tabela (desktop) */}
+            {/* Tabela responsiva (desktop + mobile) */}
             <div className="!overflow-hidden !shadow-md !rounded-2xl !border !border-gray-200 !bg-white">
-              <Table className="!hidden md:!table !w-full !text-sm !text-left !text-gray-600">
-                <TableHeader className="!bg-gradient-to-r from-red-400 to-red-600 !text-white !uppercase ">
-                  <TableRow>
-                    <TableHead className="!px-6 !py-4 !rounded-tl-2xl !text-gray-100  ">Nome</TableHead>
-                    <TableHead className="!px-6 !py-4 !text-gray-100">Email</TableHead>
-                    <TableHead className="!px-6 !py-4 !text-gray-100">Telefone</TableHead>
-                    <TableHead className="!px-6 !py-4 !text-gray-100">Cidade</TableHead>
-                    <TableHead className="!px-6 !py-4 !text-gray-100">Criado em</TableHead>
-                    <TableHead className="!px-6 !py-4 !rounded-tr-2xl !text-center !text-gray-100" >
-                      Qtd. Imóveis
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {loading ? (
-                    Array.from({ length: 5 }).map((_, idx) => (
-                      <TableRow key={idx}>
-                        <TableCell className="!px-6 !py-4">
-                          <Skeleton className="!h-4 !w-32" />
-                        </TableCell>
-                        <TableCell className="!px-6 !py-4">
-                          <Skeleton className="!h-4 !w-48" />
-                        </TableCell>
-                        <TableCell className="!px-6 !py-4">
-                          <Skeleton className="!h-4 !w-24" />
-                        </TableCell>
-                        <TableCell className="!px-6 !py-4">
-                          <Skeleton className="!h-4 !w-28" />
-                        </TableCell>
-                        <TableCell className="!px-6 !py-4">
-                          <Skeleton className="!h-4 !w-20" />
-                        </TableCell>
-                        <TableCell className="!px-6 !py-4 !text-center">
-                          <Skeleton className="!h-4 !w-10 !mx-auto" />
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : users.length > 0 ? (
-                    users.map((u) => (
-                      <TableRow key={u.id} className="hover:!bg-red-50">
-                        <TableCell className="!px-6 !py-4 !font-medium">{u.nome}</TableCell>
-                        <TableCell className="!px-6 !py-4">{u.email}</TableCell>
-                        <TableCell className="!px-6 !py-4">{formatPhone(u.telefone)}</TableCell>
-                        <TableCell className="!px-6 !py-4">{u.cidade}</TableCell>
-                        <TableCell className="!px-6 !py-4">
-                          {new Date(u.createdAt).toLocaleDateString("pt-BR")}
-                        </TableCell>
-                        <TableCell className="!px-6 !py-4 !text-center !text-red-600">
-                          {u.quantidadeImoveis}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
+              {/* 🔁 Wrapper com scroll horizontal no mobile */}
+              <div className="!overflow-x-auto">
+                <Table className="!w-full !min-w-[760px] !text-sm !text-left !text-gray-600">
+                  <TableHeader className="!bg-gradient-to-r from-red-400 to-red-600 !text-white !uppercase">
                     <TableRow>
-                      <TableCell
-                        colSpan={6}
-                        className="!p-6 !text-center !text-gray-500"
-                      >
-                        Nenhum usuário encontrado
-                      </TableCell>
+                      <TableHead className="!px-3 !py-3 md:!px-6 md:!py-4 !rounded-tl-2xl !text-gray-100">
+                        Nome
+                      </TableHead>
+                      <TableHead className="!px-3 !py-3 md:!px-6 md:!py-4 !text-gray-100">
+                        Email
+                      </TableHead>
+                      <TableHead className="!px-3 !py-3 md:!px-6 md:!py-4 !text-gray-100 whitespace-nowrap">
+                        Telefone
+                      </TableHead>
+                      <TableHead className="!px-3 !py-3 md:!px-6 md:!py-4 !text-gray-100 whitespace-nowrap">
+                        Cidade
+                      </TableHead>
+                      <TableHead className="!px-3 !py-3 md:!px-6 md:!py-4 !text-gray-100 whitespace-nowrap">
+                        Criado em
+                      </TableHead>
+                      <TableHead className="!px-3 !py-3 md:!px-6 md:!py-4 !rounded-tr-2xl !text-center !text-gray-100 whitespace-nowrap">
+                        Qtd. Imóveis
+                      </TableHead>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  </TableHeader>
 
-              {/* Cards (mobile) */}
-              <div className="md:!hidden !flex !flex-col !gap-4 !p-4">
-                {loading ? (
-                  Array.from({ length: 4 }).map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="!p-4 !border !border-gray-200 !rounded-xl !shadow-sm !bg-white !flex !flex-col !gap-2"
-                    >
-                      <Skeleton className="!h-4 !w-40" />
-                      <Skeleton className="!h-4 !w-56" />
-                      <Skeleton className="!h-4 !w-32" />
-                      <Skeleton className="!h-4 !w-28" />
-                      <Skeleton className="!h-4 !w-24" />
-                      <Skeleton className="!h-4 !w-16" />
-                    </div>
-                  ))
-                ) : users.length > 0 ? (
-                  users.map((u) => (
-                    <div
-                      key={u.id}
-                      className="!p-4 !border !border-gray-200 !rounded-xl !shadow-sm !bg-white"
-                    >
-                      <p>
-                        <span className="!font-semibold">Nome:</span> {u.nome}
-                      </p>
-                      <p>
-                        <span className="!font-semibold">Email:</span> {u.email}
-                      </p>
-                      <p>
-                        <span className="!font-semibold">Telefone:</span>{" "}
-                        {formatPhone(u.telefone)}
-                      </p>
-                      <p>
-                        <span className="!font-semibold">Cidade:</span>{" "}
-                        {u.cidade}
-                      </p>
-                      <p>
-                        <span className="!font-semibold">Criado em:</span>{" "}
-                        {new Date(u.createdAt).toLocaleDateString("pt-BR")}
-                      </p>
-                      <p>
-                        <span className="!font-semibold">Qtd. Imóveis:</span>{" "}
-                        <span className="!text-red-600">
-                          {u.quantidadeImoveis}
-                        </span>
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="!text-center !text-gray-500">
-                    Nenhum usuário encontrado
-                  </p>
-                )}
+                  <TableBody>
+                    {loading ? (
+                      Array.from({ length: 5 }).map((_, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4">
+                            <Skeleton className="!h-4 !w-32" />
+                          </TableCell>
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4">
+                            <Skeleton className="!h-4 !w-48" />
+                          </TableCell>
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4">
+                            <Skeleton className="!h-4 !w-24" />
+                          </TableCell>
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4">
+                            <Skeleton className="!h-4 !w-28" />
+                          </TableCell>
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4">
+                            <Skeleton className="!h-4 !w-20" />
+                          </TableCell>
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 !text-center">
+                            <Skeleton className="!h-4 !w-10 !mx-auto" />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : users.length > 0 ? (
+                      users.map((u) => (
+                        <TableRow key={u.id} className="hover:!bg-red-50">
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 !font-medium">
+                            {u.nome}
+                          </TableCell>
+
+                          {/* deixa o email quebrar linha no mobile pra não estourar */}
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 break-words">
+                            {u.email}
+                          </TableCell>
+
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 whitespace-nowrap">
+                            {formatPhone(u.telefone)}
+                          </TableCell>
+
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 whitespace-nowrap">
+                            {u.cidade}
+                          </TableCell>
+
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 whitespace-nowrap">
+                            {new Date(u.createdAt).toLocaleDateString("pt-BR")}
+                          </TableCell>
+
+                          <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 !text-center !text-red-600 whitespace-nowrap">
+                            {u.quantidadeImoveis}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={6} className="!p-6 !text-center !text-gray-500">
+                          Nenhum usuário encontrado
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
               </div>
             </div>
 
@@ -185,9 +161,7 @@ const UserManagement = () => {
                         e.preventDefault();
                         if (page > 1) setPage(page - 1);
                       }}
-                      className={
-                        page === 1 ? "pointer-events-none opacity-50" : ""
-                      }
+                      className={page === 1 ? "pointer-events-none opacity-50" : ""}
                     />
                   </PaginationItem>
 
@@ -213,11 +187,7 @@ const UserManagement = () => {
                         e.preventDefault();
                         if (page < totalPages) setPage(page + 1);
                       }}
-                      className={
-                        page === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
+                      className={page === totalPages ? "pointer-events-none opacity-50" : ""}
                     />
                   </PaginationItem>
                 </PaginationContent>
