@@ -34,7 +34,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   // 🔹 Carregar cidades únicas a partir dos imóveis existentes
   useEffect(() => {
     api
-      .get("/property")
+      .get("/property/?page=2")
       .then((res) => {
         const lista = res.data as Imovel[];
 
