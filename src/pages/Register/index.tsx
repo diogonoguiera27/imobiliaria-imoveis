@@ -1,6 +1,7 @@
 import React from 'react';
-import LoginLayout from '@/components/Login/LoginLayout';
+
 import RegisterForm from '@/components/RegisterForm';
+import LoginLayout from '@/components/LoginLayout';
 
 const RegisterPage: React.FC = () => (
   <LoginLayout>

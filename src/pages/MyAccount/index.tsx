@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  MyAccountSidebar,
-  MyAccountOverview,
-  MyAccountSimulations,
-  MyAccountAccessData,
-  MyAccountPersonalData,
-  MyAccountPreferences,
-} from "@/components/MyAccount";
+
 import {
   LayoutDashboard,
   Calculator,
@@ -16,6 +9,12 @@ import {
 } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Footer } from "@/components/Footer";
+import MyAccountSidebar from "@/components/MyAccountSidebar";
+import MyAccountOverview from "@/components/MyAccountOverview";
+import MyAccountSimulations from "@/components/MyAccountSimulations";
+import MyAccountAccessData from "@/components/MyAccountAccessData";
+import MyAccountPersonalData from "@/components/MyAccountPersonalData";
+import MyAccountPreferences from "@/components/MyAccountPreferences";
 
 const tabs = [
   { label: "Visão Geral", icon: LayoutDashboard },

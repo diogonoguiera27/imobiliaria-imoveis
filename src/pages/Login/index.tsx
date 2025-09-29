@@ -1,10 +1,12 @@
 
 import { useState } from 'react'
-import LoginLayout from '@/components/Login/LoginLayout'
-import LoginForm from '@/components/Login/LoginForm'
-import { ForgotPasswordForm, VerifyCodeForm,ResetPasswordForm } from '@/components/PasswordRecovery'
 
 
+import LoginLayout from '@/components/LoginLayout'
+import LoginForm from '@/components/LoginForm'
+import ForgotPasswordForm from '@/components/ForgotPasswordForm'
+import VerifyCodeForm from '@/components/VerifyCodeForm'
+import ResetPasswordForm from '@/components/ResetPasswordForm'
 
 type Step = 'login' | 'forgot' | 'verify' | 'reset'
 

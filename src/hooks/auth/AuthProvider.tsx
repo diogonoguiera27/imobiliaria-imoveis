@@ -1,5 +1,7 @@
+// src/contexts/AuthProvider.tsx
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { AuthContext, AuthState, User } from "./AuthContext";
+import { AuthContext, type AuthState } from "./AuthContext";
+import type { User } from "@/service/userService"; // ✅ centraliza o tipo
 import { login as loginSvc, getMe, setAuthToken } from "@/service/authService";
 
 interface AppProviderProps {
@@ -11,7 +13,7 @@ export function AuthProvider({ children }: AppProviderProps) {
 
   useEffect(() => {
     const token = localStorage.getItem("@Imobiliaria:token");
-    localStorage.removeItem("@Imobiliaria:user");
+    localStorage.removeItem("@Imobiliaria:user"); // 🔹 evita dados antigos
 
     if (!token) return;
 
@@ -29,25 +31,37 @@ export function AuthProvider({ children }: AppProviderProps) {
     })();
   }, []);
 
-  const signIn = useCallback(async ({ email, senha, keepConnected }: { email: string; senha: string; keepConnected: boolean }) => {
-    const { token, user } = await loginSvc(email, senha);
+  const signIn = useCallback(
+    async ({
+      email,
+      senha,
+      keepConnected,
+    }: {
+      email: string;
+      senha: string;
+      keepConnected: boolean;
+    }) => {
+      const { token, user } = await loginSvc(email, senha);
 
-    if (keepConnected) {
-      localStorage.setItem("@Imobiliaria:token", token);
-    }
+      if (keepConnected) {
+        localStorage.setItem("@Imobiliaria:token", token);
+      }
 
-    localStorage.removeItem("@Imobiliaria:user");
-    setAuthToken(token);
+      localStorage.removeItem("@Imobiliaria:user");
+      setAuthToken(token);
 
-    if (user) {
-      setData({ token, user });
-    } else {
-      setData({ token, user: null });
-    }
+      if (user) {
+        setData({ token, user });
+      } else {
+        setData({ token, user: null });
+      }
 
-    const me = await getMe();
-    setData({ token, user: me });
-  }, []);
+      // 🔄 garante que dados atualizados de /me prevaleçam
+      const me = await getMe();
+      setData({ token, user: me });
+    },
+    []
+  );
 
   const updateUser = useCallback((updatedUser: User) => {
     setData((prev) => {
@@ -71,14 +85,16 @@ export function AuthProvider({ children }: AppProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{
-      signIn,
-      signOut,
-      updateUser,
-      token: data?.token || null,
-      user: data?.user || null,
-      isAdmin: data?.user?.role === "ADMIN" || false, 
-    }}>
+    <AuthContext.Provider
+      value={{
+        signIn,
+        signOut,
+        updateUser,
+        token: data?.token || null,
+        user: data?.user || null,
+        isAdmin: data?.user?.role === "ADMIN" || false,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

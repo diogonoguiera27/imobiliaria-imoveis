@@ -1,9 +1,3 @@
-// src/pages/ProfilePage.tsx
-import {
-  ProfileSidebar,
-  ProfileEditForm,
-  UserActivitySummary,
-} from "@/components/Profile";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
@@ -12,6 +6,10 @@ import { getUserOverview } from "@/service/authService";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useAuth } from "@/hooks/auth";
+import ProfileSidebar from "@/components/ProfileSidebar";
+import UserActivitySummaryProfile from "@/components/UserActivitySummaryProfile";
+import ProfileEditFormProfile from "@/components/ProfileEditFormProfile";
+import type { User } from "@/service/userService";
 
 export default function ProfilePage() {
   const { user, token } = useAuth();
@@ -75,6 +73,19 @@ export default function ProfilePage() {
     );
   }
 
+  // 🔹 monta objeto apenas com campos editáveis
+  const editableUser: Pick<
+    User,
+    "id" | "nome" | "telefone" | "email" | "cidade" | "avatarUrl"
+  > = {
+    id: user.id,
+    nome: user.nome,
+    telefone: user.telefone ?? "",
+    email: user.email,
+    cidade: user.cidade,
+    avatarUrl: user.avatarUrl,
+  };
+
   return (
     <SidebarProvider>
       <div className="flex flex-col min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-white via-red-50 to-red-100 text-gray-900">
@@ -98,7 +109,7 @@ export default function ProfilePage() {
               {erroResumo ? (
                 <div className="text-red-500 text-sm">{erroResumo}</div>
               ) : (
-                <UserActivitySummary
+                <UserActivitySummaryProfile
                   loading={loadingResumo}
                   favoritosCount={favoritosCount ?? 0}
                   ultimoAcesso={ultimoAcesso}
@@ -107,16 +118,7 @@ export default function ProfilePage() {
               )}
 
               {/* 🔹 Formulário de edição do perfil */}
-              <ProfileEditForm
-                user={{
-                  id: user.id,
-                  nome: user.nome,
-                  telefone: user.telefone ?? "",
-                  email: user.email,
-                  cidade: user.cidade,
-                  avatarUrl: user.avatarUrl,
-                }}
-              />
+              <ProfileEditFormProfile user={editableUser} />
             </div>
           </div>
         </main>

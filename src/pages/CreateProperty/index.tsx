@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Footer } from "@/components/Footer";
-import { LeftPanel, RightPanel } from "@/components/CreateProperty";
+import LeftPanel from "@/components/LeftPanel";
+import RightPanel from "@/components/RightPanel";
+
 
 export default function CreatePropertyPage() {
   const [preview, setPreview] = useState<string | null>(null);

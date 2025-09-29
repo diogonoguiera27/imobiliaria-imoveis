@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { CardProperties } from "@/components/PropertyCard";
+
 import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "@/components/ui/dialog";
@@ -7,6 +7,7 @@ import type { Imovel } from "@/types";
 
 import { getUserFavorites } from "@/service/favoriteService";
 import { useAuth } from "@/hooks/auth";
+import PropertyCard from "../CardProperties";
 
 type PropertyListSectionProps = {
   imoveisVenda: Imovel[];
@@ -76,10 +77,10 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
         >
           {loading
             ? Array.from({ length: 8 }).map((_, i) => (
-                <CardProperties key={`skeleton-${i}`} loading />
+                <PropertyCard key={`skeleton-${i}`} loading />
               ))
             : imoveisVenda.map((item) => (
-                <CardProperties
+                <PropertyCard
                   key={item.id}
                   item={item}
                   // ✅ Verifica se o ID interno do imóvel está na lista

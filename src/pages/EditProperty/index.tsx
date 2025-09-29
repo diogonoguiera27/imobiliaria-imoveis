@@ -10,8 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import type { Imovel } from "@/types";
 import { buscarImovel } from "@/service/propertyService"; // ✅ atualizado
-import PropertyForm from "@/components/PropertyForm/PropertyForm";
+
 import Boneco from "@/assets/Boneco.png";
+import PropertyFormCreate from "@/components/PropertyFormCreate";
 
 export default function EditProperty() {
   const { id } = useParams<{ id: string }>();
@@ -176,7 +177,7 @@ export default function EditProperty() {
                       </p>
                     </CardHeader>
                     <CardContent className="!px-0 !py-0">
-                      <PropertyForm
+                      <PropertyFormCreate
                         mode="edit"
                         initialData={property}
                         onImageSelect={setPreview}

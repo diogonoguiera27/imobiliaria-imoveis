@@ -1,16 +1,6 @@
-
+// src/contexts/AuthContext.ts
 import { createContext } from "react";
-
-export interface User {
-  id: number;
-  nome: string;
-  email: string;
-  cidade: string;
-  telefone?: string;
-  username?: string;
-  avatarUrl?: string;
-  role: "ADMIN" | "USER";
-}
+import type { User } from "@/service/userService"; // ✅ usa o tipo centralizado
 
 export interface AuthState {
   token: string;
@@ -27,4 +17,3 @@ export interface AuthContextData {
 }
 
 export const AuthContext = createContext<AuthContextData | undefined>(undefined);
-

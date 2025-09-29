@@ -24,14 +24,15 @@ import {
   List as ListIcon,
 } from "lucide-react";
 
-import Filters, { AppliedFilters } from "@/components/MyProperties/Filters";
-import PropertiesGrid from "@/components/MyProperties/PropertiesGrid";
-import PropertiesList from "@/components/MyProperties/PropertiesList";
+import FiltersMyProperty, { AppliedFilters } from "@/components/FiltersMyProperty";
 
-import CardPropertiesAdmin from "@/components/PropertyCard/CardPropertiesAdmin";
+
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PropertiesGridMyProperty from "@/components/PropertiesGridMyProperty";
+import PropertiesListMyPorperty from "@/components/PropertiesListMyPorperty";
+import CardPropertiesAdmin from "@/components/CardPropertiesAdmin";
 
 type BackendError = { message?: string; error?: string };
 
@@ -294,7 +295,7 @@ export default function MyProperties() {
 
                   {/* Filtros */}
                   <div className="!mt-4 flex !justify-center">
-                    <Filters
+                    <FiltersMyProperty
                       q={applied.q || ""}
                       setQ={(q) => setApplied((p) => ({ ...p, q }))}
                       cidade={applied.cidade}
@@ -326,7 +327,7 @@ export default function MyProperties() {
                         {/* Desktop */}
                         <div className="hidden md:block">
                           {viewMode === "grid" ? (
-                            <PropertiesGrid
+                            <PropertiesGridMyProperty
                               loading={loading}
                               items={items}
                               createdId={createdId}
@@ -341,7 +342,7 @@ export default function MyProperties() {
                               onToggleAtivo={handleToggleAtivo}
                             />
                           ) : (
-                            <PropertiesList
+                            <PropertiesListMyPorperty
                               loading={loading}
                               items={items}
                               currentPage={currentPage}
@@ -418,7 +419,7 @@ export default function MyProperties() {
                               </>
                             )
                           ) : (
-                            <PropertiesList
+                            <PropertiesListMyPorperty
                               loading={loading}
                               items={items}
                               currentPage={currentPage}

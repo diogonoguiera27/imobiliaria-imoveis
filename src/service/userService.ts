@@ -10,7 +10,7 @@ export interface User {
   nome: string;
   email: string;
   cidade: string;
-  telefone: string;
+  telefone?: string; // 🔹 agora opcional para alinhar com authService
   avatarUrl?: string;
   createdAt: string;
   ultimoAcesso?: string;
@@ -44,7 +44,7 @@ export async function getUsers(
   take = 10
 ): Promise<PaginatedUsers> {
   const { data } = await api.get<PaginatedUsers>("/users", {
-    params: { page, take }, 
+    params: { page, take },
   });
   return data;
 }

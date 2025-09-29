@@ -9,12 +9,11 @@ import {
 } from "@/service/propertyService";
 import { registrarVisualizacao } from "@/service/dashboardService";
 import { Imovel } from "@/types";
+import SimilarProperties from "@/components/SimilarProperties";
+import DescricaoEContato from "@/components/PropertyInfoAndContact";
+import CarrosselPrincipal from "@/components/MainCarousel";
 
-import {
-  MainCarousel,
-  PropertyInfoAndContact,
-  SimilarProperties,
-} from "@/components/PropertyDetails/";
+
 
 export function ImovelDetalhes() {
   // ⚡ agora pode ser UUID ou número
@@ -67,8 +66,8 @@ export function ImovelDetalhes() {
         <main className="flex-grow !mt-10">
           {/* 🚀 Wrapper que força responsividade */}
           <div className="!w-full !px-3 sm:!px-4 md:!max-w-6xl md:!mx-auto">
-            <MainCarousel imagem={imovel.imagem} />
-            <PropertyInfoAndContact imovel={imovel} />
+            <CarrosselPrincipal imagem={imovel.imagem} />
+            <DescricaoEContato imovel={imovel} />
             {similares.length > 0 && (
               <SimilarProperties imoveis={similares} />
             )}

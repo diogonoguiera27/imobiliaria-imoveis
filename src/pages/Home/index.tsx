@@ -2,17 +2,25 @@
 import { useCallback, useEffect, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { HeroBanner, SearchFilter, HighlightSection } from "@/components/Home";
+
 import { Imovel } from "@/types";
 import Pagination from "@/components/Pagination";
 import { Dialog } from "@/components/ui/dialog";
 import MessageFormModal from "@/components/MessageFormModal";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CardProperties } from "@/components/PropertyCard";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
 import ContactPhoneModal from "@/components/PhoneContactModal";
 import { useContactContext } from "@/hooks/contact/useContact";
+
+import { Button } from "@/components/ui/button";
+import HeroBanner from "@/components/HeroBanner";
+import SearchFilter from "@/components/SearchFilter";
+import FeaturedCarousel from "@/components/FeaturedCarousel";
+import PopularProperties from "@/components/PopularProperties";
+import DiscountedProperties from "@/components/DiscountedProperties";
+import PropertyCard from "@/components/CardProperties";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -172,7 +180,7 @@ export function Home() {
                         }`}
                       >
                         {imoveis.map((item) => (
-                          <CardProperties key={item.id} item={item} />
+                          <PropertyCard key={item.id} item={item} />
                         ))}
                       </div>
                     </div>
@@ -191,7 +199,21 @@ export function Home() {
               </div>
             </section>
           ) : (
-            <HighlightSection /> // ✅ mantém os destaques
+            // 🚀 Destaques (substituindo o antigo HighlightSection)
+            <section className="!p-4">
+              <FeaturedCarousel />
+              <PopularProperties />
+              <DiscountedProperties />
+
+              <div className="w-full !flex !justify-center !mt-12">
+                <Button
+                  onClick={() => navigate("/imoveis-venda")}
+                  className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
+                >
+                  Ver todos os imóveis
+                </Button>
+              </div>
+            </section>
           )}
         </main>
 
