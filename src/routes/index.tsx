@@ -32,7 +32,7 @@ export const Rotas: React.FC = () => (
     <Route path="/minha-conta" element={<MinhaConta />} />
     <Route path="/favoritos" element={<Favorites/>} />
     <Route path="/dashboard" element={<Dashboard/>} />
-    <Route path="/users" element={<UserManagement/>} />
+    <Route path="/admin/users" element={<UserManagement/>} />
     
     
     

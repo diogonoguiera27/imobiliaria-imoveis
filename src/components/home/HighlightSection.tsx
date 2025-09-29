@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
           onClick={() => navigate("/imoveis-venda")}
           className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
         >
-          Ver mais destaques
+          Ver todos os imóveis
         </Button>
       </div>
     </section>

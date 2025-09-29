@@ -1,7 +1,7 @@
 // src/pages/UserManagement/index.tsx
 import { useEffect, useState } from "react";
 import { getUsers, User, PaginatedUsers } from "@/service/userService";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"; // ✅ import corrigido
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Footer } from "@/components/Footer";
 import {
   Pagination,
@@ -21,30 +21,46 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { AxiosError } from "axios";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
-  const limit = 10;
+  const take = 10; // alinhado com backend
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        const res: PaginatedUsers = await getUsers(page, limit);
-        setUsers(res.data);
-        setTotalPages(res.pagination.totalPages);
-      } catch (error) {
-        console.error("Erro ao carregar usuários:", error);
+        setError(null);
+
+        const res: PaginatedUsers = await getUsers(page, take);
+
+        setUsers(res.data || []);
+        setTotalPages(res.pagination?.totalPages || 1);
+        setTotalUsers(res.pagination?.total || 0);
+      } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+          setError(
+            err.response?.data?.error ||
+              err.response?.data?.message ||
+              "Erro ao carregar usuários."
+          );
+        } else {
+          setError("Erro inesperado ao carregar usuários.");
+        }
       } finally {
         setLoading(false);
       }
     }
+
     fetchData();
-  }, [page]);
+  }, [page, take]);
 
   return (
     <SidebarProvider>
@@ -57,9 +73,14 @@ const UserManagement = () => {
               Gerenciamento de Usuários
             </h1>
 
-            {/* Tabela responsiva (desktop + mobile) */}
+            {error && (
+              <div className="!mb-4 !p-4 !text-red-700 !bg-red-100 !rounded-lg !border !border-red-300">
+                {error}
+              </div>
+            )}
+
+            {/* Tabela responsiva */}
             <div className="!overflow-hidden !shadow-md !rounded-2xl !border !border-gray-200 !bg-white">
-              {/* 🔁 Wrapper com scroll horizontal no mobile */}
               <div className="!overflow-x-auto">
                 <Table className="!w-full !min-w-[760px] !text-sm !text-left !text-gray-600">
                   <TableHeader className="!bg-gradient-to-r from-red-400 to-red-600 !text-white !uppercase">
@@ -115,24 +136,18 @@ const UserManagement = () => {
                           <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 !font-medium">
                             {u.nome}
                           </TableCell>
-
-                          {/* deixa o email quebrar linha no mobile pra não estourar */}
                           <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 break-words">
                             {u.email}
                           </TableCell>
-
                           <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 whitespace-nowrap">
                             {formatPhone(u.telefone)}
                           </TableCell>
-
                           <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 whitespace-nowrap">
                             {u.cidade}
                           </TableCell>
-
                           <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 whitespace-nowrap">
                             {new Date(u.createdAt).toLocaleDateString("pt-BR")}
                           </TableCell>
-
                           <TableCell className="!px-3 !py-3 md:!px-6 md:!py-4 !text-center !text-red-600 whitespace-nowrap">
                             {u.quantidadeImoveis}
                           </TableCell>
@@ -140,7 +155,10 @@ const UserManagement = () => {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={6} className="!p-6 !text-center !text-gray-500">
+                        <TableCell
+                          colSpan={6}
+                          className="!p-6 !text-center !text-gray-500"
+                        >
                           Nenhum usuário encontrado
                         </TableCell>
                       </TableRow>
@@ -150,8 +168,8 @@ const UserManagement = () => {
               </div>
             </div>
 
-            {/* Paginação com shadcn */}
-            <div className="!flex !justify-center !mt-6">
+            {/* Paginação */}
+            <div className="!flex !flex-col !items-center !mt-6">
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -192,6 +210,11 @@ const UserManagement = () => {
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
+
+              <p className="!text-center !text-sm !text-gray-500 !mt-3">
+                Total de usuários:{" "}
+                <span className="!font-medium">{totalUsers}</span>
+              </p>
             </div>
           </div>
         </main>

@@ -10,6 +10,8 @@ export interface User {
   avatarUrl?: string;
   createdAt: string;
   ultimoAcesso: string;
+
+  role: "ADMIN" | "USER";
 }
 
 interface LoginResponse {

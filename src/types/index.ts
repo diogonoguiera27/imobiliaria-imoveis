@@ -20,6 +20,22 @@ export type CategoriaImovel =
 // ------------------------------
 // Usuários
 // ------------------------------
+export type Role = "admin" | "user";
+
+export type User = {
+  id: number;
+  uuid?: string;
+  nome: string;
+  telefone: string;
+  email?: string;
+  avatarUrl?: string | null;
+  cidade?: string; 
+  createdAt?: string;
+  quantidadeImoveis?: number;
+
+  // 🔑 Controle de acesso
+  role: Role;
+};
 export type UsuarioResumo = {
   id: number;
   uuid?: string;
@@ -28,6 +44,7 @@ export type UsuarioResumo = {
   email?: string;
   avatarUrl?: string | null;
   cidade?: string; // 🔹 cidade agora é string simples
+ 
 };
 
 // ------------------------------

@@ -62,7 +62,7 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
     <section className="w-full px-4 pt-0 !mt-0">
       <div className="w-full flex justify-center mb-0">
         <h2 className="!text-black !text-xl !font-bold !text-center !max-w-screen-lg !mt-2 !mb-4">
-          Imóveis à venda próximos a você
+          Todos os imóveis disponíveis
         </h2>
       </div>
 

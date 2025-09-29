@@ -1,18 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+// src/components/Home/PopularProperties.tsx
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "../ui/dialog";
 import { Imovel } from "@/types";
 import { CardProperties } from "@/components/PropertyCard";
-import { buscarImoveis } from "@/service/propertyService";
+import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
 import { getUserFavorites } from "@/service/favoriteService";
 import { priorizarImoveisDaCidade } from "@/lib/utils";
 import { useAuth } from "@/hooks/auth";
 import { useContactContext } from "@/hooks/contact/useContact";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
-
+// ✅ mesmo formato retornado pela rota /favorites
 type FavoriteIdentifier = {
   propertyId: number;
   propertyUuid?: string | null;
@@ -21,31 +21,40 @@ type FavoriteIdentifier = {
 const ImoveisPopulares = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
   const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { token, user } = useAuth();
+  // 🔹 paginação backend
+  const [apiPage, setApiPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  // 🔹 índice de início do bloco visível
+  const [startIndex, setStartIndex] = useState(0);
+  const visibleCount = 5; // 👈 quantos cards mostrar por vez
+
+  const { token, user } = useAuth();
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
-  // Carregar imóveis
+  // 🔄 carregar imóveis da categoria "popular"
   useEffect(() => {
     async function carregarImoveis() {
       try {
         setLoading(true);
-        const todos = await buscarImoveis();
+        const response: PaginatedProperties = await buscarImoveis({
+          categoria: "popular",
+          page: apiPage,
+          take: 10, // backend retorna 10
+        });
 
         const ordenados = user?.cidade
-          ? priorizarImoveisDaCidade(todos, user.cidade)
-          : todos;
+          ? priorizarImoveisDaCidade(response.data, user.cidade)
+          : response.data;
 
-        const populares = ordenados.filter(
-          (i) => i.categoria === "popular" && typeof i.id === "number"
+        setImoveis((prev) =>
+          apiPage === 1 ? ordenados : [...prev, ...ordenados]
         );
+        setTotalPages(response.pagination.totalPages);
 
-        setImoveis(populares);
-
+        // carregar favoritos
         if (token) {
           try {
             const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
@@ -63,42 +72,30 @@ const ImoveisPopulares = () => {
     }
 
     carregarImoveis();
-  }, [token, user]);
+  }, [token, user, apiPage]);
 
-  // Prefetch da próxima imagem
-  useEffect(() => {
-    if (imoveis.length === 0) return;
-    const nextIndex = (currentPage + 1) % imoveis.length;
-    const next = imoveis[nextIndex];
-    if (next?.imagem) {
-      const img = new Image();
-      img.src = `${API_URL}${next.imagem}`;
+  // 👉 navegação
+  const prevPage = () => {
+    setStartIndex((prev) => Math.max(prev - visibleCount, 0));
+  };
+
+  const nextPage = () => {
+    const nextIndex = startIndex + visibleCount;
+
+    if (nextIndex >= imoveis.length) {
+      if (apiPage < totalPages) {
+        setApiPage((prev) => prev + 1);
+        setStartIndex(nextIndex);
+      }
+    } else {
+      setStartIndex(nextIndex);
     }
-  }, [currentPage, imoveis]);
-
-  // Setas no mobile
-  const prevSlide = () => {
-    setCurrentPage((prev) => (prev > 0 ? prev - 1 : imoveis.length - 1));
-  };
-
-  const nextSlide = () => {
-    setCurrentPage((prev) => (prev < imoveis.length - 1 ? prev + 1 : 0));
-  };
-
-  // Scroll horizontal no desktop
-  const scrollDesktop = (direction: "left" | "right") => {
-    if (!containerRef.current) return;
-    const distance = 300; // ajuste de acordo com a largura dos cards
-    containerRef.current.scrollBy({
-      left: direction === "left" ? -distance : distance,
-      behavior: "smooth",
-    });
   };
 
   return (
     <section className="!w-full !px-4 !pt-0">
       <div className="!w-full !max-w-[80%] !mx-auto">
-        <div className="!w-full !flex !justify-center !mb-0 !mt-8">
+        <div className="!w-full !flex !justify-center !mt-8">
           <h2 className="!text-gray-900 !text-xl !font-bold !text-center !max-w-screen-lg">
             Apartamentos mais populares perto de você
           </h2>
@@ -107,84 +104,95 @@ const ImoveisPopulares = () => {
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
           <div className="!relative !max-w-[1412px] !w-full">
-            {/* Botão PREV */}
+            {/* seta esquerda */}
             <button
-              onClick={() => scrollDesktop("left")}
+              onClick={prevPage}
+              disabled={startIndex === 0 && apiPage === 1}
               className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
             >
-              <ChevronLeft className="!w-5 !h-5 !cursor-pointer" />
+              <ChevronLeft className="!w-5 !h-5" />
             </button>
 
+            {/* cards */}
             <div
-              ref={containerRef}
-              className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar"
+              className="!flex !gap-4 !overflow-x-hidden !items-center hide-scrollbar"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-              {loading
-                ? Array.from({ length: 4 }).map((_, i) => (
-                    <CardProperties key={i} loading />
+              {loading && imoveis.length === 0
+                ? Array.from({ length: visibleCount }).map((_, i) => (
+                    <CardProperties key={`skeleton-${i}`} loading />
                   ))
-                : imoveis.map((item) => (
-                    <CardProperties
-                      key={item.id}
-                      item={item}
-                      isFavoritedInitially={favoritedIds.includes(item.id)}
-                    />
-                  ))}
+                : imoveis
+                    .slice(startIndex, startIndex + visibleCount)
+                    .map((item) => (
+                      <CardProperties
+                        key={item.id}
+                        item={item}
+                        isFavoritedInitially={favoritedIds.includes(item.id)}
+                      />
+                    ))}
             </div>
 
-            {/* Botão NEXT */}
+            
             <button
-              onClick={() => scrollDesktop("right")}
+              onClick={nextPage}
+              disabled={
+                apiPage === totalPages &&
+                startIndex + visibleCount >= imoveis.length
+              }
               className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
             >
-              <ChevronRight className="!w-5 !h-5 !cursor-pointer" />
+              <ChevronRight className="!w-5 !h-5" />
             </button>
           </div>
         </div>
 
-        {/* 📱 Mobile */}
+        
         <div className="md:!hidden !w-full !flex !flex-col !items-center !mt-6">
-          {loading ? (
-            <div className="!w-[90%] !flex !justify-center">
-              <CardProperties loading />
-            </div>
-          ) : (
-            imoveis.length > 0 && (
-              <>
-                <div className="!w-[90%] !flex !justify-center">
+          {imoveis.length > 0 && (
+            <>
+              <div className="!w-[90%] !flex !flex-col !gap-4">
+                {imoveis.map((item) => (
                   <CardProperties
-                    item={imoveis[currentPage]}
-                    isFavoritedInitially={favoritedIds.includes(
-                      imoveis[currentPage].id
-                    )}
+                    key={item.id}
+                    item={item}
+                    isFavoritedInitially={favoritedIds.includes(item.id)}
                   />
-                </div>
+                ))}
+              </div>
 
-                <div className="!flex !items-center !justify-center !gap-6 !mt-3">
-                  <button
-                    onClick={prevSlide}
-                    className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
-                  >
-                    <ChevronLeft className="!w-5 !h-5" />
-                  </button>
+              <div className="!flex !items-center !justify-center !gap-6 !mt-3">
+                <button
+                  onClick={prevPage}
+                  disabled={startIndex === 0 && apiPage === 1}
+                  className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
+                >
+                  <ChevronLeft className="!w-5 !h-5 !cursor-pointer" />
+                </button>
 
-                  <button
-                    onClick={nextSlide}
-                    className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
-                  >
-                    <ChevronRight className="!w-5 !h-5" />
-                  </button>
-                </div>
-              </>
-            )
+                <span className="text-gray-700 text-sm">
+                  Página {apiPage} / {totalPages}
+                </span>
+
+                <button
+                  onClick={nextPage}
+                  disabled={
+                    apiPage === totalPages &&
+                    startIndex + visibleCount >= imoveis.length
+                  }
+                  className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
+                >
+                  <ChevronRight className="!w-5 !h-5 !cursor-pointer" />
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
 
-      {/* Modais de contato */}
+      
       {showContactModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />

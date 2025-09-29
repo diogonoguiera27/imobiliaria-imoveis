@@ -1,3 +1,4 @@
+// src/components/MyProperties/Filters.tsx
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -11,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import type { Imovel, TipoImovel, TipoNegocio } from "@/types";
 
 export type AppliedFilters = {
-  q: string;
+  q?: string;
   cidade?: string;
   tipo?: TipoImovel;
   negocio?: TipoNegocio;
@@ -19,7 +20,7 @@ export type AppliedFilters = {
 };
 
 type Props = {
-  q: string;
+  q?: string;
   setQ: (v: string) => void;
   cidade?: string;
   setCidade: (v?: string) => void;
@@ -30,6 +31,7 @@ type Props = {
   applied: AppliedFilters;
   setApplied: React.Dispatch<React.SetStateAction<AppliedFilters>>;
   items: Imovel[];
+  allCities: string[]; // ✅ lista única de cidades vinda de MyProperties
   onApply: () => void;
   TIPO_IMOVEL_OPCOES: TipoImovel[];
   TIPO_NEGOCIO_OPCOES: TipoNegocio[];
@@ -46,7 +48,7 @@ export default function Filters({
   setNegocio,
   applied,
   setApplied,
-  items,
+  allCities,
   onApply,
   TIPO_IMOVEL_OPCOES,
   TIPO_NEGOCIO_OPCOES,
@@ -63,7 +65,6 @@ export default function Filters({
         !shadow-sm
         !ring-1
         !ring-neutral-200
-        
       "
     >
       <div
@@ -77,20 +78,20 @@ export default function Filters({
           md:!p-5
         "
       >
-        
+        {/* 🔎 Buscar */}
         <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Buscar
           </label>
           <Input
             placeholder="Bairro ou cidade"
-            value={q}
+            value={q || ""}
             onChange={(e) => setQ(e.target.value)}
             className="!h-10 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm focus:!ring-2 focus:!ring-blue-500/30"
           />
         </div>
 
-        
+        {/* 🏙 Cidade */}
         <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Cidade
@@ -100,22 +101,29 @@ export default function Filters({
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from(new Set(items.map((i) => i.cidade ?? ""))).map(
-                (c) => (
-                  <SelectItem
-                    key={c}
-                    value={c} 
-                    className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100 !cursor-pointer"
-                  >
-                    {c || "Não informado"}
-                  </SelectItem>
-                )
+              {allCities.length > 0 ? (
+                allCities.map((c) => {
+                  const value = c.trim() || "__nao_informado__"; // ✅ valor seguro
+                  return (
+                    <SelectItem
+                      key={value}
+                      value={value}
+                      className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100 !cursor-pointer"
+                    >
+                      {c.trim() || "Não informado"}
+                    </SelectItem>
+                  );
+                })
+              ) : (
+                <SelectItem value="__vazio__" disabled>
+                  Nenhuma cidade encontrada
+                </SelectItem>
               )}
             </SelectContent>
           </Select>
         </div>
 
-       
+        {/* 🏠 Tipo */}
         <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Tipo
@@ -138,7 +146,7 @@ export default function Filters({
           </Select>
         </div>
 
-        
+        {/* 💰 Negócio */}
         <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Negócio
@@ -161,7 +169,7 @@ export default function Filters({
           </Select>
         </div>
 
-        
+        {/* ✅ Status */}
         <div className="!flex !flex-col !gap-1 !w-full">
           <label className="!text-xs !font-medium !text-neutral-600">
             Status
@@ -207,7 +215,7 @@ export default function Filters({
           </Select>
         </div>
 
-        
+        {/* Botão */}
         <div className="!flex !w-full md:!w-auto">
           <Button
             className="!h-10 !w-full md:!w-auto !rounded-lg !bg-blue-600 hover:!bg-blue-700"

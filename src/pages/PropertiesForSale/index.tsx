@@ -1,3 +1,4 @@
+// src/pages/ListaImoveisVenda.tsx
 import { useEffect, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -9,42 +10,42 @@ import Pagination from "@/components/Pagination";
 import { Imovel } from "@/types";
 
 import PropertyListSection from "@/components/PropertiesForSale";
-import { buscarImoveis } from "@/service/propertyService";
+import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
 
 const ITEMS_PER_PAGE = 8;
 
 export const ListaImoveisVenda = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
-  const [loading, setLoading] = useState(true); // ✅ estado para skeleton
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.ceil(imoveis.length / ITEMS_PER_PAGE);
-
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentImoveis = imoveis.slice(startIndex, endIndex);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [showContactModal, setShowContactModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
+  
   useEffect(() => {
     async function carregarImoveis() {
       try {
-        setLoading(true); // inicia skeleton
-        const todos = await buscarImoveis();
-        // Filtrar apenas imóveis de venda, se necessário:
-        const somenteVenda = todos.filter(
-          (i) => i.tipoNegocio === "venda" || i.tipoNegocio === "Venda"
-        );
-        setImoveis(somenteVenda);
+        setLoading(true);
+
+        const response: PaginatedProperties = await buscarImoveis({
+          page: currentPage,
+          take: ITEMS_PER_PAGE,
+        });
+
+        // 👉 agora pega todos, sem filtro de tipoNegocio ou categoria
+        setImoveis(response.data);
+        setTotalPages(response.pagination.totalPages);
       } catch (err) {
         console.error("Erro ao buscar imóveis:", err);
       } finally {
-        setLoading(false); // encerra skeleton
+        setLoading(false);
       }
     }
+
     carregarImoveis();
-  }, []);
+  }, [currentPage]);
 
   return (
     <SidebarProvider>
@@ -53,8 +54,8 @@ export const ListaImoveisVenda = () => {
 
         <main className="flex-grow !pt-[60px]">
           <PropertyListSection
-            imoveisVenda={currentImoveis}
-            loading={loading}                          // ✅ passa o estado
+            imoveisVenda={imoveis}
+            loading={loading}
             showContactModal={showContactModal}
             showPhoneModal={showPhoneModal}
             setShowContactModal={setShowContactModal}

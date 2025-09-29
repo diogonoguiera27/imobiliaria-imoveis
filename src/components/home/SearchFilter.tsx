@@ -5,11 +5,11 @@ import { Input } from "../ui/input";
 import api from "@/service/api";
 import type { Imovel } from "@/types";
 
-// Função utilitária para normalizar (sem acentos + minúsculo)
+// 🔹 Função utilitária para normalizar (sem acentos + minúsculo)
 function normalize(str: string) {
   return str
-    .normalize("NFD") // separa acentos
-    .replace(/[\u0300-\u036f]/g, "") // remove acentos
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();
 }
@@ -31,23 +31,22 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
 
   const [cidadesDisponiveis, setCidadesDisponiveis] = useState<string[]>([]);
 
-  // 🔹 Carregar cidades únicas a partir dos imóveis existentes
+  // 🔹 Carregar cidades únicas de todos os imóveis
   useEffect(() => {
     api
-      .get("/property/?page=2")
+      .get("/property", { params: { take: 9999 } }) // pega até 9999 imóveis
       .then((res) => {
-        const lista = res.data as Imovel[];
+        const lista = (res.data?.data ?? []) as Imovel[];
 
         const nomes = lista
           .map((p) => (p.cidade ?? "").trim())
           .filter((nome) => nome.length > 0);
 
         const unicasMap = new Map<string, string>();
-
         nomes.forEach((nome) => {
           const chave = normalize(nome);
           if (!unicasMap.has(chave)) {
-            unicasMap.set(chave, nome); // mantém a primeira forma encontrada
+            unicasMap.set(chave, nome); // mantém o primeiro formato encontrado
           }
         });
 
@@ -72,7 +71,6 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
     return () => window.removeEventListener("clear-filters", onClear);
   }, [onLimparFiltro]);
 
-  // 🔹 Envia filtros
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -91,7 +89,6 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
     });
   };
 
-  // 🔹 Limpa filtros
   const handleLimpar = () => {
     setValorMax(3_000_000);
     setTipo("");
@@ -110,7 +107,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
           !border !border-gray-200
         "
       >
-        {/* Preço */}
+        {/* 🔹 Preço */}
         <div className="!flex !flex-col !w-full sm:!w-[400px]">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Filtrar por Preço
@@ -129,7 +126,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
           </div>
         </div>
 
-        {/* Tipo */}
+        {/* 🔹 Tipo */}
         <div className="!flex !flex-col !w-full sm:!w-[200px]">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Tipo de Imóvel
@@ -150,7 +147,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
           </select>
         </div>
 
-        {/* Cidade */}
+        {/* 🔹 Cidade */}
         <div className="!flex !flex-col !w-full sm:!w-[220px]">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Cidade
@@ -173,7 +170,7 @@ const FiltroBusca = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
           </select>
         </div>
 
-        {/* Botões */}
+        {/* 🔹 Botões */}
         <div className="!flex !flex-col sm:!flex-row !justify-end !w-full sm:!w-auto !gap-4">
           <Button
             type="submit"

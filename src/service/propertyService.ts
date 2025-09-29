@@ -24,27 +24,38 @@ export type CreatePropertyPayload = {
 export type UpdatePropertyPayload = Partial<CreatePropertyPayload>;
 
 /* =========================================================
-   🔹 Lista geral de imóveis (público)
-   - Pode receber filtros: cidade, cityId, tipo, precoMax
+   🔹 Tipo para resposta paginada
    ========================================================= */
-export async function buscarImoveis(filtros?: {
+export interface PaginatedProperties {
+  data: Imovel[];
+  pagination: {
+    total: number;
+    page: number;
+    take: number;
+    totalPages: number;
+  };
+}
+
+/* =========================================================
+   🔹 Lista geral de imóveis (público, paginado + filtros)
+   ========================================================= */
+export async function buscarImoveis(params?: {
   cidade?: string;
   cityId?: number | null;
   tipo?: string;
   precoMax?: number;
-}): Promise<Imovel[]> {
-  const { data } = await api.get<Imovel[]>("/property", {
-    params: filtros,
-  });
+  categoria?: string; // 👈 agora aceitamos "popular", "promocao", "destaque"
+  page?: number;
+  take?: number;
+}): Promise<PaginatedProperties> {
+  const { data } = await api.get<PaginatedProperties>("/property", { params });
   return data;
 }
 
 /* =========================================================
-   🔹 Lista filtrando por cidade (público – legado)
+   🔹 Lista filtrando por cidade (legado, sem paginação)
    ========================================================= */
-export async function buscarImoveisPorCidade(
-  cidade: string
-): Promise<Imovel[]> {
+export async function buscarImoveisPorCidade(cidade: string): Promise<Imovel[]> {
   const { data } = await api.get<Imovel[]>("/property", { params: { cidade } });
   return data;
 }
@@ -60,15 +71,13 @@ export async function buscarImoveisSimilares(identifier: string | number) {
 /* =========================================================
    🔹 Busca um único imóvel
    ========================================================= */
-export async function buscarImovel(
-  identifier: string | number
-): Promise<Imovel> {
+export async function buscarImovel(identifier: string | number): Promise<Imovel> {
   const { data } = await api.get<Imovel>(`/property/${identifier}`);
   return data;
 }
 
 /* =========================================================
-   🔒 Criar imóvel (privado – usa userId da sessão)
+   🔒 Criar imóvel
    ========================================================= */
 export async function criarImovel(formData: FormData): Promise<Imovel> {
   const { data } = await api.post<Imovel>("/property", formData, {
@@ -81,72 +90,65 @@ export async function criarImovel(formData: FormData): Promise<Imovel> {
    🔒 Atualizar imóvel
    ========================================================= */
 export async function atualizarImovel(
-  identifier: number,
+  identifier: number | string,
   payload: UpdatePropertyPayload | FormData
 ): Promise<Imovel> {
   const isFormData = payload instanceof FormData;
   const { data } = await api.put<Imovel>(
     `/property/${identifier}`,
     payload,
-    isFormData
-      ? { headers: { "Content-Type": "multipart/form-data" } }
-      : undefined
+    isFormData ? { headers: { "Content-Type": "multipart/form-data" } } : undefined
   );
   return data;
 }
 
-/* =========================================================
-   🔒 Deletar (desativar) imóvel
-   ========================================================= */
-export async function deletarImovel(identifier: number): Promise<void> {
+
+export async function deletarImovel(identifier: number | string): Promise<void> {
   await api.delete(`/property/${identifier}`);
 }
 
-/* =========================================================
-   🔹 Buscar vários imóveis por lista de IDs ou UUIDs
-   ========================================================= */
-export async function buscarImoveisPorIds(
-  ids: (number | string)[]
-): Promise<Imovel[]> {
+
+export async function buscarImoveisPorIds(ids: (number | string)[]): Promise<Imovel[]> {
   const { data } = await api.post<Imovel[]>("/property/by-ids", { ids });
   return data;
 }
 
-/* =========================================================
-   🔒 Meus imóveis (privado – sempre id numérico)
-   ========================================================= */
-export async function buscarMeusImoveis(): Promise<Imovel[]> {
-  const { data } = await api.get<Imovel[]>("/property/mine");
+
+export async function buscarMeusImoveis(params?: {
+  page?: number;
+  take?: number;
+  cidade?: string;
+  tipo?: string;
+  negocio?: string;
+  ativo?: boolean;
+}): Promise<PaginatedProperties> {
+  const { data } = await api.get<PaginatedProperties>("/property/mine", { params });
   return data;
 }
 
-/* =========================================================
-   🔹 Enviar contato
-   ========================================================= */
+
 export async function enviarContato(
   identifier: string | number,
-  data: {
-    nome?: string;
-    email?: string;
-    telefone?: string;
-    mensagem?: string;
-  }
+  data: { nome?: string; email?: string; telefone?: string; mensagem?: string }
 ) {
   const response = await api.post(`/property/${identifier}/contact`, data);
   return response.data;
 }
 
-/* =========================================================
-   🔒 Atualizar status ativo/inativo
-   ========================================================= */
+
 export async function atualizarStatusImovel(
   identifier: string | number,
   ativo: boolean
 ): Promise<{ id: number; uuid: string | null; ativo: boolean }> {
-  const { data } = await api.patch<{
-    id: number;
-    uuid: string | null;
-    ativo: boolean;
-  }>(`/property/${identifier}/ativo`, { ativo });
+  const { data } = await api.patch<{ id: number; uuid: string | null; ativo: boolean }>(
+    `/property/${identifier}/ativo`,
+    { ativo }
+  );
   return data;
 }
+
+export async function buscarCidadesDoUsuario(): Promise<string[]> {
+  const { data } = await api.get<string[]>("/property/mine/cities");
+  return data;
+}
+

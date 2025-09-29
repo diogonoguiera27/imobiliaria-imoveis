@@ -77,6 +77,7 @@ export function AuthProvider({ children }: AppProviderProps) {
       updateUser,
       token: data?.token || null,
       user: data?.user || null,
+      isAdmin: data?.user?.role === "ADMIN" || false, 
     }}>
       {children}
     </AuthContext.Provider>

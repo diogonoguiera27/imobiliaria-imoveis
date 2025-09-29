@@ -9,6 +9,7 @@ export interface User {
   telefone?: string;
   username?: string;
   avatarUrl?: string;
+  role: "ADMIN" | "USER";
 }
 
 export interface AuthState {
@@ -22,6 +23,7 @@ export interface AuthContextData {
   updateUser(user: User): void;
   token: string | null;
   user: User | null;
+  isAdmin: boolean;
 }
 
 export const AuthContext = createContext<AuthContextData | undefined>(undefined);

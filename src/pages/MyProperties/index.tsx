@@ -1,5 +1,5 @@
 // src/pages/MyProperties.tsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 
@@ -10,6 +10,8 @@ import {
   buscarMeusImoveis,
   deletarImovel,
   atualizarStatusImovel,
+  PaginatedProperties,
+  buscarCidadesDoUsuario, // 🔹 novo service
 } from "@/service/propertyService";
 import type { Imovel, TipoImovel, TipoNegocio } from "@/types";
 
@@ -41,7 +43,7 @@ const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
 const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["venda", "aluguel"];
 const ITEMS_PER_PAGE = 8;
 
-/* --- Carrossel de UMA linha (mobile, grid) --- */
+/* --- Carrossel Mobile --- */
 function RowCarousel({
   items,
   onView,
@@ -58,7 +60,7 @@ function RowCarousel({
   const [index, setIndex] = useState(0);
   const prev = () => setIndex((i) => (i > 0 ? i - 1 : items.length - 1));
   const next = () => setIndex((i) => (i < items.length - 1 ? i + 1 : 0));
-  if (items.length === 0) return null;
+  if (!items || items.length === 0) return null;
 
   return (
     <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
@@ -69,7 +71,6 @@ function RowCarousel({
         onDelete={() => onDelete(items[index].id)}
         onToggleAtivo={(novo) => onToggleAtivo(items[index].id, novo)}
       />
-
       <div className="!flex !items-center !justify-center !gap-6 !mt-3">
         <button
           onClick={prev}
@@ -84,7 +85,6 @@ function RowCarousel({
           <ChevronRight className="!w-5 !h-5" />
         </button>
       </div>
-
       <div className="!flex !gap-2 !mt-3">
         {items.map((_, i) => (
           <span
@@ -134,12 +134,8 @@ export default function MyProperties() {
   const [params] = useSearchParams();
 
   const [items, setItems] = useState<Imovel[]>([]);
+  const [allCities, setAllCities] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const [q, setQ] = useState("");
-  const [cidade, setCidade] = useState<string | undefined>();
-  const [tipo, setTipo] = useState<TipoImovel | undefined>();
-  const [negocio, setNegocio] = useState<TipoNegocio | undefined>();
 
   const [applied, setApplied] = useState<AppliedFilters>({
     q: "",
@@ -150,18 +146,31 @@ export default function MyProperties() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const createdId = useMemo(() => Number(params.get("createdId")), [params]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
+  const carregarMeusImoveis = useCallback(
+    async (page = 1, filtros: Partial<AppliedFilters> = {}) => {
       try {
-        const list = await buscarMeusImoveis();
-        if (mounted) setItems(list);
+        setLoading(true);
+        const response: PaginatedProperties = await buscarMeusImoveis({
+          page,
+          take: ITEMS_PER_PAGE,
+          cidade: filtros.cidade,
+          tipo: filtros.tipo,
+          negocio: filtros.negocio,
+          ativo: filtros.ativo,
+        });
+
+        const safeData = Array.isArray(response?.data) ? response.data : [];
+        setItems(safeData);
+        setTotalPages(response?.pagination?.totalPages ?? 1);
+        setCurrentPage(response?.pagination?.page ?? 1);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          const status = err.response?.status;
+          const status: number | undefined = err.response?.status;
           if (status === 401) {
             toast.error("Sessão expirada. Faça login novamente.");
             navigate("/login");
@@ -175,54 +184,30 @@ export default function MyProperties() {
           toast.error("Erro inesperado ao carregar seus imóveis.");
         }
       } finally {
-        if (mounted) setLoading(false);
+        setLoading(false);
+      }
+    },
+    [navigate]
+  );
+
+  // 🔹 Carregar imóveis + cidades únicas
+  useEffect(() => {
+    carregarMeusImoveis(1);
+
+    (async () => {
+      try {
+        const cidades = await buscarCidadesDoUsuario();
+        setAllCities(cidades);
+      } catch {
+        setAllCities([]);
       }
     })();
-    return () => {
-      mounted = false;
-    };
-  }, [navigate]);
+  }, [carregarMeusImoveis]);
 
-  useEffect(() => {
-    const status = params.get("status");
-    setApplied((prev) => ({
-      ...prev,
-      ativo:
-        status === "inactive" ? false : status === "active" ? true : undefined,
-    }));
-  }, [params]);
-
-  const filtered = useMemo(() => {
-    const txt = (applied.q || "").trim().toLowerCase();
-    let list = [...items];
-
-    if (txt)
-      list = list.filter((p) =>
-        `${p.bairro} ${p.cidade ?? ""}`.toLowerCase().includes(txt)
-      );
-
-    if (applied.cidade)
-      list = list.filter(
-        (p) => (p.cidade ?? "").toLowerCase() === applied.cidade?.toLowerCase()
-      );
-
-    if (applied.tipo) list = list.filter((p) => p.tipo === applied.tipo);
-
-    if (applied.negocio)
-      list = list.filter(
-        (p) => p.tipoNegocio.toLowerCase() === applied.negocio?.toLowerCase()
-      );
-
-    if (typeof applied.ativo === "boolean")
-      list = list.filter((p) => p.ativo === applied.ativo);
-
-    return list;
-  }, [items, applied]);
-
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = filtered.slice(startIndex, endIndex);
+  const handleApplyFilters = () => {
+    setCurrentPage(1);
+    carregarMeusImoveis(1, applied);
+  };
 
   const handleView = (identifier: string | number) =>
     navigate(`/imovel/${identifier}`);
@@ -232,8 +217,8 @@ export default function MyProperties() {
   const handleDelete = async (id: number) => {
     try {
       await deletarImovel(id);
-      setItems((prev) => prev.filter((i) => i.id !== id));
       toast.success("Imóvel excluído com sucesso!");
+      carregarMeusImoveis(currentPage, applied);
     } catch {
       toast.error("Não foi possível excluir o imóvel.");
     }
@@ -242,54 +227,16 @@ export default function MyProperties() {
   const handleToggleAtivo = async (id: number, novoAtivo: boolean) => {
     try {
       await atualizarStatusImovel(id, novoAtivo);
-      setItems((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, ativo: novoAtivo } : p))
-      );
       toast.success(novoAtivo ? "Imóvel ativado." : "Imóvel desativado.");
+      carregarMeusImoveis(currentPage, applied);
     } catch {
       toast.error("Não foi possível atualizar o status do imóvel.");
     }
   };
 
-  const handleApplyFilters = () => {
-    setApplied({ q, cidade, tipo, negocio, ativo: applied.ativo });
-    setCurrentPage(1);
-
-    const count = (() => {
-      const txt = (q || "").trim().toLowerCase();
-      let list = [...items];
-
-      if (txt)
-        list = list.filter((p) =>
-          `${p.bairro} ${p.cidade ?? ""}`.toLowerCase().includes(txt)
-        );
-
-      if (cidade)
-        list = list.filter(
-          (p) => (p.cidade ?? "").toLowerCase() === cidade.toLowerCase()
-        );
-
-      if (tipo) list = list.filter((p) => p.tipo === tipo);
-
-      if (negocio)
-        list = list.filter(
-          (p) => p.tipoNegocio.toLowerCase() === negocio.toLowerCase()
-        );
-
-      if (typeof applied.ativo === "boolean")
-        list = list.filter((p) => p.ativo === applied.ativo);
-
-      return list.length;
-    })();
-
-    if (count === 0)
-      toast.info("Nenhum imóvel encontrado com os filtros aplicados.");
-    else toast.success(`${count} imóvel(is) encontrado(s).`);
-  };
-
-  const hasAnyItem = items.length > 0;
-  const row1 = currentItems.slice(0, 4);
-  const row2 = currentItems.slice(4, 8);
+  const hasAnyItem = Array.isArray(items) && items.length > 0;
+  const row1 = hasAnyItem ? items.slice(0, 4) : [];
+  const row2 = hasAnyItem ? items.slice(4, 8) : [];
 
   return (
     <SidebarProvider>
@@ -345,63 +292,25 @@ export default function MyProperties() {
                     </div>
                   </div>
 
-                  {/* Mobile header */}
-                  <div className="flex md:hidden !flex-col !gap-3 !pb-3 !items-center">
-                    <div className="!flex !flex-col !md:flex-row !items-center !justify-between !pb-3">
-                      <div>
-                        <h1 className="!text-2xl !font-semibold !leading-tight">
-                          Meus Imóveis
-                        </h1>
-                        <p className="!text-sm !text-neutral-500 !mt-1">
-                          Gerencie seus anúncios
-                        </p>
-                      </div>
-                      <div className="!flex !gap-2 !mt-3 !md:mt-0">
-                        <button
-                          onClick={() => setViewMode("grid")}
-                          className={`!p-2 !rounded ${
-                            viewMode === "grid"
-                              ? "!bg-red-600 !text-white"
-                              : "!bg-gray-200"
-                          }`}
-                        >
-                          <LayoutGrid className="!w-5 !h-5" />
-                        </button>
-                        <button
-                          onClick={() => setViewMode("list")}
-                          className={`!p-2 !rounded ${
-                            viewMode === "list"
-                              ? "!bg-red-600 !text-white"
-                              : "!bg-gray-200"
-                          }`}
-                        >
-                          <ListIcon className="!w-5 !h-5" />
-                        </button>
-                      </div>
-                    </div>
-                    <Button
-                      className="!h-10 !w-[285px] !rounded-lg !bg-red-600 hover:!opacity-95 !px-4 !font-medium !text-white"
-                      onClick={() => navigate("/imovel/novo")}
-                    >
-                      <Plus className="!mr-2 !h-4 !w-4" />
-                      Cadastrar Imóvel
-                    </Button>
-                  </div>
-
-                  
+                  {/* Filtros */}
                   <div className="!mt-4 flex !justify-center">
                     <Filters
-                      q={q}
-                      setQ={setQ}
-                      cidade={cidade}
-                      setCidade={setCidade}
-                      tipo={tipo}
-                      setTipo={setTipo}
-                      negocio={negocio}
-                      setNegocio={setNegocio}
+                      q={applied.q || ""}
+                      setQ={(q) => setApplied((p) => ({ ...p, q }))}
+                      cidade={applied.cidade}
+                      setCidade={(cidade) =>
+                        setApplied((p) => ({ ...p, cidade }))
+                      }
+                      tipo={applied.tipo}
+                      setTipo={(tipo) => setApplied((p) => ({ ...p, tipo }))}
+                      negocio={applied.negocio}
+                      setNegocio={(negocio) =>
+                        setApplied((p) => ({ ...p, negocio }))
+                      }
                       applied={applied}
                       setApplied={setApplied}
                       items={items}
+                      allCities={allCities} // ✅ vem da API dedicada
                       onApply={handleApplyFilters}
                       TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
                       TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
@@ -410,7 +319,7 @@ export default function MyProperties() {
 
                   {/* Conteúdo */}
                   <div className="!mt-6">
-                    {!loading && hasAnyItem && currentItems.length === 0 ? (
+                    {!loading && hasAnyItem && items.length === 0 ? (
                       <NoResults />
                     ) : (
                       <>
@@ -419,56 +328,36 @@ export default function MyProperties() {
                           {viewMode === "grid" ? (
                             <PropertiesGrid
                               loading={loading}
-                              items={currentItems}
+                              items={items}
                               createdId={createdId}
                               currentPage={currentPage}
                               totalPages={totalPages}
-                              onPageChange={setCurrentPage}
-                              onView={(identifier) =>
-                                handleView(
-                                  currentItems.find(
-                                    (p) => p.id === identifier
-                                  )?.uuid ?? identifier
-                                )
+                              onPageChange={(page) =>
+                                carregarMeusImoveis(page, applied)
                               }
-                              onEdit={(identifier) =>
-                                handleEdit(
-                                  currentItems.find(
-                                    (p) => p.id === identifier
-                                  )?.uuid ?? identifier
-                                )
-                              }
+                              onView={handleView}
+                              onEdit={handleEdit}
                               onDelete={handleDelete}
                               onToggleAtivo={handleToggleAtivo}
                             />
                           ) : (
                             <PropertiesList
                               loading={loading}
-                              items={currentItems}
+                              items={items}
                               currentPage={currentPage}
                               totalPages={totalPages}
-                              onPageChange={setCurrentPage}
-                              onView={(identifier) =>
-                                handleView(
-                                  currentItems.find(
-                                    (p) => p.id === identifier
-                                  )?.uuid ?? identifier
-                                )
+                              onPageChange={(page) =>
+                                carregarMeusImoveis(page, applied)
                               }
-                              onEdit={(identifier) =>
-                                handleEdit(
-                                  currentItems.find(
-                                    (p) => p.id === identifier
-                                  )?.uuid ?? identifier
-                                )
-                              }
+                              onView={handleView}
+                              onEdit={handleEdit}
                               onDelete={handleDelete}
                               onToggleAtivo={handleToggleAtivo}
                             />
                           )}
                         </div>
 
-                        
+                        {/* Mobile */}
                         <div className="flex md:hidden !flex-col !items-center ">
                           {viewMode === "grid" ? (
                             loading ? (
@@ -501,8 +390,9 @@ export default function MyProperties() {
                                   <div className="!flex !justify-center !mt-4 !gap-2">
                                     <button
                                       onClick={() =>
-                                        setCurrentPage((p) =>
-                                          Math.max(1, p - 1)
+                                        carregarMeusImoveis(
+                                          Math.max(1, currentPage - 1),
+                                          applied
                                         )
                                       }
                                       className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
@@ -514,8 +404,9 @@ export default function MyProperties() {
                                     </span>
                                     <button
                                       onClick={() =>
-                                        setCurrentPage((p) =>
-                                          Math.min(totalPages, p + 1)
+                                        carregarMeusImoveis(
+                                          Math.min(totalPages, currentPage + 1),
+                                          applied
                                         )
                                       }
                                       className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
@@ -526,33 +417,17 @@ export default function MyProperties() {
                                 )}
                               </>
                             )
-                          ) : loading ? (
-                            <div className="!w-[285px] !mx-auto !flex !flex-col !gap-6">
-                              {Array.from({ length: 4 }).map((_, i) => (
-                                <CardPropertiesAdmin key={i} loading />
-                              ))}
-                            </div>
                           ) : (
                             <PropertiesList
                               loading={loading}
-                              items={currentItems}
+                              items={items}
                               currentPage={currentPage}
                               totalPages={totalPages}
-                              onPageChange={setCurrentPage}
-                              onView={(identifier) =>
-                                handleView(
-                                  currentItems.find(
-                                    (p) => p.id === identifier
-                                  )?.uuid ?? identifier
-                                )
+                              onPageChange={(page) =>
+                                carregarMeusImoveis(page, applied)
                               }
-                              onEdit={(identifier) =>
-                                handleEdit(
-                                  currentItems.find(
-                                    (p) => p.id === identifier
-                                  )?.uuid ?? identifier
-                                )
-                              }
+                              onView={handleView}
+                              onEdit={handleEdit}
                               onDelete={handleDelete}
                               onToggleAtivo={handleToggleAtivo}
                             />
