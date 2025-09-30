@@ -8,7 +8,6 @@ interface PropertyCardAdminProps {
   loading?: boolean;
   onView?: () => void;
   onEdit?: () => void;
-  onDelete?: () => void;
   onToggleAtivo?: (novo: boolean) => void;
 }
 
@@ -17,14 +16,10 @@ export default function CardPropertiesAdmin({
   loading = false,
   onView,
   onEdit,
-  onDelete,
   onToggleAtivo,
 }: PropertyCardAdminProps) {
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
-  // =====================
-  // Skeleton de carregamento
-  // =====================
   if (loading) {
     return (
       <div className="!w-[285px] !h-[470px] !flex-shrink-0 !flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200">
@@ -53,7 +48,6 @@ export default function CardPropertiesAdmin({
 
           <div className="!flex !flex-col !gap-2 !mt-2">
             <div className="!flex !justify-between !gap-2">
-              <Skeleton className="h-9 w-full rounded" />
               <Skeleton className="h-9 w-full rounded" />
               <Skeleton className="h-9 w-full rounded" />
             </div>
@@ -134,7 +128,6 @@ export default function CardPropertiesAdmin({
               Ver
             </Button>
 
-            
             <Button
               onClick={onEdit}
               disabled={!isActive}
@@ -146,13 +139,6 @@ export default function CardPropertiesAdmin({
               }`}
             >
               Editar
-            </Button>
-
-            <Button
-              onClick={onDelete}
-              className="!flex-1 !rounded !bg-red-600 !text-white !text-sm hover:!bg-red-700"
-            >
-              Excluir
             </Button>
           </div>
 

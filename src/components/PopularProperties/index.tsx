@@ -28,9 +28,12 @@ const PopularProperties = () => {
   const [apiPage, setApiPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // 🔹 índice de início do bloco visível
+  // 🔹 índice desktop
   const [startIndex, setStartIndex] = useState(0);
-  const visibleCount = 5; // 👈 quantos cards mostrar por vez
+  const visibleCount = 5;
+
+  // 🔹 índice mobile
+  const [mobileIndex, setMobileIndex] = useState(0);
 
   const { token, user } = useAuth();
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
@@ -43,19 +46,19 @@ const PopularProperties = () => {
         const response: PaginatedProperties = await buscarImoveis({
           categoria: "popular",
           page: apiPage,
-          take: 10, // backend retorna 10
+          take: 10,
         });
 
         const ordenados = user?.cidade
           ? priorizarImoveisDaCidade(response.data, user.cidade)
           : response.data;
 
-        setImoveis((prev) =>
-          apiPage === 1 ? ordenados : [...prev, ...ordenados]
-        );
+        // 👉 sempre substitui os imóveis da página atual
+        setImoveis(ordenados);
         setTotalPages(response.pagination.totalPages);
+        setStartIndex(0); // reset no desktop quando troca de página
+        setMobileIndex(0); // reset no mobile também
 
-        // carregar favoritos
         if (token) {
           try {
             const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
@@ -75,21 +78,46 @@ const PopularProperties = () => {
     carregarImoveis();
   }, [token, user, apiPage]);
 
-  // 👉 navegação
+  // 👉 navegação desktop
   const prevPage = () => {
-    setStartIndex((prev) => Math.max(prev - visibleCount, 0));
+    if (startIndex > 0) {
+      // apenas volta dentro da página
+      setStartIndex((prev) => Math.max(prev - visibleCount, 0));
+    } else if (apiPage > 1) {
+      // se estiver no começo e não for a primeira página → busca página anterior
+      setApiPage((prev) => prev - 1);
+      setStartIndex(5); // último bloco da página anterior
+    }
   };
 
   const nextPage = () => {
     const nextIndex = startIndex + visibleCount;
-
     if (nextIndex >= imoveis.length) {
       if (apiPage < totalPages) {
         setApiPage((prev) => prev + 1);
-        setStartIndex(nextIndex);
+        setStartIndex(0);
       }
     } else {
       setStartIndex(nextIndex);
+    }
+  };
+
+  // 👉 navegação mobile com paginação
+  const prevMobile = () => {
+    if (mobileIndex > 0) {
+      setMobileIndex((prev) => prev - 1);
+    } else if (apiPage > 1) {
+      setApiPage((prev) => prev - 1);
+      setMobileIndex(9); // último item da página anterior
+    }
+  };
+
+  const nextMobile = () => {
+    if (mobileIndex < imoveis.length - 1) {
+      setMobileIndex((prev) => prev + 1);
+    } else if (apiPage < totalPages) {
+      setApiPage((prev) => prev + 1);
+      setMobileIndex(0); // primeiro item da próxima página
     }
   };
 
@@ -105,17 +133,15 @@ const PopularProperties = () => {
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
           <div className="!relative !max-w-[1412px] !w-full">
-            {/* seta esquerda */}
             <button
               onClick={prevPage}
-              disabled={startIndex === 0 && apiPage === 1}
+              disabled={apiPage === 1 && startIndex === 0}
               className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
                          !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
             >
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
-            {/* cards */}
             <div
               className="!flex !gap-4 !overflow-x-hidden !items-center hide-scrollbar"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
@@ -135,13 +161,9 @@ const PopularProperties = () => {
                     ))}
             </div>
 
-            
             <button
               onClick={nextPage}
-              disabled={
-                apiPage === totalPages &&
-                startIndex + visibleCount >= imoveis.length
-              }
+              disabled={apiPage === totalPages && startIndex + visibleCount >= imoveis.length}
               className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
                          !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
             >
@@ -150,50 +172,50 @@ const PopularProperties = () => {
           </div>
         </div>
 
-        
+        {/* 📱 Mobile */}
         <div className="md:!hidden !w-full !flex !flex-col !items-center !mt-6">
           {imoveis.length > 0 && (
             <>
-              <div className="!w-[90%] !flex !flex-col !gap-4">
-                {imoveis.map((item) => (
-                  <PropertyCard
-                    key={item.id}
-                    item={item}
-                    isFavoritedInitially={favoritedIds.includes(item.id)}
-                  />
-                ))}
+              <div className="!w-[90%]">
+                <PropertyCard
+                  item={imoveis[mobileIndex]}
+                  isFavoritedInitially={favoritedIds.includes(imoveis[mobileIndex].id)}
+                />
               </div>
 
               <div className="!flex !items-center !justify-center !gap-6 !mt-3">
                 <button
-                  onClick={prevPage}
-                  disabled={startIndex === 0 && apiPage === 1}
+                  onClick={prevMobile}
+                  disabled={apiPage === 1 && mobileIndex === 0}
                   className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
                 >
                   <ChevronLeft className="!w-5 !h-5 !cursor-pointer" />
                 </button>
-
-                <span className="text-gray-700 text-sm">
-                  Página {apiPage} / {totalPages}
-                </span>
-
                 <button
-                  onClick={nextPage}
-                  disabled={
-                    apiPage === totalPages &&
-                    startIndex + visibleCount >= imoveis.length
-                  }
+                  onClick={nextMobile}
+                  disabled={apiPage === totalPages && mobileIndex === imoveis.length - 1}
                   className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
                 >
                   <ChevronRight className="!w-5 !h-5 !cursor-pointer" />
                 </button>
+              </div>
+
+              {/* 🔹 Bolinhas (máx 10 por página) */}
+              <div className="!flex !gap-2 !mt-3">
+                {imoveis.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`!w-2 !h-2 !rounded-full ${
+                      i === mobileIndex ? "!bg-red-500" : "!bg-gray-300"
+                    }`}
+                  />
+                ))}
               </div>
             </>
           )}
         </div>
       </div>
 
-      
       {showContactModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />

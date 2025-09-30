@@ -14,7 +14,7 @@ type Props = {
   items: Imovel[];
   onView: (id: number) => void;
   onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  
   onToggleAtivo: (id: number, ativo: boolean) => void;
   currentPage: number;
   totalPages: number;
@@ -26,7 +26,7 @@ export default function PropertiesListMyPorperty({
   items,
   onView,
   onEdit,
-  onDelete,
+  
   onToggleAtivo,
   currentPage,
   totalPages,
@@ -144,14 +144,8 @@ export default function PropertiesListMyPorperty({
                       {isActive ? "Desativar" : "Ativar"}
                     </Button>
 
-                    {/* Excluir */}
-                    <Button
-                      size="sm"
-                      onClick={() => onDelete(item.id)}
-                      className="!w-[90px] !py-2 !bg-gradient-to-r !from-red-500 !to-pink-600 !text-white !font-semibold !rounded-full !transition-transform hover:!scale-105 hover:!shadow-lg"
-                    >
-                      Excluir
-                    </Button>
+                    
+                    
                   </TableCell>
                 </TableRow>
               );

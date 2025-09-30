@@ -12,7 +12,7 @@ type Props = {
   onPageChange: (p: number) => void;
   onView: (id: number) => void;
   onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+ 
   onToggleAtivo: (id: number, ativo: boolean) => void;
 };
 
@@ -25,7 +25,6 @@ export default function PropertiesGridMyProperty({
   onPageChange,
   onView,
   onEdit,
-  onDelete,
   onToggleAtivo,
 }: Props) {
   return (
@@ -45,8 +44,7 @@ export default function PropertiesGridMyProperty({
                   <CardPropertiesAdmin
                     item={it}
                     onView={() => onView(it.id)}
-                    onEdit={() => onEdit(it.id)}
-                    onDelete={() => onDelete(it.id)}
+                    onEdit={() => onEdit(it.id)}                 
                     onToggleAtivo={(novo) => onToggleAtivo(it.id, novo)}
                   />
                 </div>

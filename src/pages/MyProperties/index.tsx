@@ -8,7 +8,7 @@ import { Footer } from "@/components/Footer";
 
 import {
   buscarMeusImoveis,
-  deletarImovel,
+ 
   atualizarStatusImovel,
   PaginatedProperties,
   buscarCidadesDoUsuario, // 🔹 novo service
@@ -44,18 +44,17 @@ const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
 const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["venda", "aluguel"];
 const ITEMS_PER_PAGE = 8;
 
-/* --- Carrossel Mobile --- */
+
 function RowCarousel({
   items,
   onView,
   onEdit,
-  onDelete,
   onToggleAtivo,
 }: {
   items: Imovel[];
   onView: (identifier: string | number) => void;
   onEdit: (identifier: string | number) => void;
-  onDelete: (id: number) => void;
+  
   onToggleAtivo: (id: number, ativo: boolean) => void;
 }) {
   const [index, setIndex] = useState(0);
@@ -69,7 +68,6 @@ function RowCarousel({
         item={items[index]}
         onView={() => onView(items[index].uuid ?? items[index].id)}
         onEdit={() => onEdit(items[index].uuid ?? items[index].id)}
-        onDelete={() => onDelete(items[index].id)}
         onToggleAtivo={(novo) => onToggleAtivo(items[index].id, novo)}
       />
       <div className="!flex !items-center !justify-center !gap-6 !mt-3">
@@ -215,15 +213,6 @@ export default function MyProperties() {
   const handleEdit = (identifier: string | number) =>
     navigate(`/imovel/editar/${identifier}`);
 
-  const handleDelete = async (id: number) => {
-    try {
-      await deletarImovel(id);
-      toast.success("Imóvel excluído com sucesso!");
-      carregarMeusImoveis(currentPage, applied);
-    } catch {
-      toast.error("Não foi possível excluir o imóvel.");
-    }
-  };
 
   const handleToggleAtivo = async (id: number, novoAtivo: boolean) => {
     try {
@@ -338,7 +327,7 @@ export default function MyProperties() {
                               }
                               onView={handleView}
                               onEdit={handleEdit}
-                              onDelete={handleDelete}
+                              
                               onToggleAtivo={handleToggleAtivo}
                             />
                           ) : (
@@ -352,7 +341,7 @@ export default function MyProperties() {
                               }
                               onView={handleView}
                               onEdit={handleEdit}
-                              onDelete={handleDelete}
+                              
                               onToggleAtivo={handleToggleAtivo}
                             />
                           )}
@@ -376,14 +365,14 @@ export default function MyProperties() {
                                   items={row1}
                                   onView={handleView}
                                   onEdit={handleEdit}
-                                  onDelete={handleDelete}
+                                  
                                   onToggleAtivo={handleToggleAtivo}
                                 />
                                 <RowCarousel
                                   items={row2}
                                   onView={handleView}
                                   onEdit={handleEdit}
-                                  onDelete={handleDelete}
+                                  
                                   onToggleAtivo={handleToggleAtivo}
                                 />
 
@@ -429,7 +418,7 @@ export default function MyProperties() {
                               }
                               onView={handleView}
                               onEdit={handleEdit}
-                              onDelete={handleDelete}
+                              
                               onToggleAtivo={handleToggleAtivo}
                             />
                           )}

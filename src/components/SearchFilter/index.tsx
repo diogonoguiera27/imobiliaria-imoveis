@@ -34,10 +34,9 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   // 🔹 Carregar cidades únicas de todos os imóveis
   useEffect(() => {
     api
-      .get("/property", { params: { take: 9999 } }) // pega até 9999 imóveis
+      .get("/property", { params: { take: 9999 } })
       .then((res) => {
         const lista = (res.data?.data ?? []) as Imovel[];
-
         const nomes = lista
           .map((p) => (p.cidade ?? "").trim())
           .filter((nome) => nome.length > 0);
@@ -46,7 +45,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
         nomes.forEach((nome) => {
           const chave = normalize(nome);
           if (!unicasMap.has(chave)) {
-            unicasMap.set(chave, nome); // mantém o primeiro formato encontrado
+            unicasMap.set(chave, nome);
           }
         });
 
@@ -108,7 +107,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
         "
       >
         {/* 🔹 Preço */}
-        <div className="!flex !flex-col !w-full sm:!w-[400px]">
+        <div className="!flex !flex-col !w-full sm:!w-[320px]">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Filtrar por Preço
           </label>
@@ -127,7 +126,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
         </div>
 
         {/* 🔹 Tipo */}
-        <div className="!flex !flex-col !w-full sm:!w-[200px]">
+        <div className="!flex !flex-col !w-full sm:!flex-1">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Tipo de Imóvel
           </label>
@@ -135,7 +134,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
             value={tipo}
             onChange={(e) => setTipo(e.target.value)}
             className="
-              !rounded !px-4 !py-2
+              !w-full !rounded !px-4 !py-2
               !bg-white !text-black
               !border !border-gray-300
             "
@@ -148,7 +147,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
         </div>
 
         {/* 🔹 Cidade */}
-        <div className="!flex !flex-col !w-full sm:!w-[220px]">
+        <div className="!flex !flex-col !w-full sm:!flex-1">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Cidade
           </label>
@@ -156,7 +155,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
             value={cidade}
             onChange={(e) => setCidade(e.target.value)}
             className="
-              !rounded !px-4 !py-2
+              !w-full !rounded !px-4 !py-2
               !bg-white !text-black
               !border !border-gray-300
             "
@@ -171,14 +170,14 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
         </div>
 
         {/* 🔹 Botões */}
-        <div className="!flex !flex-col sm:!flex-row !justify-end !w-full sm:!w-auto !gap-4">
+        <div className="!flex !flex-col sm:!flex-row !justify-end !w-full sm:!w-[200px] !gap-4">
           <Button
             type="submit"
             className="
               !bg-red-600 !text-white
               !font-semibold !px-6 !py-3
               !rounded hover:!bg-red-700
-              !w-full sm:!w-auto
+              !w-full
             "
           >
             Pesquisar
@@ -192,7 +191,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
                 !bg-gray-200 !text-gray-700
                 !font-semibold !px-6 !py-3
                 !rounded hover:!bg-gray-300
-                !w-full sm:!w-auto
+                !w-full
               "
             >
               Limpar filtro

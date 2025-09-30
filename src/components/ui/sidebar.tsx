@@ -32,8 +32,10 @@ import {
   Building2,
   Home,
   LayoutDashboard,
+  Menu,
   Phone,
   PlusSquare,
+  Settings,
   Users,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "./dialog";
@@ -227,6 +229,8 @@ function Sidebar({
   );
 }
 
+
+
 export default function SidebarTrigger() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -256,7 +260,7 @@ export default function SidebarTrigger() {
     >
       {/* ===== ESQUERDA ===== */}
       <div className="flex items-center gap-6">
-        {/* Mobile: Drawer */}
+        {/* Mobile: Drawer só com Home e Contato */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
@@ -265,16 +269,7 @@ export default function SidebarTrigger() {
                 size="icon"
                 className="!text-white size-7 !bg-transparent"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="!w-6 !h-6"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <Menu className="!w-6 !h-6" />
               </Button>
             </SheetTrigger>
 
@@ -293,44 +288,6 @@ export default function SidebarTrigger() {
                 </button>
                 <hr />
 
-                {isAdmin && (
-                  <>
-                    <button
-                      onClick={() => ensureAuth("/meus-imoveis")}
-                      className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
-                    >
-                      <Building2 className="w-5 h-5" />
-                      Meus Imóveis
-                    </button>
-                    <hr />
-                    <button
-                      onClick={() => ensureAuth("/imovel/novo")}
-                      className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
-                    >
-                      <PlusSquare className="w-5 h-5" />
-                      Cadastrar Imóveis
-                    </button>
-                    <hr />
-                    <button
-                      onClick={() => ensureAuth("/dashboard")}
-                      className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
-                    >
-                      <LayoutDashboard className="w-5 h-5" />
-                      Dashboard
-                    </button>
-                    <hr />
-                    <button
-                      onClick={() => ensureAuth("/users")}
-                      className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
-                    >
-                      <Users className="w-5 h-5" />
-                      Gerenciar Usuários
-                    </button>
-                    <hr />
-                  </>
-                )}
-
-                {/* Contato sempre visível */}
                 <Dialog>
                   <DialogTrigger asChild>
                     <button className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition">
@@ -347,7 +304,7 @@ export default function SidebarTrigger() {
           </Sheet>
         </div>
 
-        
+        {/* Desktop Admin menu */}
         {isAdmin && (
           <nav className="hidden md:flex !px-3.5 gap-6 items-center !text-white !text-sm !font-semibold">
             <button onClick={() => ensureAuth("/meus-imoveis")} className="hover:underline">
@@ -366,8 +323,9 @@ export default function SidebarTrigger() {
         )}
       </div>
 
-      
+      {/* ===== DIREITA ===== */}
       <div className="flex items-center gap-6">
+        {/* Desktop normal menu */}
         <nav className="hidden md:flex gap-6 items-center !text-white !text-sm !font-semibold">
           <button onClick={goHome} className="hover:underline">
             Home
@@ -383,6 +341,63 @@ export default function SidebarTrigger() {
           </Dialog>
         </nav>
 
+        {/* Mobile: Drawer só para menus de Admin */}
+        {isAdmin && (
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="!text-white size-7 !bg-transparent"
+                >
+                  <Settings className="!w-6 !h-6" />
+                </Button>
+              </SheetTrigger>
+
+              <SheetContent
+                side="right"
+                className="!p-6 w-[80%] max-w-xs h-full 
+                           bg-gradient-to-r from-red-400 to-red-700 text-white"
+              >
+                <nav className="flex flex-col gap-2 font-semibold">
+                  <button
+                    onClick={() => ensureAuth("/meus-imoveis")}
+                    className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                  >
+                    <Building2 className="w-5 h-5" />
+                    Meus Imóveis
+                  </button>
+                  <hr />
+                  <button
+                    onClick={() => ensureAuth("/imovel/novo")}
+                    className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                  >
+                    <PlusSquare className="w-5 h-5" />
+                    Cadastrar Imóveis
+                  </button>
+                  <hr />
+                  <button
+                    onClick={() => ensureAuth("/dashboard")}
+                    className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                  >
+                    <LayoutDashboard className="w-5 h-5" />
+                    Dashboard
+                  </button>
+                  <hr />
+                  <button
+                    onClick={() => ensureAuth("/admin/users")}
+                    className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                  >
+                    <Users className="w-5 h-5" />
+                    Gerenciar Usuários
+                  </button>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
+        )}
+
         <div className="!mr-2 sm:!mr-4">
           <PerfilUsuarioModal />
         </div>
@@ -390,6 +405,7 @@ export default function SidebarTrigger() {
     </main>
   );
 }
+
 
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {

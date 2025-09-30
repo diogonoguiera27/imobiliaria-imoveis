@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Heart } from "lucide-react";
-import { getFavoritedProperties } from "@/service/favoriteService";
+import { buscarFavoritosPaginados } from "@/service/favoriteService";
 import { Imovel } from "@/types";
 import { useAuth } from "@/hooks/auth";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,43 +15,45 @@ import {
 } from "@/components/ui/pagination";
 
 export default function FavoriteProperties() {
-  const [favoritos, setFavoritos] = useState<Imovel[]>([]);
+  const [items, setItems] = useState<Imovel[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const ITEMS_PER_PAGE = 6;
 
   const { token } = useAuth();
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
-  useEffect(() => {
-    const carregarFavoritos = async () => {
+  const carregarFavoritos = useCallback(
+    async (page: number) => {
       if (!token) {
-        setFavoritos([]);
+        setItems([]);
         setLoading(false);
         return;
       }
 
       try {
-        const imoveisFavoritos = await getFavoritedProperties(token);
-        setFavoritos(imoveisFavoritos);
+        setLoading(true);
+        const response = await buscarFavoritosPaginados(token, {
+          page,
+          take: ITEMS_PER_PAGE,
+        });
+        setItems(response.data);
+        setTotalPages(response.pagination.totalPages);
+        setCurrentPage(response.pagination.page);
       } catch (err) {
         console.error("❌ Erro ao buscar imóveis favoritos:", err);
-        setFavoritos([]);
+        setItems([]);
       } finally {
         setLoading(false);
       }
-    };
-
-    carregarFavoritos();
-  }, [token]);
-
-  const totalPages = Math.ceil(favoritos.length / ITEMS_PER_PAGE) || 1;
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = useMemo(
-    () => favoritos.slice(startIndex, endIndex),
-    [favoritos, startIndex, endIndex]
+    },
+    [token] // ✅ dependência correta
   );
+
+  useEffect(() => {
+    carregarFavoritos(1);
+  }, [carregarFavoritos]);
 
   return (
     <div className="!rounded-xl !p-6 !shadow-xl !bg-gradient-to-br !from-white !via-red-50 !to-red-100">
@@ -77,7 +79,7 @@ export default function FavoriteProperties() {
             </div>
           ))}
         </div>
-      ) : favoritos.length === 0 ? (
+      ) : items.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center text-gray-500">
           <Heart size={48} className="mb-4 text-red-300" />
           <p className="text-lg font-medium">
@@ -92,7 +94,7 @@ export default function FavoriteProperties() {
       ) : (
         <>
           <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4">
-            {currentItems.map((imovel) => (
+            {items.map((imovel) => (
               <div
                 key={imovel.id}
                 className="!bg-white !rounded-lg !overflow-hidden !shadow-sm !border !border-red-100 hover:!shadow-md !transition !duration-200"
@@ -124,7 +126,6 @@ export default function FavoriteProperties() {
             ))}
           </div>
 
-          
           {totalPages > 1 && (
             <div className="!flex !justify-center !mt-6">
               <Pagination>
@@ -132,22 +133,27 @@ export default function FavoriteProperties() {
                   <PaginationItem>
                     <PaginationPrevious
                       onClick={() =>
-                        setCurrentPage((p) => Math.max(1, p - 1))
+                        carregarFavoritos(Math.max(1, currentPage - 1))
                       }
-                      className={currentPage === 1 ? "opacity-50 pointer-events-none" : ""}
+                      className={
+                        currentPage === 1
+                          ? "opacity-50 pointer-events-none"
+                          : ""
+                      }
                     />
                   </PaginationItem>
 
-                  
                   {Array.from({ length: totalPages }).map((_, i) => {
                     const page = i + 1;
                     return (
                       <PaginationItem key={page}>
                         <button
-                          onClick={() => setCurrentPage(page)}
-                          className={`!px-3 !py-1 !rounded  !cursor-pointer
-                            ${page === currentPage ? "!bg-red-600 !text-white" : "bg-gray-200"}
-                          `}
+                          onClick={() => carregarFavoritos(page)}
+                          className={`!px-3 !py-1 !rounded !cursor-pointer ${
+                            page === currentPage
+                              ? "!bg-red-600 !text-white"
+                              : "!bg-gray-200"
+                          }`}
                         >
                           {page}
                         </button>
@@ -158,9 +164,13 @@ export default function FavoriteProperties() {
                   <PaginationItem>
                     <PaginationNext
                       onClick={() =>
-                        setCurrentPage((p) => Math.min(totalPages, p + 1))
+                        carregarFavoritos(Math.min(totalPages, currentPage + 1))
                       }
-                      className={currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}
+                      className={
+                        currentPage === totalPages
+                          ? "opacity-50 pointer-events-none"
+                          : ""
+                      }
                     />
                   </PaginationItem>
                 </PaginationContent>

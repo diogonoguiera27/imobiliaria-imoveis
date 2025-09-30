@@ -27,7 +27,11 @@ const ITEMS_PER_PAGE = 8;
 export function Home() {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
   const [filtroAtivo, setFiltroAtivo] = useState(false);
-  const [filtros, setFiltros] = useState<{ cidade?: string; tipo?: string; precoMax?: number }>({});
+  const [filtros, setFiltros] = useState<{
+    cidade?: string;
+    tipo?: string;
+    precoMax?: number;
+  }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -36,7 +40,7 @@ export function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 🔹 Buscar imóveis paginados (com ou sem filtro)
+  // Buscar imóveis para listagem principal
   const carregarImoveis = useCallback(
     async (page: number, activeFilters = filtros) => {
       try {
@@ -44,9 +48,8 @@ export function Home() {
         const response: PaginatedProperties = await buscarImoveis({
           page,
           take: ITEMS_PER_PAGE,
-          ...activeFilters, // aplica filtros se existirem
+          ...activeFilters,
         });
-
         setImoveis(response.data);
         setTotalPages(response.pagination.totalPages);
       } catch (error) {
@@ -58,12 +61,10 @@ export function Home() {
     [filtros]
   );
 
-  // 🔹 Carregar imóveis quando troca de página
   useEffect(() => {
     carregarImoveis(currentPage);
   }, [carregarImoveis, currentPage]);
 
-  // 🔹 Resetar filtros
   const handleLimparFiltro = useCallback(() => {
     setFiltroAtivo(false);
     setFiltros({});
@@ -71,30 +72,19 @@ export function Home() {
     carregarImoveis(1, {});
   }, [carregarImoveis]);
 
-  // 🔹 Resetar via query param ?reset=true
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const shouldReset = params.get("reset") === "true";
-    if (shouldReset) {
+    if (params.get("reset") === "true") {
       handleLimparFiltro();
       navigate("/home", { replace: true });
     }
   }, [location.search, navigate, handleLimparFiltro]);
 
-  // 🔹 Resetar via evento global
-  useEffect(() => {
-    const handleClear = () => {
-      handleLimparFiltro();
-      if (location.search) {
-        navigate({ pathname: "/home", search: "" }, { replace: true });
-      }
-    };
-    window.addEventListener("clear-filters", handleClear);
-    return () => window.removeEventListener("clear-filters", handleClear);
-  }, [location.search, navigate, handleLimparFiltro]);
-
-  // 🔹 Aplicar filtro
-  const handleFiltrar = async (novosFiltros: { cidade?: string; tipo?: string; precoMax?: number }) => {
+  const handleFiltrar = async (novosFiltros: {
+    cidade?: string;
+    tipo?: string;
+    precoMax?: number;
+  }) => {
     try {
       setLoading(true);
       const response: PaginatedProperties = await buscarImoveis({
@@ -102,7 +92,6 @@ export function Home() {
         page: 1,
         take: ITEMS_PER_PAGE,
       });
-
       setImoveis(response.data);
       setTotalPages(response.pagination.totalPages);
       setFiltros(novosFiltros);
@@ -115,7 +104,6 @@ export function Home() {
     }
   };
 
-  // 🔹 Skeleton placeholder para o grid
   const GridSkeleton = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6">
       {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
@@ -143,11 +131,8 @@ export function Home() {
           <SidebarTrigger />
           <HeroBanner />
 
-          {/* 🚀 Filtro */}
-          <div
-            className="w-full !mx-auto !px-4 md:!px-0 
-                       !max-w-[1412px] md:!max-w-[1412px] sm:!w-[95%]"
-          >
+          {/* 🔹 Filtro */}
+          <div className="w-full !mx-auto !px-4 md:!px-0 !max-w-[1412px] sm:!w-[95%]">
             <SearchFilter
               onFiltrar={handleFiltrar}
               onLimparFiltro={handleLimparFiltro}
@@ -158,13 +143,6 @@ export function Home() {
           {filtroAtivo ? (
             <section className="w-full px-4 pt-0 !mt-8">
               <div className="w-full !max-w-[1412px] !mx-auto">
-                {imoveis.length > 0 && !loading && (
-                  <div className="w-full !flex !justify-center !mb-4 mt-8">
-                    <h2 className="!text-black !text-xl !font-bold !text-center !max-w-screen-lg !mt-2">
-                      Resultados filtrados
-                    </h2>
-                  </div>
-                )}
                 {loading ? (
                   <GridSkeleton />
                 ) : imoveis.length === 0 ? (
@@ -173,7 +151,8 @@ export function Home() {
                   </div>
                 ) : (
                   <>
-                    <div className="w-full flex justify-center mt-6">
+                    {/* Desktop → Grid */}
+                    <div className="hidden md:block">
                       <div
                         className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6 ${
                           totalPages <= 1 ? "!mb-12" : ""
@@ -183,25 +162,35 @@ export function Home() {
                           <PropertyCard key={item.id} item={item} />
                         ))}
                       </div>
+                      {totalPages > 1 && (
+                        <div className="w-full !flex !mt-10 !justify-center">
+                          <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                          />
+                        </div>
+                      )}
                     </div>
 
-                    {totalPages > 1 && (
-                      <div className="w-full !flex !mt-10 !justify-center">
-                        <Pagination
-                          currentPage={currentPage}
-                          totalPages={totalPages}
-                          onPageChange={setCurrentPage}
-                        />
-                      </div>
-                    )}
+                    {/* Mobile → mantém o mesmo estilo de card (um abaixo do outro) */}
+                    <div className="block md:hidden mt-6">
+                      {imoveis.map((item) => (
+                        <div key={item.id} className="mb-4">
+                          <PropertyCard item={item} />
+                        </div>
+                      ))}
+                    </div>
                   </>
                 )}
               </div>
             </section>
           ) : (
-            // 🚀 Destaques (substituindo o antigo HighlightSection)
             <section className="!p-4">
+              {/* Imóveis em Destaque */}
               <FeaturedCarousel />
+
+              {/* Populares e Promoções → desktop e mobile */}
               <PopularProperties />
               <DiscountedProperties />
 

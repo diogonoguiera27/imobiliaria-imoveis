@@ -36,15 +36,13 @@ export interface PaginatedProperties {
   };
 }
 
-/* =========================================================
-   🔹 Lista geral de imóveis (público, paginado + filtros)
-   ========================================================= */
+
 export async function buscarImoveis(params?: {
   cidade?: string;
   cityId?: number | null;
   tipo?: string;
   precoMax?: number;
-  categoria?: string; // 👈 agora aceitamos "popular", "promocao", "destaque"
+  categoria?: string; 
   page?: number;
   take?: number;
 }): Promise<PaginatedProperties> {
@@ -103,9 +101,7 @@ export async function atualizarImovel(
 }
 
 
-export async function deletarImovel(identifier: number | string): Promise<void> {
-  await api.delete(`/property/${identifier}`);
-}
+
 
 
 export async function buscarImoveisPorIds(ids: (number | string)[]): Promise<Imovel[]> {

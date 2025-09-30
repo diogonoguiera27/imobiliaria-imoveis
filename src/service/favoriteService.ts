@@ -1,14 +1,14 @@
 import api from "./api";
+import { PaginatedProperties } from "./propertyService";
 
 export interface FavoriteIdentifier {
   propertyId: number;     // ID interno do imóvel
   propertyUuid?: string;  // ✅ UUID público do imóvel
 }
 
-/**
- * Alterna o status de favorito de um imóvel.
- * 🔑 Aceita tanto ID quanto UUID. Prefira UUID quando disponível.
- */
+/* =========================================================
+   🔹 Alternar favorito (adiciona ou remove)
+   ========================================================= */
 export const toggleFavorite = async (
   identifier: number | string,
   isFavorited: boolean,
@@ -22,7 +22,6 @@ export const toggleFavorite = async (
       await api.delete(`/favorites/${identifier}`, { headers });
     } else {
       // Se não está, adiciona
-      // Se for string, é tratado como UUID
       const body =
         typeof identifier === "string"
           ? { propertyUuid: identifier }
@@ -36,10 +35,9 @@ export const toggleFavorite = async (
   }
 };
 
-/**
- * Retorna a lista de favoritos do usuário autenticado.
- * Agora retorna IDs **e** UUIDs de cada imóvel.
- */
+/* =========================================================
+   🔹 Buscar apenas os identificadores (IDs/UUIDs) dos favoritos
+   ========================================================= */
 export const getUserFavorites = async (
   token: string
 ): Promise<FavoriteIdentifier[]> => {
@@ -47,7 +45,7 @@ export const getUserFavorites = async (
     const response = await api.get<FavoriteIdentifier[]>("/favorites", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    // Exemplo de item retornado:
+    // Exemplo de retorno:
     // { propertyId: 123, propertyUuid: "550e8400-e29b-41d4-a716-446655440000" }
     return response.data;
   } catch (error) {
@@ -56,16 +54,15 @@ export const getUserFavorites = async (
   }
 };
 
-/**
- * Retorna os imóveis favoritos completos.
- * Pode enviar IDs ou UUIDs para o backend.
- */
+/* =========================================================
+   🔹 Buscar imóveis favoritos completos (sem paginação)
+   ⚠️ Uso legado → em novas telas prefira buscarFavoritosPaginados
+   ========================================================= */
 export const getFavoritedProperties = async (token: string) => {
   try {
     const favs = await getUserFavorites(token);
     if (favs.length === 0) return [];
 
-    // Envia a lista mista de IDs/UUIDs para o backend
     const idsOrUuids = favs.map((f) => f.propertyUuid || f.propertyId);
 
     const response = await api.post(
@@ -78,5 +75,33 @@ export const getFavoritedProperties = async (token: string) => {
   } catch (error) {
     console.error("Erro ao buscar imóveis favoritos completos:", error);
     return [];
+  }
+};
+
+/* =========================================================
+   🔹 Buscar imóveis favoritos completos com paginação
+   ✅ Use este em /imoveis-favoritos
+   ========================================================= */
+export const buscarFavoritosPaginados = async (
+  token: string,
+  params?: { page?: number; take?: number }
+): Promise<PaginatedProperties> => {
+  try {
+    const { data } = await api.get<PaginatedProperties>("/favorites", {
+      params,
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error) {
+    console.error("Erro ao buscar favoritos paginados:", error);
+    return {
+      data: [],
+      pagination: {
+        total: 0,
+        page: params?.page || 1,
+        take: params?.take || 6,
+        totalPages: 1,
+      },
+    };
   }
 };
