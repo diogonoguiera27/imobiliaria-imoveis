@@ -1,4 +1,4 @@
-// src/components/CarrosselDestaques/index.tsx
+// ✅ src/components/CarrosselDestaques/index.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Imovel } from "@/types";
@@ -13,7 +13,7 @@ const FeaturedCarousel: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  const [currentIndex, setCurrentIndex] = useState(0); // 📱 controle mobile
+  const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
 
@@ -44,6 +44,7 @@ const FeaturedCarousel: React.FC = () => {
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
+
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
@@ -60,6 +61,7 @@ const FeaturedCarousel: React.FC = () => {
   // 📱 Navegação manual (mobile)
   const prevSlide = () =>
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : imoveis.length - 1));
+
   const nextSlide = () =>
     setCurrentIndex((prev) => (prev < imoveis.length - 1 ? prev + 1 : 0));
 
@@ -76,6 +78,7 @@ const FeaturedCarousel: React.FC = () => {
   return (
     <section className="!w-full !px-4 !pt-2 !mt-0">
       <div className="!w-full !max-w-[80%] !mx-auto">
+        {/* 🔹 Título */}
         <div className="!w-full !flex !justify-center !mb-0">
           <h2 className="!text-xl !font-bold !text-gray-900 !text-center !max-w-screen-lg !mb-4">
             Imóveis em Destaque
@@ -120,17 +123,17 @@ const FeaturedCarousel: React.FC = () => {
           </div>
         </div>
 
-        {/* 📱 Mobile */}
+        {/* 📱 Mobile (forçado com !important) */}
         <div className="md:!hidden !w-full !flex !flex-col !items-center">
           {loading ? (
-            <div className="!w-[95%] !flex !justify-center">
+            <div className="!max-w-[380px] !w-full !mx-auto !flex !justify-center">
               <MainCarouselPropertyCard loading />
             </div>
           ) : (
             imoveis.length > 0 && (
               <>
                 <div
-                  className="!w-[95%] !flex !justify-center"
+                  className="!max-w-[380px] !w-full !mx-auto !flex !justify-center"
                   onTouchStart={handleTouchStart}
                   onTouchEnd={handleTouchEnd}
                 >

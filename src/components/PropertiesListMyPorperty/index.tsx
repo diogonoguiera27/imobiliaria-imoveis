@@ -46,7 +46,7 @@ export default function PropertiesListMyPorperty({
 
   return (
     <div className="!w-full">
-      {/* 🖥️/📱 Tabela responsiva */}
+      
       <div className="!overflow-hidden !shadow-md !rounded-2xl !border !border-gray-200 !bg-white">
         <Table className="!min-w-full !border-collapse !bg-white !rounded-lg !shadow-sm !text-sm">
           <TableHeader className="!bg-gradient-to-r from-red-400 to-red-600 !text-white !uppercase">
@@ -116,7 +116,7 @@ export default function PropertiesListMyPorperty({
                       Ver
                     </Button>
 
-                    {/* Editar → desativado se imóvel estiver inativo */}
+                    
                     <Button
                       size="sm"
                       onClick={() => isActive && onEdit(item.id)}
@@ -131,7 +131,7 @@ export default function PropertiesListMyPorperty({
                       Editar
                     </Button>
 
-                    {/* Ativar / Desativar */}
+                    
                     <Button
                       size="sm"
                       onClick={() => onToggleAtivo(item.id, !isActive)}

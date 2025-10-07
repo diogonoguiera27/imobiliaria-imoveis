@@ -8,10 +8,9 @@ import { Footer } from "@/components/Footer";
 
 import {
   buscarMeusImoveis,
- 
   atualizarStatusImovel,
   PaginatedProperties,
-  buscarCidadesDoUsuario, // 🔹 novo service
+  buscarCidadesDoUsuario,
 } from "@/service/propertyService";
 import type { Imovel, TipoImovel, TipoNegocio } from "@/types";
 
@@ -24,9 +23,9 @@ import {
   List as ListIcon,
 } from "lucide-react";
 
-import FiltersMyProperty, { AppliedFilters } from "@/components/FiltersMyProperty";
-
-
+import FiltersMyProperty, {
+  AppliedFilters,
+} from "@/components/FiltersMyProperty";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -44,7 +43,6 @@ const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
 const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["venda", "aluguel"];
 const ITEMS_PER_PAGE = 8;
 
-
 function RowCarousel({
   items,
   onView,
@@ -54,7 +52,6 @@ function RowCarousel({
   items: Imovel[];
   onView: (identifier: string | number) => void;
   onEdit: (identifier: string | number) => void;
-  
   onToggleAtivo: (id: number, ativo: boolean) => void;
 }) {
   const [index, setIndex] = useState(0);
@@ -189,10 +186,8 @@ export default function MyProperties() {
     [navigate]
   );
 
-  // 🔹 Carregar imóveis + cidades únicas
   useEffect(() => {
     carregarMeusImoveis(1);
-
     (async () => {
       try {
         const cidades = await buscarCidadesDoUsuario();
@@ -212,7 +207,6 @@ export default function MyProperties() {
     navigate(`/imovel/${identifier}`);
   const handleEdit = (identifier: string | number) =>
     navigate(`/imovel/editar/${identifier}`);
-
 
   const handleToggleAtivo = async (id: number, novoAtivo: boolean) => {
     try {
@@ -241,7 +235,59 @@ export default function MyProperties() {
                 </div>
               ) : (
                 <>
-                  {/* Cabeçalho */}
+                  {/* Cabeçalho - MOBILE */}
+                  <div className="flex md:hidden flex-col items-center justify-center pb-4 px-4">
+                    <div className="w-full flex flex-col items-start">
+                      <div className="w-full flex items-center justify-between mb-2 max-w-[370px] mx-auto">
+                        <div>
+                          <h1 className="text-lg font-semibold text-gray-900 leading-tight">
+                            Meus Imóveis
+                          </h1>
+                          <p className="text-sm text-neutral-500 mt-0">
+                            Gerencie seus anúncios
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setViewMode("grid")}
+                            className={`p-2 rounded ${
+                              viewMode === "grid"
+                                ? "bg-red-600 text-white"
+                                : "bg-gray-200"
+                            }`}
+                          >
+                            <LayoutGrid className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => setViewMode("list")}
+                            className={`p-2 rounded ${
+                              viewMode === "list"
+                                ? "bg-red-600 text-white"
+                                : "bg-gray-200"
+                            }`}
+                          >
+                            <ListIcon className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Botão com largura idêntica ao card de filtros */}
+                      <div className="w-full flex justify-center">
+                        <div className="w-full max-w-[370px]">
+                          <Button
+                            className="w-full h-10 rounded-lg bg-red-600 hover:opacity-95 font-medium text-white mb-2"
+                            onClick={() => navigate("/imovel/novo")}
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Cadastrar Imóvel
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Cabeçalho - DESKTOP */}
                   <div className="hidden md:flex !items-center !justify-between !pb-3">
                     <div>
                       <h1 className="!text-2xl !font-semibold !mb-0.5">
@@ -300,7 +346,7 @@ export default function MyProperties() {
                       applied={applied}
                       setApplied={setApplied}
                       items={items}
-                      allCities={allCities} // ✅ vem da API dedicada
+                      allCities={allCities}
                       onApply={handleApplyFilters}
                       TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
                       TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
@@ -327,7 +373,6 @@ export default function MyProperties() {
                               }
                               onView={handleView}
                               onEdit={handleEdit}
-                              
                               onToggleAtivo={handleToggleAtivo}
                             />
                           ) : (
@@ -341,14 +386,13 @@ export default function MyProperties() {
                               }
                               onView={handleView}
                               onEdit={handleEdit}
-                              
                               onToggleAtivo={handleToggleAtivo}
                             />
                           )}
                         </div>
 
                         {/* Mobile */}
-                        <div className="flex md:hidden !flex-col !items-center ">
+                        <div className="flex md:hidden !flex-col !items-center">
                           {viewMode === "grid" ? (
                             loading ? (
                               <>
@@ -365,14 +409,12 @@ export default function MyProperties() {
                                   items={row1}
                                   onView={handleView}
                                   onEdit={handleEdit}
-                                  
                                   onToggleAtivo={handleToggleAtivo}
                                 />
                                 <RowCarousel
                                   items={row2}
                                   onView={handleView}
                                   onEdit={handleEdit}
-                                  
                                   onToggleAtivo={handleToggleAtivo}
                                 />
 
@@ -418,7 +460,6 @@ export default function MyProperties() {
                               }
                               onView={handleView}
                               onEdit={handleEdit}
-                              
                               onToggleAtivo={handleToggleAtivo}
                             />
                           )}

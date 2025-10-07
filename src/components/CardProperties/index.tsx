@@ -1,4 +1,4 @@
-// src/components/PropertyCard/index.tsx
+// ✅ src/components/PropertyCard/index.tsx
 import { useState, useEffect } from "react";
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Heart } from "lucide-react";
@@ -42,12 +42,20 @@ const PropertyCard = ({
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+
     if (!token || !item) return;
+
     try {
-      await toggleFavorite(item.id, isFavorited, token);
+      // ✅ Detecta corretamente UUID ou ID
+      const identifier =
+        item.uuid && /^[0-9a-fA-F-]{36}$/.test(item.uuid)
+          ? item.uuid
+          : item.id;
+
+      await toggleFavorite(identifier, isFavorited, token);
       setIsFavorited(!isFavorited);
     } catch (err) {
-      console.error("Erro ao favoritar imóvel:", err);
+      console.error("❌ Erro ao favoritar imóvel:", err);
     }
   };
 

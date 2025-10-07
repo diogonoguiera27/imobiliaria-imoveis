@@ -35,7 +35,7 @@ import {
   Menu,
   Phone,
   PlusSquare,
-  Settings,
+  
   Users,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "./dialog";
@@ -229,8 +229,6 @@ function Sidebar({
   );
 }
 
-
-
 export default function SidebarTrigger() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -252,161 +250,176 @@ export default function SidebarTrigger() {
   };
 
   const isAdmin = user?.role === "ADMIN";
+  const isUser = user?.role === "USER";
 
   return (
-    <main
-      className="fixed z-50 flex h-[60px] w-full items-center justify-between
-                 px-4 sm:px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl"
-    >
-      {/* ===== ESQUERDA ===== */}
-      <div className="flex items-center gap-6">
-        {/* Mobile: Drawer só com Home e Contato */}
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="!text-white size-7 !bg-transparent"
-              >
-                <Menu className="!w-6 !h-6" />
-              </Button>
-            </SheetTrigger>
+    <>
+      {/* ===== CABEÇALHO SUPERIOR ===== */}
+      <header className="fixed z-50 flex h-[60px] w-full items-center justify-between px-4 sm:px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
+        {/* ===== ESQUERDA ===== */}
+        <div className="flex items-center gap-6">
+          {/* ⚙️ Engrenagem (abre tudo no mobile) */}
+          {(isAdmin || isUser) && (
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="!text-white size-7 !bg-transparent"
+                  >
+                    <Menu className="!w-6 !h-6" />
+                  </Button>
+                </SheetTrigger>
 
-            <SheetContent
-              side="left"
-              className="!p-6 w-[80%] max-w-xs h-full 
-                         bg-gradient-to-r from-red-400 to-red-700 text-white"
-            >
-              <nav className="flex flex-col gap-2 font-semibold">
-                <button
-                  onClick={goHome}
-                  className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                <SheetContent
+                  side="left"
+                  className="!p-6 w-[80%] max-w-xs h-full flex flex-col 
+                             bg-gradient-to-r from-red-400 to-red-700 text-white"
                 >
-                  <Home className="w-5 h-5" />
-                  Home
-                </button>
-                <hr />
-
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition">
-                      <Phone className="w-5 h-5" />
-                      Contato
+                  {/* ===== PARTE SUPERIOR ===== */}
+                  <nav className="flex flex-col gap-2 font-semibold">
+                    <button
+                      onClick={() => ensureAuth("/meus-imoveis")}
+                      className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                    >
+                      <Building2 className="w-5 h-5" />
+                      Meus Imóveis
                     </button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-lg">
-                    <ContactInfoModal />
-                  </DialogContent>
-                </Dialog>
-              </nav>
-            </SheetContent>
-          </Sheet>
-        </div>
+                    <hr className="border-white/20" />
 
-        {/* Desktop Admin menu */}
-        {isAdmin && (
-          <nav className="hidden md:flex !px-3.5 gap-6 items-center !text-white !text-sm !font-semibold">
-            <button onClick={() => ensureAuth("/meus-imoveis")} className="hover:underline">
-              Meus Imóveis
-            </button>
-            <button onClick={() => ensureAuth("/imovel/novo")} className="hover:underline">
-              Cadastrar Imóveis
-            </button>
-            <button onClick={() => ensureAuth("/dashboard")} className="hover:underline">
-              Dashboard
-            </button>
-            <button onClick={() => ensureAuth("/admin/users")} className="hover:underline">
-              Gerenciar Usuários
-            </button>
-          </nav>
-        )}
-      </div>
+                    <button
+                      onClick={() => ensureAuth("/imovel/novo")}
+                      className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                    >
+                      <PlusSquare className="w-5 h-5" />
+                      Cadastrar Imóveis
+                    </button>
 
-      {/* ===== DIREITA ===== */}
-      <div className="flex items-center gap-6">
-        {/* Desktop normal menu */}
-        <nav className="hidden md:flex gap-6 items-center !text-white !text-sm !font-semibold">
-          <button onClick={goHome} className="hover:underline">
-            Home
-          </button>
+                    {isAdmin && (
+                      <>
+                        <hr className="border-white/20" />
+                        <button
+                          onClick={() => ensureAuth("/dashboard")}
+                          className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                        >
+                          <LayoutDashboard className="w-5 h-5" />
+                          Dashboard
+                        </button>
+                        <hr className="border-white/20" />
+                        <button
+                          onClick={() => ensureAuth("/admin/users")}
+                          className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
+                        >
+                          <Users className="w-5 h-5" />
+                          Gerenciar Usuários
+                        </button>
+                      </>
+                    )}
+                  </nav>
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="hover:underline">Contato</button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg">
-              <ContactInfoModal />
-            </DialogContent>
-          </Dialog>
-        </nav>
+                  {/* ===== RODAPÉ (HOME / CONTATO) ===== */}
+                  <div className="!mt-auto border-t border-white/20 !pt-50 !pb-8 flex flex-col !gap-2 font-semibold">
+                    <button
+                      onClick={goHome}
+                      className="flex items-center !gap-3 !px-3 !py-2 rounded-md hover:bg-white/10 transition"
+                    >
+                      <Home className="w-5 h-5" />
+                      Home
+                    </button>
 
-        {/* Mobile: Drawer só para menus de Admin */}
-        {isAdmin && (
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="!text-white size-7 !bg-transparent"
-                >
-                  <Settings className="!w-6 !h-6" />
-                </Button>
-              </SheetTrigger>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button className="flex items-center !gap-3 !px-3 !py-2 rounded-md hover:bg-white/10 transition">
+                          <Phone className="w-5 h-5" />
+                          Contato
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-lg z-[9999]">
+                        <ContactInfoModal />
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          )}
 
-              <SheetContent
-                side="right"
-                className="!p-6 w-[80%] max-w-xs h-full 
-                           bg-gradient-to-r from-red-400 to-red-700 text-white"
+          {/* ===== Menu ADMIN no desktop ===== */}
+          {isAdmin && (
+            <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
+              <button
+                onClick={() => ensureAuth("/meus-imoveis")}
+                className="hover:underline"
               >
-                <nav className="flex flex-col gap-2 font-semibold">
-                  <button
-                    onClick={() => ensureAuth("/meus-imoveis")}
-                    className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
-                  >
-                    <Building2 className="w-5 h-5" />
-                    Meus Imóveis
-                  </button>
-                  <hr />
-                  <button
-                    onClick={() => ensureAuth("/imovel/novo")}
-                    className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
-                  >
-                    <PlusSquare className="w-5 h-5" />
-                    Cadastrar Imóveis
-                  </button>
-                  <hr />
-                  <button
-                    onClick={() => ensureAuth("/dashboard")}
-                    className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
-                  >
-                    <LayoutDashboard className="w-5 h-5" />
-                    Dashboard
-                  </button>
-                  <hr />
-                  <button
-                    onClick={() => ensureAuth("/admin/users")}
-                    className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
-                  >
-                    <Users className="w-5 h-5" />
-                    Gerenciar Usuários
-                  </button>
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
-        )}
-
-        <div className="!mr-2 sm:!mr-4">
-          <PerfilUsuarioModal />
+                Meus Imóveis
+              </button>
+              <button
+                onClick={() => ensureAuth("/imovel/novo")}
+                className="hover:underline"
+              >
+                Cadastrar Imóveis
+              </button>
+              <button
+                onClick={() => ensureAuth("/dashboard")}
+                className="hover:underline"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => ensureAuth("/admin/users")}
+                className="hover:underline"
+              >
+                Gerenciar Usuários
+              </button>
+            </nav>
+          )}
         </div>
-      </div>
-    </main>
+
+        {/* ===== DIREITA ===== */}
+        <div className="flex items-center gap-6">
+          {/* Desktop: Home e Contato normais */}
+          <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
+            <button onClick={goHome} className="hover:underline">
+              Home
+            </button>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="hover:underline">Contato</button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg">
+                <ContactInfoModal />
+              </DialogContent>
+            </Dialog>
+
+            {isUser && (
+              <>
+                <button
+                  onClick={() => ensureAuth("/meus-imoveis")}
+                  className="hover:underline"
+                >
+                  Meus Imóveis
+                </button>
+                <button
+                  onClick={() => ensureAuth("/imovel/novo")}
+                  className="hover:underline"
+                >
+                  Cadastrar Imóveis
+                </button>
+              </>
+            )}
+          </nav>
+
+          {/* Perfil do usuário */}
+          <div className="mr-2 sm:mr-4">
+            <PerfilUsuarioModal />
+          </div>
+        </div>
+      </header>
+    </>
   );
 }
-
-
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar();

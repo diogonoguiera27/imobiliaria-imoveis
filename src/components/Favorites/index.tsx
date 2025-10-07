@@ -5,7 +5,6 @@ import { Imovel } from "@/types";
 import { useAuth } from "@/hooks/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// 🔹 componentes individuais do shadcn
 import {
   Pagination,
   PaginationContent,
@@ -13,6 +12,7 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+import { PaginatedProperties } from "@/service/propertyService";
 
 export default function FavoriteProperties() {
   const [items, setItems] = useState<Imovel[]>([]);
@@ -34,11 +34,18 @@ export default function FavoriteProperties() {
 
       try {
         setLoading(true);
-        const response = await buscarFavoritosPaginados(token, {
-          page,
-          take: ITEMS_PER_PAGE,
-        });
-        setItems(response.data);
+
+        const response: PaginatedProperties = await buscarFavoritosPaginados(
+          token,
+          {
+            page,
+            take: ITEMS_PER_PAGE,
+          }
+        );
+
+        const favoritos = Array.isArray(response.data) ? response.data : [];
+
+        setItems(favoritos);
         setTotalPages(response.pagination.totalPages);
         setCurrentPage(response.pagination.page);
       } catch (err) {
@@ -48,9 +55,8 @@ export default function FavoriteProperties() {
         setLoading(false);
       }
     },
-    [token] // ✅ dependência correta
+    [token]
   );
-
   useEffect(() => {
     carregarFavoritos(1);
   }, [carregarFavoritos]);

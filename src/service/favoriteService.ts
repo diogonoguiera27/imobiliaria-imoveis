@@ -1,9 +1,10 @@
+// ✅ src/service/favoriteService.ts
 import api from "./api";
 import { PaginatedProperties } from "./propertyService";
 
 export interface FavoriteIdentifier {
-  propertyId: number;     // ID interno do imóvel
-  propertyUuid?: string;  // ✅ UUID público do imóvel
+  propertyId: number; // ID interno do imóvel
+  propertyUuid?: string; // UUID público do imóvel
 }
 
 /* =========================================================
@@ -17,20 +18,39 @@ export const toggleFavorite = async (
   try {
     const headers = { Authorization: `Bearer ${token}` };
 
+    // 🔍 Detecta UUID válido (formato padrão 8-4-4-4-12)
+    const isUuid = (val: string): boolean =>
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+        val
+      );
+
     if (isFavorited) {
-      // Se já está favoritado, remove
+      // ✅ Remover favorito
       await api.delete(`/favorites/${identifier}`, { headers });
     } else {
-      // Se não está, adiciona
-      const body =
-        typeof identifier === "string"
-          ? { propertyUuid: identifier }
-          : { propertyId: Number(identifier) };
+      // ✅ Adicionar favorito
+      let body: Record<string, string | number>;
+
+      if (typeof identifier === "string") {
+        // Se for string numérica ex: "123" → trata como ID
+        if (/^\d+$/.test(identifier)) {
+          body = { propertyId: Number(identifier) };
+        }
+        // Se for UUID válido → envia propertyUuid
+        else if (isUuid(identifier)) {
+          body = { propertyUuid: identifier };
+        } else {
+          throw new Error("Identificador inválido (não é ID nem UUID)");
+        }
+      } else {
+        // Se vier número direto → propertyId
+        body = { propertyId: identifier };
+      }
 
       await api.post("/favorites", body, { headers });
     }
   } catch (error) {
-    console.error("Erro ao favoritar/desfavoritar imóvel:", error);
+    console.error("❌ Erro ao favoritar/desfavoritar imóvel:", error);
     throw error;
   }
 };
@@ -42,14 +62,24 @@ export const getUserFavorites = async (
   token: string
 ): Promise<FavoriteIdentifier[]> => {
   try {
-    const response = await api.get<FavoriteIdentifier[]>("/favorites", {
+    const response = await api.get<{
+      data: { id?: number; uuid?: string | null }[];
+      pagination?: object;
+    }>("/favorites", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    // Exemplo de retorno:
-    // { propertyId: 123, propertyUuid: "550e8400-e29b-41d4-a716-446655440000" }
-    return response.data;
+
+    const favoritos = Array.isArray(response.data?.data)
+      ? response.data.data
+      : [];
+
+    // ✅ Extrai corretamente os identificadores retornados do backend
+    return favoritos.map((f) => ({
+      propertyId: f.id ?? 0,
+      propertyUuid: f.uuid ?? undefined,
+    }));
   } catch (error) {
-    console.error("Erro ao buscar favoritos:", error);
+    console.error("❌ Erro ao buscar favoritos:", error);
     return [];
   }
 };
@@ -73,7 +103,7 @@ export const getFavoritedProperties = async (token: string) => {
 
     return response.data;
   } catch (error) {
-    console.error("Erro ao buscar imóveis favoritos completos:", error);
+    console.error("❌ Erro ao buscar imóveis favoritos completos:", error);
     return [];
   }
 };
@@ -93,7 +123,7 @@ export const buscarFavoritosPaginados = async (
     });
     return data;
   } catch (error) {
-    console.error("Erro ao buscar favoritos paginados:", error);
+    console.error("❌ Erro ao buscar favoritos paginados:", error);
     return {
       data: [],
       pagination: {

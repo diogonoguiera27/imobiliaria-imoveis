@@ -1,19 +1,16 @@
-// src/pages/Home.tsx
+// ✅ src/pages/Home.tsx
 import { useCallback, useEffect, useState } from "react";
 import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-
 import { Imovel } from "@/types";
 import Pagination from "@/components/Pagination";
 import { Dialog } from "@/components/ui/dialog";
 import MessageFormModal from "@/components/MessageFormModal";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import { Skeleton } from "@/components/ui/skeleton";
 import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
 import ContactPhoneModal from "@/components/PhoneContactModal";
 import { useContactContext } from "@/hooks/contact/useContact";
-
 import { Button } from "@/components/ui/button";
 import HeroBanner from "@/components/HeroBanner";
 import SearchFilter from "@/components/SearchFilter";
@@ -40,7 +37,7 @@ export function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Buscar imóveis para listagem principal
+  // 🔄 Buscar imóveis
   const carregarImoveis = useCallback(
     async (page: number, activeFilters = filtros) => {
       try {
@@ -126,13 +123,13 @@ export function Home() {
 
   return (
     <SidebarProvider>
-      <div className="!min-h-screen flex !flex-col !overflow-x-hidden">
+      <div className="!min-h-screen flex flex-col !overflow-x-hidden">
         <main className="flex-grow">
           <SidebarTrigger />
           <HeroBanner />
 
-          {/* 🔹 Filtro */}
-          <div className="w-full !mx-auto !px-4 md:!px-0 !max-w-[1412px] sm:!w-[95%]">
+          {/* 🔍 Filtro principal */}
+          <div className="!w-[120%] sm:!w-full !max-w-[80%] !mx-auto md:!max-w-[1412px]">
             <SearchFilter
               onFiltrar={handleFiltrar}
               onLimparFiltro={handleLimparFiltro}
@@ -141,6 +138,7 @@ export function Home() {
           </div>
 
           {filtroAtivo ? (
+            // 🔹 Quando filtro está ativo
             <section className="w-full px-4 pt-0 !mt-8">
               <div className="w-full !max-w-[1412px] !mx-auto">
                 {loading ? (
@@ -151,7 +149,7 @@ export function Home() {
                   </div>
                 ) : (
                   <>
-                    {/* Desktop → Grid */}
+                    {/* 💻 Desktop */}
                     <div className="hidden md:block">
                       <div
                         className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6 ${
@@ -173,8 +171,8 @@ export function Home() {
                       )}
                     </div>
 
-                    {/* Mobile → mantém o mesmo estilo de card (um abaixo do outro) */}
-                    <div className="block md:hidden mt-6">
+                    {/* 📱 Mobile */}
+                    <div className="block md:hidden mt-6 !max-w-[80%] !mx-auto !w-full !px-4">
                       {imoveis.map((item) => (
                         <div key={item.id} className="mb-4">
                           <PropertyCard item={item} />
@@ -186,15 +184,25 @@ export function Home() {
               </div>
             </section>
           ) : (
-            <section className="!p-4">
-              {/* Imóveis em Destaque */}
-              <FeaturedCarousel />
+            
+            <section className="!p-4 md:!p-0">
+              
+              <div className="!max-w-[80%] !w-full !mx-auto md:!max-w-none">
+                <FeaturedCarousel />
+              </div>
 
-              {/* Populares e Promoções → desktop e mobile */}
-              <PopularProperties />
-              <DiscountedProperties />
+              
+              <div className="!max-w-[80%] !w-full !mx-auto md:!max-w-none !mt-6 ">
+                <PopularProperties />
+              </div>
 
-              <div className="w-full !flex !justify-center !mt-12">
+              
+              <div className="!max-w-[80%] !w-full !mx-auto md:!max-w-none !mt-6 !justify-center">
+                <DiscountedProperties />
+              </div>
+
+              
+              <div className="w-full flex justify-center !mt-12">
                 <Button
                   onClick={() => navigate("/imoveis-venda")}
                   className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
@@ -206,6 +214,7 @@ export function Home() {
           )}
         </main>
 
+        
         <Dialog
           open={showContactModal}
           onOpenChange={(o) => !o && closeModals()}

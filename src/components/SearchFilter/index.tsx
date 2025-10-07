@@ -1,4 +1,4 @@
-// src/components/Home/FiltroBusca.tsx
+// ✅ src/components/Home/FiltroBusca.tsx
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -44,9 +44,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
         const unicasMap = new Map<string, string>();
         nomes.forEach((nome) => {
           const chave = normalize(nome);
-          if (!unicasMap.has(chave)) {
-            unicasMap.set(chave, nome);
-          }
+          if (!unicasMap.has(chave)) unicasMap.set(chave, nome);
         });
 
         const unicas = Array.from(unicasMap.values()).sort((a, b) =>
@@ -96,18 +94,27 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   };
 
   return (
-    <div className="w-full">
+    <div
+      className="
+        !w-[120%] sm:!w-full          /* 🔹 Mesmo comportamento do card de imóveis destaque */
+        !max-w-[80%]                  /* 🔹 Igual ao container do destaque */
+        !mx-auto                      /* 🔹 Centralizado */
+        md:!max-w-[1412px]            /* 🔹 Desktop padrão */
+      "
+    >
       <form
         onSubmit={handleSubmit}
         className="
-          !bg-white !rounded-xl !shadow-xl !px-6 !py-6
+          !bg-white !rounded-xl !shadow-xl
+          !px-3 sm:!px-6               /* 🔹 Mobile mais justo, desktop espaçado */
+          !py-6
           !flex !flex-col sm:!flex-row !flex-wrap
           !gap-6 !items-end !w-full
           !border !border-gray-200
         "
       >
         {/* 🔹 Preço */}
-        <div className="!flex !flex-col !w-full sm:!w-[320px]">
+        <div className="!flex !flex-col !w-full sm:!w-[380px]">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Filtrar por Preço
           </label>
