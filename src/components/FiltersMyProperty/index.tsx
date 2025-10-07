@@ -1,4 +1,3 @@
-// src/components/MyProperties/Filters.tsx
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -31,7 +30,7 @@ type Props = {
   applied: AppliedFilters;
   setApplied: React.Dispatch<React.SetStateAction<AppliedFilters>>;
   items: Imovel[];
-  allCities: string[]; // ✅ lista única de cidades vinda de MyProperties
+  allCities: string[];
   onApply: () => void;
   TIPO_IMOVEL_OPCOES: TipoImovel[];
   TIPO_NEGOCIO_OPCOES: TipoNegocio[];
@@ -56,15 +55,14 @@ export default function FiltersMyProperty({
   return (
     <div
       className="
-        w-[285px]
-        md:w-full        
-        sm:w-auto        
-        mx-auto          
-        !rounded-2xl
+        w-full
         !bg-white
-        !shadow-sm
-        !ring-1
-        !ring-neutral-200
+        !shadow-md
+        !rounded-2xl
+        !border
+        !border-gray-200
+        !overflow-hidden
+        !mx-auto
       "
     >
       <div
@@ -75,7 +73,6 @@ export default function FiltersMyProperty({
           !gap-4
           !items-end
           !p-4
-          md:!p-5
         "
       >
         {/* 🔎 Buscar */}
@@ -103,7 +100,7 @@ export default function FiltersMyProperty({
             <SelectContent>
               {allCities.length > 0 ? (
                 allCities.map((c) => {
-                  const value = c.trim() || "__nao_informado__"; // ✅ valor seguro
+                  const value = c.trim() || "__nao_informado__";
                   return (
                     <SelectItem
                       key={value}
@@ -125,9 +122,7 @@ export default function FiltersMyProperty({
 
         {/* 🏠 Tipo */}
         <div className="!flex !flex-col !gap-1 !w-full">
-          <label className="!text-xs !font-medium !text-neutral-600">
-            Tipo
-          </label>
+          <label className="!text-xs !font-medium !text-neutral-600">Tipo</label>
           <Select value={tipo} onValueChange={setTipo}>
             <SelectTrigger className="!h-10 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer">
               <SelectValue placeholder="Selecione" />
@@ -215,7 +210,7 @@ export default function FiltersMyProperty({
           </Select>
         </div>
 
-        {/* Botão */}
+        {/* 🔘 Botão */}
         <div className="!flex !w-full md:!w-auto">
           <Button
             className="!h-10 !w-full md:!w-auto !rounded-lg !bg-blue-600 hover:!bg-blue-700"

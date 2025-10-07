@@ -1,4 +1,4 @@
-// src/pages/MyProperties.tsx
+// ✅ src/pages/MyProperties.tsx
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -235,52 +235,67 @@ export default function MyProperties() {
                 </div>
               ) : (
                 <>
-                  {/* Cabeçalho - MOBILE */}
-                  <div className="flex md:hidden flex-col items-center justify-center pb-4 px-4">
-                    <div className="w-full flex flex-col items-start">
-                      <div className="w-full flex items-center justify-between mb-2 max-w-[370px] mx-auto">
+                  <div className="!flex md:!hidden !flex-col !items-center !justify-center !pb-4">
+                    <div className="!w-full !flex !flex-col !items-start">
+                      {/* 🔹 Título e ícones */}
+                      <div className="!w-full !flex !items-center !justify-between !mb-3 !max-w-[380px] !mx-auto !px-4">
                         <div>
-                          <h1 className="text-lg font-semibold text-gray-900 leading-tight">
+                          <h1 className="!text-lg !font-semibold !text-gray-900 !leading-tight">
                             Meus Imóveis
                           </h1>
-                          <p className="text-sm text-neutral-500 mt-0">
+                          <p className="!text-sm !text-neutral-500 !mt-0">
                             Gerencie seus anúncios
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="!flex !items-center !gap-2">
                           <button
                             onClick={() => setViewMode("grid")}
-                            className={`p-2 rounded ${
+                            className={`!p-2 !rounded ${
                               viewMode === "grid"
-                                ? "bg-red-600 text-white"
-                                : "bg-gray-200"
+                                ? "!bg-red-600 !text-white"
+                                : "!bg-gray-200"
                             }`}
                           >
-                            <LayoutGrid className="w-5 h-5" />
+                            <LayoutGrid className="!w-5 !h-5" />
                           </button>
                           <button
                             onClick={() => setViewMode("list")}
-                            className={`p-2 rounded ${
+                            className={`!p-2 !rounded ${
                               viewMode === "list"
-                                ? "bg-red-600 text-white"
-                                : "bg-gray-200"
+                                ? "!bg-red-600 !text-white"
+                                : "!bg-gray-200"
                             }`}
                           >
-                            <ListIcon className="w-5 h-5" />
+                            <ListIcon className="!w-5 !h-5" />
                           </button>
                         </div>
                       </div>
 
-                      {/* Botão com largura idêntica ao card de filtros */}
-                      <div className="w-full flex justify-center">
-                        <div className="w-full max-w-[370px]">
+                      {/* 🔸 Botão alinhado ao filtro e ícone centralizado */}
+                      <div className="!w-full !flex !justify-center">
+                        <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
                           <Button
-                            className="w-full h-10 rounded-lg bg-red-600 hover:opacity-95 font-medium text-white mb-2"
+                            className="
+            !w-full 
+            !h-11 
+            !rounded-lg 
+            !bg-red-600 
+            hover:!opacity-95 
+            !font-semibold 
+            !text-white 
+            !text-base 
+            !flex 
+            !items-center 
+            !justify-center 
+            !gap-2
+          "
                             onClick={() => navigate("/imovel/novo")}
                           >
-                            <Plus className="mr-2 h-4 w-4" />
-                            Cadastrar Imóvel
+                            <Plus className="!h-5 !w-5 !translate-y-[0.5px]" />
+                            <span className="!leading-none">
+                              Cadastrar Imóvel
+                            </span>
                           </Button>
                         </div>
                       </div>
@@ -328,29 +343,31 @@ export default function MyProperties() {
                     </div>
                   </div>
 
-                  {/* Filtros */}
-                  <div className="!mt-4 flex !justify-center">
-                    <FiltersMyProperty
-                      q={applied.q || ""}
-                      setQ={(q) => setApplied((p) => ({ ...p, q }))}
-                      cidade={applied.cidade}
-                      setCidade={(cidade) =>
-                        setApplied((p) => ({ ...p, cidade }))
-                      }
-                      tipo={applied.tipo}
-                      setTipo={(tipo) => setApplied((p) => ({ ...p, tipo }))}
-                      negocio={applied.negocio}
-                      setNegocio={(negocio) =>
-                        setApplied((p) => ({ ...p, negocio }))
-                      }
-                      applied={applied}
-                      setApplied={setApplied}
-                      items={items}
-                      allCities={allCities}
-                      onApply={handleApplyFilters}
-                      TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
-                      TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
-                    />
+                  {/* 🔹 Filtros com alinhamento responsivo */}
+                  <div className="!mt-4 !flex !justify-center">
+                    <div className="!w-full !max-w-[90%] sm:!max-w-[380px] md:!max-w-none !mx-auto">
+                      <FiltersMyProperty
+                        q={applied.q || ""}
+                        setQ={(q) => setApplied((p) => ({ ...p, q }))}
+                        cidade={applied.cidade}
+                        setCidade={(cidade) =>
+                          setApplied((p) => ({ ...p, cidade }))
+                        }
+                        tipo={applied.tipo}
+                        setTipo={(tipo) => setApplied((p) => ({ ...p, tipo }))}
+                        negocio={applied.negocio}
+                        setNegocio={(negocio) =>
+                          setApplied((p) => ({ ...p, negocio }))
+                        }
+                        applied={applied}
+                        setApplied={setApplied}
+                        items={items}
+                        allCities={allCities}
+                        onApply={handleApplyFilters}
+                        TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
+                        TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
+                      />
+                    </div>
                   </div>
 
                   {/* Conteúdo */}
@@ -393,76 +410,81 @@ export default function MyProperties() {
 
                         {/* Mobile */}
                         <div className="flex md:hidden !flex-col !items-center">
-                          {viewMode === "grid" ? (
-                            loading ? (
-                              <>
-                                <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
-                                  <CardPropertiesAdmin loading />
-                                </div>
-                                <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
-                                  <CardPropertiesAdmin loading />
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <RowCarousel
-                                  items={row1}
-                                  onView={handleView}
-                                  onEdit={handleEdit}
-                                  onToggleAtivo={handleToggleAtivo}
-                                />
-                                <RowCarousel
-                                  items={row2}
-                                  onView={handleView}
-                                  onEdit={handleEdit}
-                                  onToggleAtivo={handleToggleAtivo}
-                                />
-
-                                {totalPages > 1 && (
-                                  <div className="!flex !justify-center !mt-4 !gap-2">
-                                    <button
-                                      onClick={() =>
-                                        carregarMeusImoveis(
-                                          Math.max(1, currentPage - 1),
-                                          applied
-                                        )
-                                      }
-                                      className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
-                                    >
-                                      Anterior
-                                    </button>
-                                    <span className="!px-2 !py-1 !text-sm">
-                                      Página {currentPage} de {totalPages}
-                                    </span>
-                                    <button
-                                      onClick={() =>
-                                        carregarMeusImoveis(
-                                          Math.min(totalPages, currentPage + 1),
-                                          applied
-                                        )
-                                      }
-                                      className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
-                                    >
-                                      Próximo
-                                    </button>
+                          <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
+                            {viewMode === "grid" ? (
+                              loading ? (
+                                <>
+                                  <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
+                                    <CardPropertiesAdmin loading />
                                   </div>
-                                )}
-                              </>
-                            )
-                          ) : (
-                            <PropertiesListMyPorperty
-                              loading={loading}
-                              items={items}
-                              currentPage={currentPage}
-                              totalPages={totalPages}
-                              onPageChange={(page) =>
-                                carregarMeusImoveis(page, applied)
-                              }
-                              onView={handleView}
-                              onEdit={handleEdit}
-                              onToggleAtivo={handleToggleAtivo}
-                            />
-                          )}
+                                  <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
+                                    <CardPropertiesAdmin loading />
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <RowCarousel
+                                    items={row1}
+                                    onView={handleView}
+                                    onEdit={handleEdit}
+                                    onToggleAtivo={handleToggleAtivo}
+                                  />
+                                  <RowCarousel
+                                    items={row2}
+                                    onView={handleView}
+                                    onEdit={handleEdit}
+                                    onToggleAtivo={handleToggleAtivo}
+                                  />
+
+                                  {totalPages > 1 && (
+                                    <div className="!flex !justify-center !mt-4 !gap-2">
+                                      <button
+                                        onClick={() =>
+                                          carregarMeusImoveis(
+                                            Math.max(1, currentPage - 1),
+                                            applied
+                                          )
+                                        }
+                                        className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
+                                      >
+                                        Anterior
+                                      </button>
+                                      <span className="!px-2 !py-1 !text-sm">
+                                        Página {currentPage} de {totalPages}
+                                      </span>
+                                      <button
+                                        onClick={() =>
+                                          carregarMeusImoveis(
+                                            Math.min(
+                                              totalPages,
+                                              currentPage + 1
+                                            ),
+                                            applied
+                                          )
+                                        }
+                                        className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
+                                      >
+                                        Próximo
+                                      </button>
+                                    </div>
+                                  )}
+                                </>
+                              )
+                            ) : (
+                              <PropertiesListMyPorperty
+                                loading={loading}
+                                items={items}
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={(page) =>
+                                  carregarMeusImoveis(page, applied)
+                                }
+                                onView={handleView}
+                                onEdit={handleEdit}
+                                onToggleAtivo={handleToggleAtivo}
+                              />
+                            )}
+                          </div>
                         </div>
                       </>
                     )}
@@ -473,7 +495,7 @@ export default function MyProperties() {
           </section>
         </main>
 
-        <div className="!mt-4">
+        <div className="!mt-4 !mb-12">
           <Footer />
         </div>
       </div>
