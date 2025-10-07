@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -7,7 +8,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
 import type { Imovel, TipoImovel, TipoNegocio } from "@/types";
 
 export type AppliedFilters = {
@@ -52,10 +52,31 @@ export default function FiltersMyProperty({
   TIPO_IMOVEL_OPCOES,
   TIPO_NEGOCIO_OPCOES,
 }: Props) {
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  // 📏 Diagnóstico — somente logs, sem afetar layout
+  useEffect(() => {
+    if (!filterRef.current) return;
+
+    const logWidth = (context: string) => {
+      const largura = filterRef.current?.offsetWidth || 0;
+      console.log(`📐 [${context}] Largura do filtro: ${largura}px`);
+    };
+
+    requestAnimationFrame(() => logWidth("montagem"));
+
+    const observer = new ResizeObserver(() => logWidth("resize"));
+    observer.observe(filterRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
+      ref={filterRef}
       className="
-        w-full
+        filter-wrapper
+        !w-full
         !bg-white
         !shadow-md
         !rounded-2xl
@@ -188,24 +209,9 @@ export default function FiltersMyProperty({
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem
-                value="all"
-                className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100 !cursor-pointer"
-              >
-                Todos
-              </SelectItem>
-              <SelectItem
-                value="active"
-                className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100 !cursor-pointer"
-              >
-                Ativos
-              </SelectItem>
-              <SelectItem
-                value="inactive"
-                className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100 !cursor-pointer"
-              >
-                Inativos
-              </SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="active">Ativos</SelectItem>
+              <SelectItem value="inactive">Inativos</SelectItem>
             </SelectContent>
           </Select>
         </div>

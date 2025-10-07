@@ -2,6 +2,7 @@ import { Imovel } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
+import { useEffect, useRef } from "react";
 
 interface PropertyCardAdminProps {
   item?: Imovel;
@@ -19,14 +20,43 @@ export default function CardPropertiesAdmin({
   onToggleAtivo,
 }: PropertyCardAdminProps) {
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // 🧠 Diagnóstico completo de largura
+  useEffect(() => {
+    function logWidth(context: string) {
+      if (cardRef.current) {
+        const largura = cardRef.current.offsetWidth;
+        console.log(
+          `🏠 [DEBUG - ${context}] Card largura: ${largura}px | Imóvel:`,
+          item?.bairro || "(sem bairro)",
+          "-",
+          item?.cidade || "(sem cidade)"
+        );
+      } else {
+        console.warn("⚠️ [DEBUG] cardRef não disponível no momento.");
+      }
+    }
+
+    // Log inicial
+    logWidth("montagem");
+
+    // Log quando viewport muda (resize)
+    const handleResize = () => logWidth("resize");
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [item]);
 
   if (loading) {
     return (
-      <div className="!w-[285px] !h-[470px] !flex-shrink-0 !flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200">
-        {/* Imagem */}
+      <div
+        ref={cardRef}
+        className="card-admin-test !w-full sm:!w-[285px] !h-[470px] !flex-shrink-0 !flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200"
+      >
         <Skeleton className="h-[180px] w-full" />
-
-        {/* Conteúdo */}
         <div className="!p-4 !flex !flex-col !justify-between !gap-3 !flex-1">
           <div className="!flex !flex-col !gap-1">
             <Skeleton className="h-5 w-3/4" />
@@ -58,17 +88,16 @@ export default function CardPropertiesAdmin({
     );
   }
 
-  // =====================
-  // Card normal
-  // =====================
   const imageUrl = item?.imagem
     ? `${API_URL}${item.imagem}`
     : "https://via.placeholder.com/300x180.png?text=Sem+Imagem";
-
   const isActive = !!item?.ativo;
 
   return (
-    <div className="!w-[285px] !h-[470px] !flex-shrink-0 !flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200 hover:!scale-[1.01] !transition !cursor-default">
+    <div
+      ref={cardRef}
+      className="card-admin-test !w-full sm:!w-[285px] !max-w-[380px] !h-[470px] !flex-shrink-0 !flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200 hover:!scale-[1.01] !transition !cursor-default"
+    >
       {/* Imagem */}
       <div className="!w-full !h-[180px] !overflow-hidden relative">
         <img

@@ -77,7 +77,7 @@ const UserManagement = () => {
           </div>
         </main>
 
-        <div className="!mt-6">
+        <div className="!mt-6 !mb-12">
           <Footer />
         </div>
       </div>

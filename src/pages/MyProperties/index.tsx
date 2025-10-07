@@ -1,4 +1,3 @@
-// ✅ src/pages/MyProperties.tsx
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -29,9 +28,11 @@ import FiltersMyProperty, {
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import PropertiesGridMyProperty from "@/components/PropertiesGridMyProperty";
 import PropertiesListMyPorperty from "@/components/PropertiesListMyPorperty";
 import CardPropertiesAdmin from "@/components/CardPropertiesAdmin";
+import CardPropertiesAdminMobile from "@/components/CardPropertiesAdminMobile";
 
 type BackendError = { message?: string; error?: string };
 
@@ -43,6 +44,7 @@ const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
 const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["venda", "aluguel"];
 const ITEMS_PER_PAGE = 8;
 
+/* 🔹 Carrossel Mobile com card otimizado */
 function RowCarousel({
   items,
   onView,
@@ -57,16 +59,18 @@ function RowCarousel({
   const [index, setIndex] = useState(0);
   const prev = () => setIndex((i) => (i > 0 ? i - 1 : items.length - 1));
   const next = () => setIndex((i) => (i < items.length - 1 ? i + 1 : 0));
+
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
-      <CardPropertiesAdmin
+    <div className="!w-full sm:!max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
+      <CardPropertiesAdminMobile
         item={items[index]}
         onView={() => onView(items[index].uuid ?? items[index].id)}
         onEdit={() => onEdit(items[index].uuid ?? items[index].id)}
         onToggleAtivo={(novo) => onToggleAtivo(items[index].id, novo)}
       />
+
       <div className="!flex !items-center !justify-center !gap-6 !mt-3">
         <button
           onClick={prev}
@@ -81,6 +85,7 @@ function RowCarousel({
           <ChevronRight className="!w-5 !h-5" />
         </button>
       </div>
+
       <div className="!flex !gap-2 !mt-3">
         {items.map((_, i) => (
           <span
@@ -95,6 +100,7 @@ function RowCarousel({
   );
 }
 
+/* 🔸 Estado vazio */
 function EmptyState({ onCreate }: { onCreate: () => void }) {
   return (
     <div className="!w-full !rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200 !px-8 !py-12 !flex !flex-col !items-center !justify-center !text-center">
@@ -115,6 +121,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
   );
 }
 
+/* 🔸 Nenhum resultado encontrado */
 function NoResults() {
   return (
     <div className="!w-full !rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200 !px-8 !py-12 !text-center">
@@ -125,6 +132,7 @@ function NoResults() {
   );
 }
 
+/* 🔸 Página principal */
 export default function MyProperties() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -207,7 +215,6 @@ export default function MyProperties() {
     navigate(`/imovel/${identifier}`);
   const handleEdit = (identifier: string | number) =>
     navigate(`/imovel/editar/${identifier}`);
-
   const handleToggleAtivo = async (id: number, novoAtivo: boolean) => {
     try {
       await atualizarStatusImovel(id, novoAtivo);
@@ -235,9 +242,9 @@ export default function MyProperties() {
                 </div>
               ) : (
                 <>
+                  {/* 🔹 Cabeçalho Mobile */}
                   <div className="!flex md:!hidden !flex-col !items-center !justify-center !pb-4">
                     <div className="!w-full !flex !flex-col !items-start">
-                      {/* 🔹 Título e ícones */}
                       <div className="!w-full !flex !items-center !justify-between !mb-3 !max-w-[380px] !mx-auto !px-4">
                         <div>
                           <h1 className="!text-lg !font-semibold !text-gray-900 !leading-tight">
@@ -247,7 +254,6 @@ export default function MyProperties() {
                             Gerencie seus anúncios
                           </p>
                         </div>
-
                         <div className="!flex !items-center !gap-2">
                           <button
                             onClick={() => setViewMode("grid")}
@@ -272,37 +278,21 @@ export default function MyProperties() {
                         </div>
                       </div>
 
-                      {/* 🔸 Botão alinhado ao filtro e ícone centralizado */}
                       <div className="!w-full !flex !justify-center">
                         <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
                           <Button
-                            className="
-            !w-full 
-            !h-11 
-            !rounded-lg 
-            !bg-red-600 
-            hover:!opacity-95 
-            !font-semibold 
-            !text-white 
-            !text-base 
-            !flex 
-            !items-center 
-            !justify-center 
-            !gap-2
-          "
+                            className="!w-full !h-11 !rounded-lg !bg-red-600 hover:!opacity-95 !font-semibold !text-white !text-base"
                             onClick={() => navigate("/imovel/novo")}
                           >
-                            <Plus className="!h-5 !w-5 !translate-y-[0.5px]" />
-                            <span className="!leading-none">
-                              Cadastrar Imóvel
-                            </span>
+                            <Plus className="!mr-2 !h-5 !w-5" />
+                            Cadastrar Imóvel
                           </Button>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Cabeçalho - DESKTOP */}
+                  {/* 🔹 Cabeçalho Desktop */}
                   <div className="hidden md:flex !items-center !justify-between !pb-3">
                     <div>
                       <h1 className="!text-2xl !font-semibold !mb-0.5">
@@ -343,7 +333,7 @@ export default function MyProperties() {
                     </div>
                   </div>
 
-                  {/* 🔹 Filtros com alinhamento responsivo */}
+                  {/* 🔹 Filtros */}
                   <div className="!mt-4 !flex !justify-center">
                     <div className="!w-full !max-w-[90%] sm:!max-w-[380px] md:!max-w-none !mx-auto">
                       <FiltersMyProperty
@@ -370,7 +360,7 @@ export default function MyProperties() {
                     </div>
                   </div>
 
-                  {/* Conteúdo */}
+                  {/* 🔹 Conteúdo */}
                   <div className="!mt-6">
                     {!loading && hasAnyItem && items.length === 0 ? (
                       <NoResults />
@@ -408,18 +398,14 @@ export default function MyProperties() {
                           )}
                         </div>
 
-                        {/* Mobile */}
-                        <div className="flex md:hidden !flex-col !items-center">
+                        {/* 🔹 Mobile */}
+                        <div className="!flex md:!hidden !flex-col !items-center !justify-center">
                           <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
                             {viewMode === "grid" ? (
                               loading ? (
                                 <>
-                                  <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
-                                    <CardPropertiesAdmin loading />
-                                  </div>
-                                  <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
-                                    <CardPropertiesAdmin loading />
-                                  </div>
+                                  <CardPropertiesAdmin loading />
+                                  <CardPropertiesAdmin loading />
                                 </>
                               ) : (
                                 <>
@@ -436,6 +422,7 @@ export default function MyProperties() {
                                     onToggleAtivo={handleToggleAtivo}
                                   />
 
+                                  {/* 🔸 Paginação mobile */}
                                   {totalPages > 1 && (
                                     <div className="!flex !justify-center !mt-4 !gap-2">
                                       <button
