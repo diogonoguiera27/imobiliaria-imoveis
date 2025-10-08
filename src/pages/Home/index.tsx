@@ -224,8 +224,8 @@ export function Home() {
           <ContactPhoneModal />
         </Dialog>
 
-        <div className="!mt-8">
-          <Footer />
+        <div className="!mt-8 !w-full !mx-auto">
+          <Footer variant="home" />
         </div>
       </div>
     </SidebarProvider>

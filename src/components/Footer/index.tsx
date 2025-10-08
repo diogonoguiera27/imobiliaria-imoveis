@@ -51,7 +51,7 @@ export const Footer = ({ variant = "wide" }: FooterProps) => {
       : variant === "mobile"
       ? "!max-w-[90%] sm:!max-w-[380px] !mx-auto"
       : variant === "home"
-      ? "!max-w-[80%] !mx-auto"
+      ? "!max-w-[75%] !mx-auto"
       : "!max-w-6xl !mx-auto !px-6 md:!px-10"; // wide padrão
 
   return (

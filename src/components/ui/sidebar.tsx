@@ -35,7 +35,6 @@ import {
   Menu,
   Phone,
   PlusSquare,
-  
   Users,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "./dialog";
@@ -258,7 +257,7 @@ export default function SidebarTrigger() {
       <header className="fixed z-50 flex h-[60px] w-full items-center justify-between px-4 sm:px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
         {/* ===== ESQUERDA ===== */}
         <div className="flex items-center gap-6">
-          {/* ⚙️ Engrenagem (abre tudo no mobile) */}
+          {/* ⚙️ Engrenagem (abre menu mobile) */}
           {(isAdmin || isUser) && (
             <div className="md:hidden">
               <Sheet>
@@ -275,9 +274,9 @@ export default function SidebarTrigger() {
                 <SheetContent
                   side="left"
                   className="!p-6 w-[80%] max-w-xs h-full flex flex-col 
-                             bg-gradient-to-r from-red-400 to-red-700 text-white"
+                             bg-gradient-to-b from-red-500 to-red-700 text-white shadow-xl"
                 >
-                  {/* ===== PARTE SUPERIOR ===== */}
+                  {/* ===== PARTE SUPERIOR (Admin/Usuário) ===== */}
                   <nav className="flex flex-col gap-2 font-semibold">
                     <button
                       onClick={() => ensureAuth("/meus-imoveis")}
@@ -286,7 +285,7 @@ export default function SidebarTrigger() {
                       <Building2 className="w-5 h-5" />
                       Meus Imóveis
                     </button>
-                    <hr className="border-white/20" />
+                    <hr className="!border-white/20" />
 
                     <button
                       onClick={() => ensureAuth("/imovel/novo")}
@@ -298,7 +297,7 @@ export default function SidebarTrigger() {
 
                     {isAdmin && (
                       <>
-                        <hr className="border-white/20" />
+                        <hr className="!border-white/20" />
                         <button
                           onClick={() => ensureAuth("/dashboard")}
                           className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
@@ -306,7 +305,7 @@ export default function SidebarTrigger() {
                           <LayoutDashboard className="w-5 h-5" />
                           Dashboard
                         </button>
-                        <hr className="border-white/20" />
+                        <hr className="!border-white/20" />
                         <button
                           onClick={() => ensureAuth("/admin/users")}
                           className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-white/10 transition"
@@ -318,24 +317,24 @@ export default function SidebarTrigger() {
                     )}
                   </nav>
 
-                  {/* ===== RODAPÉ (HOME / CONTATO) ===== */}
-                  <div className="!mt-auto border-t border-white/20 !pt-50 !pb-8 flex flex-col !gap-2 font-semibold">
+                  {/* ===== RODAPÉ (Home / Contato) ===== */}
+                  <div className="!mt-auto border-t !border-white/20 px-5 !pt-6 !pb-2p !flex !flex-col !font-semibold">
                     <button
                       onClick={goHome}
-                      className="flex items-center !gap-3 !px-3 !py-2 rounded-md hover:bg-white/10 transition"
+                      className="!flex !items-center !gap-3 !py-3 !border-b !border-white/30 hover:!bg-white/10 !rounded !transition"
                     >
-                      <Home className="w-5 h-5" />
+                      <Home className="!w-5 !h-5" />
                       Home
                     </button>
 
                     <Dialog>
                       <DialogTrigger asChild>
-                        <button className="flex items-center !gap-3 !px-3 !py-2 rounded-md hover:bg-white/10 transition">
-                          <Phone className="w-5 h-5" />
+                        <button className="!flex !items-center !gap-3 !py-3 !border-b !border-white/30 hover:!bg-white/10 !rounded !transition">
+                          <Phone className="!w-5 !h-5" />
                           Contato
                         </button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-lg z-[9999]">
+                      <DialogContent className="!max-w-lg !z-[9999]">
                         <ContactInfoModal />
                       </DialogContent>
                     </Dialog>
@@ -347,7 +346,7 @@ export default function SidebarTrigger() {
 
           {/* ===== Menu ADMIN no desktop ===== */}
           {isAdmin && (
-            <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
+            <nav className="hidden md:flex !gap-6 !ml-2 items-center text-white text-sm font-semibold">
               <button
                 onClick={() => ensureAuth("/meus-imoveis")}
                 className="hover:underline"
@@ -378,7 +377,7 @@ export default function SidebarTrigger() {
 
         {/* ===== DIREITA ===== */}
         <div className="flex items-center gap-6">
-          {/* Desktop: Home e Contato normais */}
+          {/* Desktop: Home e Contato */}
           <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
             <button onClick={goHome} className="hover:underline">
               Home
@@ -412,7 +411,7 @@ export default function SidebarTrigger() {
           </nav>
 
           {/* Perfil do usuário */}
-          <div className="mr-2 sm:mr-4">
+          <div className="!mr-2 !sm:mr-4">
             <PerfilUsuarioModal />
           </div>
         </div>
