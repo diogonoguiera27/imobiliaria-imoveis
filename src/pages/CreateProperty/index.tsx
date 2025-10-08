@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Footer } from "@/components/Footer";
+
 import LeftPanel from "@/components/LeftPanel";
 import RightPanel from "@/components/RightPanel";
+import { FooterDesktop } from "@/components/FooterDesktop";
 
 
 export default function CreatePropertyPage() {
@@ -34,9 +35,9 @@ export default function CreatePropertyPage() {
           </div>
         </div>
 
-        <div className="!mt-6   ">
-          <Footer variant="create"  />
-        </div>
+        <div className="!mt-6">
+  <FooterDesktop variant="create" />
+</div>
       </div>
     </SidebarProvider>
   );

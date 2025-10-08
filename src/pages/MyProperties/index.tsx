@@ -33,6 +33,7 @@ import PropertiesGridMyProperty from "@/components/PropertiesGridMyProperty";
 import PropertiesListMyPorperty from "@/components/PropertiesListMyPorperty";
 import CardPropertiesAdmin from "@/components/CardPropertiesAdmin";
 import CardPropertiesAdminMobile from "@/components/CardPropertiesAdminMobile";
+import { FooterDesktop } from "@/components/FooterDesktop";
 
 type BackendError = { message?: string; error?: string };
 
@@ -133,6 +134,7 @@ export default function MyProperties() {
   const [items, setItems] = useState<Imovel[]>([]);
   const [allCities, setAllCities] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const [applied, setApplied] = useState<AppliedFilters>({
     q: "",
@@ -147,6 +149,13 @@ export default function MyProperties() {
 
   const createdId = useMemo(() => Number(params.get("createdId")), [params]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const carregarMeusImoveis = useCallback(
     async (page = 1, filtros: Partial<AppliedFilters> = {}) => {
@@ -222,6 +231,8 @@ export default function MyProperties() {
   const hasAnyItem = Array.isArray(items) && items.length > 0;
   const row1 = hasAnyItem ? items.slice(0, 4) : [];
   const row2 = hasAnyItem ? items.slice(4, 8) : [];
+
+  const footerVariant: "gridTight" | "list" = viewMode === "grid" ? "gridTight" : "list";
 
   return (
     <SidebarProvider>
@@ -487,8 +498,12 @@ export default function MyProperties() {
           </section>
         </main>
 
-        <div className="!mt-4  !w-full !mx-auto">
-          <Footer variant="page"/>
+        <div className="!mt-4 !w-full !mx-auto">
+          {isDesktop ? (
+            <FooterDesktop variant={footerVariant} />
+          ) : (
+            <Footer variant="page" />
+          )}
         </div>
       </div>
       <ToastContainer />

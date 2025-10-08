@@ -99,7 +99,7 @@ export const Footer = ({ variant = "wide" }: FooterProps) => {
           </p>
         )}
 
-        {/* 🔸 WhatsApp */}
+        
         <div className="!text-sm !text-white">
           <p>
             WhatsApp:{" "}
