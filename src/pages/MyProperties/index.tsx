@@ -32,6 +32,7 @@ import "react-toastify/dist/ReactToastify.css";
 import PropertiesGridMyProperty from "@/components/PropertiesGridMyProperty";
 import PropertiesListMyPorperty from "@/components/PropertiesListMyPorperty";
 import CardPropertiesAdmin from "@/components/CardPropertiesAdmin";
+import CardPropertiesAdminMobile from "@/components/CardPropertiesAdminMobile";
 
 type BackendError = { message?: string; error?: string };
 
@@ -60,8 +61,8 @@ function RowCarousel({
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
-      <CardPropertiesAdmin
+    <div className=" !flex !flex-col !items-center !mb-8">
+      <CardPropertiesAdminMobile
         item={items[index]}
         onView={() => onView(items[index].uuid ?? items[index].id)}
         onEdit={() => onEdit(items[index].uuid ?? items[index].id)}
@@ -235,7 +236,6 @@ export default function MyProperties() {
                 </div>
               ) : (
                 <>
-                  
                   <div className="!flex md:!hidden !flex-col !items-center !justify-center !pb-4">
                     <div className="!w-full !flex !flex-col !items-start">
                       {/* Título e ícones */}
@@ -395,82 +395,89 @@ export default function MyProperties() {
                         </div>
 
                         {/* 🔹 MOBILE VIEW */}
-<div className="!flex md:!hidden !flex-col !items-center !justify-center">
-  {/* 🔸 Container com mesma largura do filtro */}
-  <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
-    {viewMode === "grid" ? (
-      loading ? (
-        <>
-          {/* Skeletons alinhados */}
-          <div className="!w-full !max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
-            <CardPropertiesAdmin loading />
-          </div>
-          <div className="!w-full !max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
-            <CardPropertiesAdmin loading />
-          </div>
-        </>
-      ) : (
-        <>
-          {/* 🔸 Cards centralizados e alinhados ao filtro */}
-          <div className="!w-full !max-w-[380px] !mx-auto">
-            <RowCarousel
-              items={row1}
-              onView={handleView}
-              onEdit={handleEdit}
-              onToggleAtivo={handleToggleAtivo}
-            />
-            <RowCarousel
-              items={row2}
-              onView={handleView}
-              onEdit={handleEdit}
-              onToggleAtivo={handleToggleAtivo}
-            />
-          </div>
+                        <div className="!flex md:!hidden !flex-col !items-center !justify-center">
+                          {/* 🔸 Container com mesma largura do filtro */}
+                          <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
+                            {viewMode === "grid" ? (
+                              loading ? (
+                                <>
+                                  {/* Skeletons alinhados */}
+                                  <div className="!w-full !max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
+                                    <CardPropertiesAdmin loading />
+                                  </div>
+                                  <div className="!w-full !max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
+                                    <CardPropertiesAdmin loading />
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  {/* 🔸 Cards centralizados e alinhados ao filtro */}
+                                  <div className="!w-full !max-w-[380px] !mx-auto">
+                                    <RowCarousel
+                                      items={row1}
+                                      onView={handleView}
+                                      onEdit={handleEdit}
+                                      onToggleAtivo={handleToggleAtivo}
+                                    />
+                                    <RowCarousel
+                                      items={row2}
+                                      onView={handleView}
+                                      onEdit={handleEdit}
+                                      onToggleAtivo={handleToggleAtivo}
+                                    />
+                                  </div>
 
-          {/* 🔹 Paginação */}
-          {totalPages > 1 && (
-            <div className="!flex !justify-center !mt-4 !gap-2">
-              <button
-                onClick={() =>
-                  carregarMeusImoveis(Math.max(1, currentPage - 1), applied)
-                }
-                className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
-              >
-                Anterior
-              </button>
-              <span className="!px-2 !py-1 !text-sm">
-                Página {currentPage} de {totalPages}
-              </span>
-              <button
-                onClick={() =>
-                  carregarMeusImoveis(
-                    Math.min(totalPages, currentPage + 1),
-                    applied
-                  )
-                }
-                className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
-              >
-                Próximo
-              </button>
-            </div>
-          )}
-        </>
-      )
-    ) : (
-      <PropertiesListMyPorperty
-        loading={loading}
-        items={items}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page) => carregarMeusImoveis(page, applied)}
-        onView={handleView}
-        onEdit={handleEdit}
-        onToggleAtivo={handleToggleAtivo}
-      />
-    )}
-  </div>
-</div>
-
+                                  {/* 🔹 Paginação */}
+                                  {totalPages > 1 && (
+                                    <div className="!flex !justify-center !mt-4 !gap-2">
+                                      <button
+                                        onClick={() =>
+                                          carregarMeusImoveis(
+                                            Math.max(1, currentPage - 1),
+                                            applied
+                                          )
+                                        }
+                                        className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
+                                      >
+                                        Anterior
+                                      </button>
+                                      <span className="!px-2 !py-1 !text-sm">
+                                        Página {currentPage} de {totalPages}
+                                      </span>
+                                      <button
+                                        onClick={() =>
+                                          carregarMeusImoveis(
+                                            Math.min(
+                                              totalPages,
+                                              currentPage + 1
+                                            ),
+                                            applied
+                                          )
+                                        }
+                                        className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
+                                      >
+                                        Próximo
+                                      </button>
+                                    </div>
+                                  )}
+                                </>
+                              )
+                            ) : (
+                              <PropertiesListMyPorperty
+                                loading={loading}
+                                items={items}
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={(page) =>
+                                  carregarMeusImoveis(page, applied)
+                                }
+                                onView={handleView}
+                                onEdit={handleEdit}
+                                onToggleAtivo={handleToggleAtivo}
+                              />
+                            )}
+                          </div>
+                        </div>
                       </>
                     )}
                   </div>
@@ -480,8 +487,8 @@ export default function MyProperties() {
           </section>
         </main>
 
-        <div className="!mt-4 !mb-12">
-          <Footer />
+        <div className="!mt-4  !w-full !mx-auto">
+          <Footer variant="page"/>
         </div>
       </div>
       <ToastContainer />

@@ -34,8 +34,8 @@ export default function CreatePropertyPage() {
           </div>
         </div>
 
-        <div className="!mt-6 !mb-12">
-          <Footer />
+        <div className="!mt-6   ">
+          <Footer variant="create"  />
         </div>
       </div>
     </SidebarProvider>

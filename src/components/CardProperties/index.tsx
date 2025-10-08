@@ -110,7 +110,7 @@ const PropertyCard = ({
     <div
       onClick={handleNavigateToDetails}
       className={`${
-        isFeatured ? "w-[460px]" : "w-[280px]"
+        isFeatured ? "w-[460px]" : "w-[270px]"
       } !h-[460px] flex-shrink-0 flex flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer`}
     >
       {/* Imagem */}

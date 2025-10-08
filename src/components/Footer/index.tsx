@@ -14,13 +14,14 @@ interface FooterProps {
   /**
    * Controla o layout e largura do footer:
    *
-   * - "wide"   → Usa largura máxima da página (ex: criação de imóvel)
+   * - "wide"   → Usa largura máxima da página (ex: listagens amplas)
    * - "page"   → Segue 85% da tela (ex: gerenciamento de usuários)
-   * - "mobile" → Segue largura dos cards (ex: meus imóveis)
-   * - "narrow" → Alinha com cards pequenos ou páginas simples
-   * - "home"   → Segue largura de 80% (ex: página inicial)
+   * - "mobile" → Segue largura dos cards (ex: Meus Imóveis)
+   * - "narrow" → Alinha com cards pequenos
+   * - "home"   → Segue largura de 75% (ex: página inicial)
+   * - "create" → Alinha com o card de criação de imóvel (RightPanel)
    */
-  variant?: "wide" | "narrow" | "page" | "mobile" | "home";
+  variant?: "wide" | "narrow" | "page" | "mobile" | "home" | "create";
 }
 
 export const Footer = ({ variant = "wide" }: FooterProps) => {
@@ -39,12 +40,13 @@ export const Footer = ({ variant = "wide" }: FooterProps) => {
     console.log("Email:", data.email);
     setFormStatus("success");
     reset();
-    alert("Contato salvo com sucesso!");
   };
 
-  // 🔹 Largura dinâmica conforme o tipo de página
+  // 🔹 Largura dinâmica conforme a variante
   const containerWidth =
-    variant === "narrow"
+    variant === "create"
+      ? "!max-w-[95%] sm:!max-w-[680px] !mx-auto" // 👈 largura do card branco de criação
+      : variant === "narrow"
       ? "!max-w-[380px] !mx-auto"
       : variant === "page"
       ? "!max-w-[85%] !mx-auto"
@@ -55,10 +57,10 @@ export const Footer = ({ variant = "wide" }: FooterProps) => {
       : "!max-w-6xl !mx-auto !px-6 md:!px-10"; // wide padrão
 
   return (
-    <footer className="!bg-gradient-to-r !from-gray-400 !to-gray-700 !py-8 !px-4 !w-full !flex !justify-center">
+    <footer className="!bg-gradient-to-r !from-gray-500 !to-gray-700 !py-8 !px-4 !w-full !flex !justify-center">
       {/* 🔹 Card principal */}
       <div
-        className={`!bg-gradient-to-r !from-gray-400 !to-gray-700 !w-full ${containerWidth} !p-5 !rounded-xl !shadow-md !flex !flex-col !items-center !text-center !space-y-4 !border !border-gray-300`}
+        className={`!bg-gradient-to-r !from-gray-500 !to-gray-700 !w-full ${containerWidth} !p-5 !rounded-xl !shadow-md !flex !flex-col !items-center !text-center !space-y-4 !border !border-gray-400`}
       >
         {/* 🔸 Título */}
         <div>

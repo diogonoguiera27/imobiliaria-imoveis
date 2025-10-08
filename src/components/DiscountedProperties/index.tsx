@@ -1,4 +1,3 @@
-// ✅ src/components/ImoveisPromocao/index.tsx
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Dialog } from "../ui/dialog";
@@ -17,44 +16,35 @@ const DiscountedProperties = () => {
   const [favoritedIds, setFavoritedIds] = useState<(number | string)[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // paginação backend
   const [apiPage, setApiPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
-  // índice desktop
   const [startIndex, setStartIndex] = useState(0);
-  const visibleCount = 5;
-
-  // índice mobile
   const [mobileIndex, setMobileIndex] = useState(0);
+  const visibleCount = 5;
 
   const { token, user } = useAuth();
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
-  // 🔹 Carregar imóveis e favoritos
   useEffect(() => {
     async function carregarImoveis() {
       try {
         setLoading(true);
-
         const response: PaginatedProperties = await buscarImoveis({
           categoria: "promocao",
           page: apiPage,
           take: 10,
         });
 
-        // 🔹 Ordena e ignora o primeiro item (para não repetir o destaque)
         const ordenados = user?.cidade
           ? priorizarImoveisDaCidade(response.data, user.cidade)
           : response.data;
 
-        const semPrimeiro = ordenados.slice(1); // Remove o primeiro imóvel
+        const semPrimeiro = ordenados.slice(1);
         setImoveis(semPrimeiro);
         setTotalPages(response.pagination.totalPages);
         setStartIndex(0);
         setMobileIndex(0);
 
-        // 🔹 Favoritos
         if (token) {
           try {
             const favoritos = await getUserFavorites(token);
@@ -75,11 +65,9 @@ const DiscountedProperties = () => {
     carregarImoveis();
   }, [apiPage, token, user]);
 
-  // 🔹 Navegação desktop
   const prevPage = () => {
-    if (startIndex > 0) {
-      setStartIndex((prev) => Math.max(prev - visibleCount, 0));
-    } else if (apiPage > 1) {
+    if (startIndex > 0) setStartIndex((prev) => Math.max(prev - visibleCount, 0));
+    else if (apiPage > 1) {
       setApiPage((prev) => prev - 1);
       setStartIndex(5);
     }
@@ -92,36 +80,31 @@ const DiscountedProperties = () => {
         setApiPage((prev) => prev + 1);
         setStartIndex(0);
       }
-    } else {
-      setStartIndex(nextIndex);
-    }
+    } else setStartIndex(nextIndex);
   };
 
-  // 🔹 Navegação mobile
   const prevMobile = () => {
-    if (mobileIndex > 0) {
-      setMobileIndex((prev) => prev - 1);
-    } else if (apiPage > 1) {
+    if (mobileIndex > 0) setMobileIndex((prev) => prev - 1);
+    else if (apiPage > 1) {
       setApiPage((prev) => prev - 1);
       setMobileIndex(9);
     }
   };
 
   const nextMobile = () => {
-    if (mobileIndex < imoveis.length - 1) {
-      setMobileIndex((prev) => prev + 1);
-    } else if (apiPage < totalPages) {
+    if (mobileIndex < imoveis.length - 1) setMobileIndex((prev) => prev + 1);
+    else if (apiPage < totalPages) {
       setApiPage((prev) => prev + 1);
       setMobileIndex(0);
     }
   };
 
   return (
-    <section className="!w-full !px-4 !pt-0 !mt-0">
+    <section className="!w-full !px-4 !pt-2 !mt-0">
       {/* 🔹 Container central padronizado */}
-      <div className="!w-full !mx-auto">
-        {/* Título */}
-        <div className="!w-full !flex !justify-center !mt-8">
+      <div className="!w-full !max-w-[80%] !mx-auto md:!max-w-[1412px]">
+        {/* 🔹 Título */}
+        <div className="!w-full !flex !justify-center !mt-6">
           <h2 className="!text-gray-900 !text-xl !font-bold !text-center">
             Imóveis que baixaram de preço em até 32% próximos a você
           </h2>
@@ -129,7 +112,7 @@ const DiscountedProperties = () => {
 
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
-          <div className="!relative !w-full">
+          <div className="!relative !max-w-[1412px] !w-full">
             {/* ⬅️ seta esquerda */}
             <button
               onClick={prevPage}
@@ -142,11 +125,8 @@ const DiscountedProperties = () => {
 
             {/* lista de cards */}
             <div
-              className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar !pl-4 !pr-2"
-              style={{
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-              }}
+              className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {loading && imoveis.length === 0
                 ? Array.from({ length: visibleCount }).map((_, i) => (
