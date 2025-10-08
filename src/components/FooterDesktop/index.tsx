@@ -43,7 +43,7 @@ export const FooterDesktop = ({ variant = "list" }: FooterDesktopProps) => {
     variant === "create"
       ? "!w-full !max-w-6xl !mx-auto !px-6 lg:!px-20"
       : variant === "gridFix" || variant === "gridTight"
-      ? "!w-full !max-w-6xl !mx-auto !px-6 md:!px-10" // ⬅️ mesmo espaçamento lateral da grid dos cards
+      ? "!w-full !max-w-[1450px] !mx-auto !px-6 md:!px-10 lg:!translate-x-[50px]"  // ⬅️ mesmo espaçamento lateral da grid dos cards
       : "!w-full !max-w-6xl !mx-auto !px-6 md:!px-10";
 
   // 🔹 Card interno (caixa cinza do footer)
