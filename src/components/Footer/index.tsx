@@ -10,7 +10,20 @@ const emailSchema = z.object({
 
 type EmailFormData = z.infer<typeof emailSchema>;
 
-export const Footer = () => {
+interface FooterProps {
+  /**
+   * Controla o layout e largura do footer:
+   *
+   * - "wide"   → Usa largura máxima da página (ex: criação de imóvel)
+   * - "page"   → Segue 85% da tela (ex: gerenciamento de usuários)
+   * - "mobile" → Segue largura dos cards (ex: meus imóveis)
+   * - "narrow" → Alinha com cards pequenos ou páginas simples
+   * - "home"   → Segue largura de 80% (ex: página inicial)
+   */
+  variant?: "wide" | "narrow" | "page" | "mobile" | "home";
+}
+
+export const Footer = ({ variant = "wide" }: FooterProps) => {
   const [formStatus, setFormStatus] = useState<"idle" | "success">("idle");
 
   const {
@@ -29,11 +42,24 @@ export const Footer = () => {
     alert("Contato salvo com sucesso!");
   };
 
+  // 🔹 Largura dinâmica conforme o tipo de página
+  const containerWidth =
+    variant === "narrow"
+      ? "!max-w-[380px] !mx-auto"
+      : variant === "page"
+      ? "!max-w-[85%] !mx-auto"
+      : variant === "mobile"
+      ? "!max-w-[90%] sm:!max-w-[380px] !mx-auto"
+      : variant === "home"
+      ? "!max-w-[80%] !mx-auto"
+      : "!max-w-6xl !mx-auto !px-6 md:!px-10"; // wide padrão
+
   return (
-    <footer className="!bg-gradient-to-r !from-gray-400 !to-gray-700 !py-6 !px-4 !w-full !flex !justify-center">
-      {/* 🔹 Card centralizado e padronizado com os outros elementos da página */}
-      <div className="!bg-gradient-to-r !from-gray-400 !to-gray-700 !w-full !max-w-[90%] sm:!max-w-[380px] md:!max-w-none !mx-auto !p-4 !rounded-xl !shadow-md !flex !flex-col !items-center !text-center !space-y-4 !border !border-gray-200">
-        
+    <footer className="!bg-gradient-to-r !from-gray-400 !to-gray-700 !py-8 !px-4 !w-full !flex !justify-center">
+      {/* 🔹 Card principal */}
+      <div
+        className={`!bg-gradient-to-r !from-gray-400 !to-gray-700 !w-full ${containerWidth} !p-5 !rounded-xl !shadow-md !flex !flex-col !items-center !text-center !space-y-4 !border !border-gray-300`}
+      >
         {/* 🔸 Título */}
         <div>
           <h2 className="!text-lg !font-bold !text-white">
@@ -61,7 +87,7 @@ export const Footer = () => {
           </button>
         </form>
 
-        {/* 🔸 Mensagens de validação */}
+        {/* 🔸 Mensagens */}
         {errors.email && (
           <p className="!text-red-100 !text-sm">{errors.email.message}</p>
         )}
@@ -71,7 +97,7 @@ export const Footer = () => {
           </p>
         )}
 
-        {/* 🔸 Contato WhatsApp */}
+        {/* 🔸 WhatsApp */}
         <div className="!text-sm !text-white">
           <p>
             WhatsApp:{" "}

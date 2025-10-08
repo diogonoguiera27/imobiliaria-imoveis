@@ -1,4 +1,3 @@
-// src/components/PropertyCard/MainCarouselPropertyCard.tsx
 import { FaBed, FaCar, FaRulerCombined } from "react-icons/fa";
 import { Imovel } from "@/types";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +21,11 @@ const MainCarouselPropertyCard = ({
     navigate(`/imovel/${imovel.uuid}`);
   };
 
-  // 🔹 Modo Skeleton
+  // 🔹 Estado Skeleton
   if (loading) {
     return (
       <div
-        className="!w-[120%] !h-[250px] sm:!h-auto sm:!w-[360px] md:!w-[400px] lg:!w-[460px] 
+        className="!w-full sm:!w-[380px] md:!w-[400px] lg:!w-[460px]
                    !flex-shrink-0 !bg-white !rounded-xl !shadow-md 
                    !overflow-hidden !border !border-gray-700 !p-4"
       >
@@ -55,7 +54,7 @@ const MainCarouselPropertyCard = ({
 
   return (
     <div
-      className="!w-[120%] !h-[250px] sm:!h-auto sm:!w-[360px] md:!w-[400px] lg:!w-[460px] 
+      className="!w-full sm:!w-[380px] md:!w-[400px] lg:!w-[460px]
                  !flex-shrink-0 !bg-white !rounded-xl !shadow-md 
                  !overflow-hidden !border !border-gray-700 
                  hover:!scale-[1.01] !transition !cursor-pointer"
@@ -63,14 +62,14 @@ const MainCarouselPropertyCard = ({
       aria-label={`Imóvel em ${imovel.bairro}, ${imovel.cidade}`}
       onClick={goToDetails}
     >
-      {/* Imagem */}
+      {/* 🖼️ Imagem */}
       <img
         src={`${API_URL}${imovel.imagem}`}
         alt={`${imovel.tipo} em ${imovel.bairro}, ${imovel.cidade}`}
         className="!w-full !h-[100px] sm:!h-[200px] !object-cover !block"
       />
 
-      {/* Conteúdo */}
+      {/* 📋 Conteúdo */}
       <div className="!bg-gray-100 !border-t !border-gray-800 !px-4 !pt-3 !pb-3 !h-[140px] sm:!h-auto">
         <div className="!flex !flex-col !gap-1 sm:!gap-2 !text-left">
           <p className="!text-[11px] sm:!text-xs !text-black !font-semibold !uppercase">
@@ -86,7 +85,7 @@ const MainCarouselPropertyCard = ({
           </p>
 
           <p className="!text-[11px] sm:!text-xs !font-semibold !uppercase !text-red-600">
-            {imovel.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
+            {imovel.tipoNegocio === "venda" ? "VENDA" : "ALUGA-SE"}
           </p>
 
           {imovel.user?.nome && (
@@ -97,7 +96,7 @@ const MainCarouselPropertyCard = ({
           )}
         </div>
 
-        {/* Infos adicionais */}
+        {/* ⚙️ Informações adicionais */}
         <div className="!flex !flex-wrap !gap-x-3 !gap-y-1 !text-gray-700 !text-[11px] sm:!text-sm !mt-2 sm:!mt-3">
           <div className="!flex !items-center !gap-1">
             <FaRulerCombined className="!text-[12px] sm:!text-[15px]" />
@@ -114,7 +113,7 @@ const MainCarouselPropertyCard = ({
 
           <div className="!ml-auto !flex !items-center">
             <p className="!text-sm sm:!text-base !font-bold !text-green-600">
-              R{"$ "}
+              R${" "}
               {imovel.preco.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
               })}
@@ -122,7 +121,7 @@ const MainCarouselPropertyCard = ({
           </div>
         </div>
 
-        {/* Botão visível apenas no desktop */}
+        {/* 🔘 Botão visível apenas no desktop */}
         <div
           className="!w-full !hidden sm:!block !mt-2"
           onClick={(e) => e.stopPropagation()}

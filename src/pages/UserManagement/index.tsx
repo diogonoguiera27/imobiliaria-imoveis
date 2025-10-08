@@ -15,7 +15,7 @@ const UserManagement = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  const take = 10; // alinhado com backend
+  const take = 10;
 
   useEffect(() => {
     async function fetchData() {
@@ -77,8 +77,8 @@ const UserManagement = () => {
           </div>
         </main>
 
-        <div className="!mt-6 !mb-12">
-          <Footer />
+        <div className="!mt-6 !mb-12 !w-full !mx-auto">
+          <Footer variant="page" />
         </div>
       </div>
     </SidebarProvider>

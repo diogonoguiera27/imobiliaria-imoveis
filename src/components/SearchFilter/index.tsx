@@ -1,11 +1,10 @@
-// ✅ src/components/Home/FiltroBusca.tsx
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import api from "@/service/api";
 import type { Imovel } from "@/types";
 
-// 🔹 Função utilitária para normalizar (sem acentos + minúsculo)
+// 🔹 Normaliza string (remove acento + minúsculas)
 function normalize(str: string) {
   return str
     .normalize("NFD")
@@ -28,10 +27,9 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   const [valorMax, setValorMax] = useState<number>(3_000_000);
   const [tipo, setTipo] = useState<string>("");
   const [cidade, setCidade] = useState<string>("");
-
   const [cidadesDisponiveis, setCidadesDisponiveis] = useState<string[]>([]);
 
-  // 🔹 Carregar cidades únicas de todos os imóveis
+  // 🔹 Carregar cidades disponíveis
   useEffect(() => {
     api
       .get("/property", { params: { take: 9999 } })
@@ -50,13 +48,12 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
         const unicas = Array.from(unicasMap.values()).sort((a, b) =>
           a.localeCompare(b, "pt-BR")
         );
-
         setCidadesDisponiveis(unicas);
       })
       .catch((err) => console.error("Erro ao carregar cidades:", err));
   }, []);
 
-  // 🔹 Resetar filtros via evento global
+  // 🔹 Resetar filtros
   useEffect(() => {
     const onClear = () => {
       setValorMax(3_000_000);
@@ -96,24 +93,23 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   return (
     <div
       className="
-        !w-[120%] sm:!w-full          /* 🔹 Mesmo comportamento do card de imóveis destaque */
-        !max-w-[80%]                  /* 🔹 Igual ao container do destaque */
-        !mx-auto                      /* 🔹 Centralizado */
-        md:!max-w-[1412px]            /* 🔹 Desktop padrão */
+        !w-full
+        !max-w-[278px] sm:!max-w-[400px] md:!max-w-[1412px]
+        !mx-auto
+        !mt-6 !mb-4
       "
     >
       <form
         onSubmit={handleSubmit}
         className="
           !bg-white !rounded-xl !shadow-xl
-          !px-3 sm:!px-6               /* 🔹 Mobile mais justo, desktop espaçado */
-          !py-6
+          !px-3 !py-4
           !flex !flex-col sm:!flex-row !flex-wrap
-          !gap-6 !items-end !w-full
+          !gap-4 !items-end !w-full
           !border !border-gray-200
         "
       >
-        {/* 🔹 Preço */}
+        {/* 🔹 Filtro de Preço */}
         <div className="!flex !flex-col !w-full sm:!w-[380px]">
           <label className="!text-gray-800 !text-sm !font-semibold !mb-1">
             Filtrar por Preço
@@ -189,6 +185,7 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
           >
             Pesquisar
           </Button>
+
           {filtroAtivo && (
             <Button
               type="button"

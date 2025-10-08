@@ -5,7 +5,6 @@ import { Dialog } from "../ui/dialog";
 import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
 import { Imovel } from "@/types";
-
 import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
 import { getUserFavorites } from "@/service/favoriteService";
 import { priorizarImoveisDaCidade } from "@/lib/utils";
@@ -44,24 +43,24 @@ const DiscountedProperties = () => {
           take: 10,
         });
 
+        // 🔹 Ordena e ignora o primeiro item (para não repetir o destaque)
         const ordenados = user?.cidade
           ? priorizarImoveisDaCidade(response.data, user.cidade)
           : response.data;
 
-        setImoveis(ordenados);
+        const semPrimeiro = ordenados.slice(1); // Remove o primeiro imóvel
+        setImoveis(semPrimeiro);
         setTotalPages(response.pagination.totalPages);
         setStartIndex(0);
         setMobileIndex(0);
 
+        // 🔹 Favoritos
         if (token) {
           try {
             const favoritos = await getUserFavorites(token);
-
-            // ✅ extrai ids e uuids válidos (sem duplicar)
             const idsOuUuids = favoritos
               .map((f) => f.propertyUuid || f.propertyId)
               .filter(Boolean);
-
             setFavoritedIds([...new Set(idsOuUuids)]);
           } catch (err) {
             console.error("Erro ao buscar favoritos:", err);
@@ -119,31 +118,35 @@ const DiscountedProperties = () => {
 
   return (
     <section className="!w-full !px-4 !pt-0 !mt-0">
-      {/* 🔹 Container central igual aos outros blocos */}
-      <div className="!w-full !max-w-[80%] !mx-auto">
+      {/* 🔹 Container central padronizado */}
+      <div className="!w-full !mx-auto">
+        {/* Título */}
         <div className="!w-full !flex !justify-center !mt-8">
-          <h2 className="!text-gray-900 !text-xl !font-bold !text-center !max-w-screen-lg">
+          <h2 className="!text-gray-900 !text-xl !font-bold !text-center">
             Imóveis que baixaram de preço em até 32% próximos a você
           </h2>
         </div>
 
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
-          <div className="!relative !w-full !max-w-[80%] md:!max-w-[1412px] !mx-auto">
+          <div className="!relative !w-full">
             {/* ⬅️ seta esquerda */}
             <button
               onClick={prevPage}
               disabled={apiPage === 1 && startIndex === 0}
               className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
             >
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
             {/* lista de cards */}
             <div
-              className="!flex !gap-4 !overflow-x-hidden !items-center !justify-center hide-scrollbar"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar !pl-4 !pr-2"
+              style={{
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
             >
               {loading && imoveis.length === 0
                 ? Array.from({ length: visibleCount }).map((_, i) => (
@@ -174,7 +177,7 @@ const DiscountedProperties = () => {
                 startIndex + visibleCount >= imoveis.length
               }
               className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
             >
               <ChevronRight className="!w-5 !h-5" />
             </button>

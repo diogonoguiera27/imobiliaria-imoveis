@@ -1,11 +1,9 @@
-// ✅ src/components/Home/PopularProperties.tsx
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "../ui/dialog";
 import { Imovel } from "@/types";
-
 import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
 import { getUserFavorites } from "@/service/favoriteService";
 import { priorizarImoveisDaCidade } from "@/lib/utils";
@@ -49,12 +47,15 @@ const PopularProperties = () => {
           take: 10,
         });
 
+        // 🔹 ordena e ignora o primeiro imóvel (para evitar repetição)
         const ordenados = user?.cidade
           ? priorizarImoveisDaCidade(response.data, user.cidade)
           : response.data;
 
+        const semPrimeiro = ordenados.slice(1); // Remove o primeiro
+
         // 👉 sempre substitui os imóveis da página atual
-        setImoveis(ordenados);
+        setImoveis(semPrimeiro);
         setTotalPages(response.pagination.totalPages);
         setStartIndex(0);
         setMobileIndex(0);
@@ -122,7 +123,7 @@ const PopularProperties = () => {
   return (
     <section className="!w-full !px-4 !pt-0 !mt-0">
       {/* 🔹 Container central padrão (mesmo do Destaque) */}
-      <div className="!w-full !max-w-[80%] !mx-auto">
+      <div className="!w-full !mx-auto">
         {/* Título */}
         <div className="!w-full !flex !justify-center !mt-8">
           <h2 className="!text-gray-900 !text-xl !font-bold !text-center !max-w-screen-lg">
@@ -132,20 +133,20 @@ const PopularProperties = () => {
 
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
-          <div className="!relative !w-full !max-w-[80%] md:!max-w-[1412px] !mx-auto">
+          <div className="!relative !w-full">
             {/* ⬅️ seta esquerda */}
             <button
               onClick={prevPage}
               disabled={apiPage === 1 && startIndex === 0}
               className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
             >
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
             {/* Lista de cards */}
             <div
-              className="!flex !gap-4 !overflow-x-hidden !items-center !justify-center hide-scrollbar"
+              className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar !pl-4 !pr-2"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {loading && imoveis.length === 0
@@ -171,7 +172,7 @@ const PopularProperties = () => {
                 startIndex + visibleCount >= imoveis.length
               }
               className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
             >
               <ChevronRight className="!w-5 !h-5" />
             </button>
@@ -182,13 +183,16 @@ const PopularProperties = () => {
         <div className="md:!hidden !w-full !flex !flex-col !items-center !mt-6">
           {imoveis.length > 0 && (
             <>
-              <div className="!max-w-[380px] !w-full !mx-auto !flex !justify-center">
-                <PropertyCard
-                  item={imoveis[mobileIndex]}
-                  isFavoritedInitially={favoritedIds.includes(
-                    imoveis[mobileIndex].id
-                  )}
-                />
+              {/* Card centralizado e alinhado com Destaques */}
+              <div className="!relative !flex !justify-center !items-center !w-full !px-2 sm:!px-0">
+                <div className="!max-w-[390px] sm:!max-w-[400px] !w-full !mx-auto !flex !justify-center">
+                  <PropertyCard
+                    item={imoveis[mobileIndex]}
+                    isFavoritedInitially={favoritedIds.includes(
+                      imoveis[mobileIndex].id
+                    )}
+                  />
+                </div>
               </div>
 
               {/* setas */}

@@ -1,3 +1,4 @@
+// ✅ src/pages/MyProperties.tsx
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -28,11 +29,9 @@ import FiltersMyProperty, {
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import PropertiesGridMyProperty from "@/components/PropertiesGridMyProperty";
 import PropertiesListMyPorperty from "@/components/PropertiesListMyPorperty";
 import CardPropertiesAdmin from "@/components/CardPropertiesAdmin";
-import CardPropertiesAdminMobile from "@/components/CardPropertiesAdminMobile";
 
 type BackendError = { message?: string; error?: string };
 
@@ -44,7 +43,6 @@ const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
 const TIPO_NEGOCIO_OPCOES: TipoNegocio[] = ["venda", "aluguel"];
 const ITEMS_PER_PAGE = 8;
 
-/* 🔹 Carrossel Mobile com card otimizado */
 function RowCarousel({
   items,
   onView,
@@ -59,18 +57,16 @@ function RowCarousel({
   const [index, setIndex] = useState(0);
   const prev = () => setIndex((i) => (i > 0 ? i - 1 : items.length - 1));
   const next = () => setIndex((i) => (i < items.length - 1 ? i + 1 : 0));
-
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="!w-full sm:!max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
-      <CardPropertiesAdminMobile
+    <div className="!w-[90%] !flex !flex-col !items-center !mb-8">
+      <CardPropertiesAdmin
         item={items[index]}
         onView={() => onView(items[index].uuid ?? items[index].id)}
         onEdit={() => onEdit(items[index].uuid ?? items[index].id)}
         onToggleAtivo={(novo) => onToggleAtivo(items[index].id, novo)}
       />
-
       <div className="!flex !items-center !justify-center !gap-6 !mt-3">
         <button
           onClick={prev}
@@ -85,7 +81,6 @@ function RowCarousel({
           <ChevronRight className="!w-5 !h-5" />
         </button>
       </div>
-
       <div className="!flex !gap-2 !mt-3">
         {items.map((_, i) => (
           <span
@@ -100,7 +95,6 @@ function RowCarousel({
   );
 }
 
-/* 🔸 Estado vazio */
 function EmptyState({ onCreate }: { onCreate: () => void }) {
   return (
     <div className="!w-full !rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200 !px-8 !py-12 !flex !flex-col !items-center !justify-center !text-center">
@@ -121,7 +115,6 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
   );
 }
 
-/* 🔸 Nenhum resultado encontrado */
 function NoResults() {
   return (
     <div className="!w-full !rounded-2xl !bg-white !shadow-sm !ring-1 !ring-neutral-200 !px-8 !py-12 !text-center">
@@ -132,7 +125,6 @@ function NoResults() {
   );
 }
 
-/* 🔸 Página principal */
 export default function MyProperties() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -215,6 +207,7 @@ export default function MyProperties() {
     navigate(`/imovel/${identifier}`);
   const handleEdit = (identifier: string | number) =>
     navigate(`/imovel/editar/${identifier}`);
+
   const handleToggleAtivo = async (id: number, novoAtivo: boolean) => {
     try {
       await atualizarStatusImovel(id, novoAtivo);
@@ -242,9 +235,10 @@ export default function MyProperties() {
                 </div>
               ) : (
                 <>
-                  {/* 🔹 Cabeçalho Mobile */}
+                  
                   <div className="!flex md:!hidden !flex-col !items-center !justify-center !pb-4">
                     <div className="!w-full !flex !flex-col !items-start">
+                      {/* Título e ícones */}
                       <div className="!w-full !flex !items-center !justify-between !mb-3 !max-w-[380px] !mx-auto !px-4">
                         <div>
                           <h1 className="!text-lg !font-semibold !text-gray-900 !leading-tight">
@@ -254,7 +248,8 @@ export default function MyProperties() {
                             Gerencie seus anúncios
                           </p>
                         </div>
-                        <div className="!flex !items-center !gap-2">
+
+                        <div className="!flex !items-center !gap-2  ">
                           <button
                             onClick={() => setViewMode("grid")}
                             className={`!p-2 !rounded ${
@@ -278,6 +273,7 @@ export default function MyProperties() {
                         </div>
                       </div>
 
+                      {/* 🔹 Botão com largura igual ao filtro */}
                       <div className="!w-full !flex !justify-center">
                         <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
                           <Button
@@ -292,7 +288,7 @@ export default function MyProperties() {
                     </div>
                   </div>
 
-                  {/* 🔹 Cabeçalho Desktop */}
+                  {/* Cabeçalho - DESKTOP */}
                   <div className="hidden md:flex !items-center !justify-between !pb-3">
                     <div>
                       <h1 className="!text-2xl !font-semibold !mb-0.5">
@@ -333,7 +329,7 @@ export default function MyProperties() {
                     </div>
                   </div>
 
-                  {/* 🔹 Filtros */}
+                  {/* 🔹 Filtros com alinhamento responsivo */}
                   <div className="!mt-4 !flex !justify-center">
                     <div className="!w-full !max-w-[90%] sm:!max-w-[380px] md:!max-w-none !mx-auto">
                       <FiltersMyProperty
@@ -360,7 +356,7 @@ export default function MyProperties() {
                     </div>
                   </div>
 
-                  {/* 🔹 Conteúdo */}
+                  {/* Conteúdo */}
                   <div className="!mt-6">
                     {!loading && hasAnyItem && items.length === 0 ? (
                       <NoResults />
@@ -398,81 +394,83 @@ export default function MyProperties() {
                           )}
                         </div>
 
-                        {/* 🔹 Mobile */}
-                        <div className="!flex md:!hidden !flex-col !items-center !justify-center">
-                          <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
-                            {viewMode === "grid" ? (
-                              loading ? (
-                                <>
-                                  <CardPropertiesAdmin loading />
-                                  <CardPropertiesAdmin loading />
-                                </>
-                              ) : (
-                                <>
-                                  <RowCarousel
-                                    items={row1}
-                                    onView={handleView}
-                                    onEdit={handleEdit}
-                                    onToggleAtivo={handleToggleAtivo}
-                                  />
-                                  <RowCarousel
-                                    items={row2}
-                                    onView={handleView}
-                                    onEdit={handleEdit}
-                                    onToggleAtivo={handleToggleAtivo}
-                                  />
+                        {/* 🔹 MOBILE VIEW */}
+<div className="!flex md:!hidden !flex-col !items-center !justify-center">
+  {/* 🔸 Container com mesma largura do filtro */}
+  <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
+    {viewMode === "grid" ? (
+      loading ? (
+        <>
+          {/* Skeletons alinhados */}
+          <div className="!w-full !max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
+            <CardPropertiesAdmin loading />
+          </div>
+          <div className="!w-full !max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
+            <CardPropertiesAdmin loading />
+          </div>
+        </>
+      ) : (
+        <>
+          {/* 🔸 Cards centralizados e alinhados ao filtro */}
+          <div className="!w-full !max-w-[380px] !mx-auto">
+            <RowCarousel
+              items={row1}
+              onView={handleView}
+              onEdit={handleEdit}
+              onToggleAtivo={handleToggleAtivo}
+            />
+            <RowCarousel
+              items={row2}
+              onView={handleView}
+              onEdit={handleEdit}
+              onToggleAtivo={handleToggleAtivo}
+            />
+          </div>
 
-                                  {/* 🔸 Paginação mobile */}
-                                  {totalPages > 1 && (
-                                    <div className="!flex !justify-center !mt-4 !gap-2">
-                                      <button
-                                        onClick={() =>
-                                          carregarMeusImoveis(
-                                            Math.max(1, currentPage - 1),
-                                            applied
-                                          )
-                                        }
-                                        className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
-                                      >
-                                        Anterior
-                                      </button>
-                                      <span className="!px-2 !py-1 !text-sm">
-                                        Página {currentPage} de {totalPages}
-                                      </span>
-                                      <button
-                                        onClick={() =>
-                                          carregarMeusImoveis(
-                                            Math.min(
-                                              totalPages,
-                                              currentPage + 1
-                                            ),
-                                            applied
-                                          )
-                                        }
-                                        className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
-                                      >
-                                        Próximo
-                                      </button>
-                                    </div>
-                                  )}
-                                </>
-                              )
-                            ) : (
-                              <PropertiesListMyPorperty
-                                loading={loading}
-                                items={items}
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                onPageChange={(page) =>
-                                  carregarMeusImoveis(page, applied)
-                                }
-                                onView={handleView}
-                                onEdit={handleEdit}
-                                onToggleAtivo={handleToggleAtivo}
-                              />
-                            )}
-                          </div>
-                        </div>
+          {/* 🔹 Paginação */}
+          {totalPages > 1 && (
+            <div className="!flex !justify-center !mt-4 !gap-2">
+              <button
+                onClick={() =>
+                  carregarMeusImoveis(Math.max(1, currentPage - 1), applied)
+                }
+                className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
+              >
+                Anterior
+              </button>
+              <span className="!px-2 !py-1 !text-sm">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                onClick={() =>
+                  carregarMeusImoveis(
+                    Math.min(totalPages, currentPage + 1),
+                    applied
+                  )
+                }
+                className="!px-3 !py-1 !bg-gray-200 !rounded hover:!bg-gray-300"
+              >
+                Próximo
+              </button>
+            </div>
+          )}
+        </>
+      )
+    ) : (
+      <PropertiesListMyPorperty
+        loading={loading}
+        items={items}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => carregarMeusImoveis(page, applied)}
+        onView={handleView}
+        onEdit={handleEdit}
+        onToggleAtivo={handleToggleAtivo}
+      />
+    )}
+  </div>
+</div>
+
                       </>
                     )}
                   </div>
