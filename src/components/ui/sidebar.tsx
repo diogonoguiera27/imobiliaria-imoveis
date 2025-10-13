@@ -254,9 +254,14 @@ export default function SidebarTrigger() {
   return (
     <>
       {/* ===== CABEÇALHO SUPERIOR ===== */}
-      <header className="fixed z-50 flex h-[60px] w-full items-center justify-between px-4 sm:px-10 bg-gradient-to-r from-red-400 to-red-700 shadow-xl">
+      <header
+  className="!fixed !z-50 !flex !h-[60px] !w-full 
+             !items-center  
+             !bg-gradient-to-r !from-red-400 !to-red-700 !shadow-xl"
+>
+          <div className="!w-[80%] !mx-auto !flex !items-center !justify-between ">
         {/* ===== ESQUERDA ===== */}
-        <div className="flex items-center gap-6">
+        <div className="!flex !items-center !gap-6 !w-full   ">
           {/* ⚙️ Engrenagem (abre menu mobile) */}
           {(isAdmin || isUser) && (
             <div className="md:hidden">
@@ -346,28 +351,28 @@ export default function SidebarTrigger() {
 
           {/* ===== Menu ADMIN no desktop ===== */}
           {isAdmin && (
-            <nav className="hidden md:flex !gap-6 !ml-2 items-center text-white text-sm font-semibold">
+            <nav className="hidden md:flex  !gap-6 items-center text-white text-sm font-semibold">
               <button
                 onClick={() => ensureAuth("/meus-imoveis")}
-                className="hover:underline"
+                className="hover:underline cursor-pointer"
               >
                 Meus Imóveis
               </button>
               <button
                 onClick={() => ensureAuth("/imovel/novo")}
-                className="hover:underline"
+                className="hover:underline cursor-pointer"
               >
                 Cadastrar Imóveis
               </button>
               <button
                 onClick={() => ensureAuth("/dashboard")}
-                className="hover:underline"
+                className="hover:underline cursor-pointer"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => ensureAuth("/admin/users")}
-                className="hover:underline"
+                className="hover:underline cursor-pointer"
               >
                 Gerenciar Usuários
               </button>
@@ -376,16 +381,16 @@ export default function SidebarTrigger() {
         </div>
 
         {/* ===== DIREITA ===== */}
-        <div className="flex items-center gap-6">
+        <div className="!flex !items-center !gap-6 !w-full  !justify-end">
           {/* Desktop: Home e Contato */}
           <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
-            <button onClick={goHome} className="hover:underline">
+            <button onClick={goHome} className="hover:underline cursor-pointer">
               Home
             </button>
 
             <Dialog>
               <DialogTrigger asChild>
-                <button className="hover:underline">Contato</button>
+                <button className="hover:underline cursor-pointer">Contato</button>
               </DialogTrigger>
               <DialogContent className="max-w-lg">
                 <ContactInfoModal />
@@ -411,9 +416,10 @@ export default function SidebarTrigger() {
           </nav>
 
           {/* Perfil do usuário */}
-          <div className="!mr-2 !sm:mr-4">
+          <div className="mr-2 sm:mr-4">
             <PerfilUsuarioModal />
           </div>
+        </div>
         </div>
       </header>
     </>

@@ -96,7 +96,7 @@ export default function CardPropertiesAdmin({
   return (
     <div
       ref={cardRef}
-      className="card-admin-test !w-full sm:!w-[285px] !max-w-[380px] !h-[470px] !flex-shrink-0 !flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200 hover:!scale-[1.01] !transition !cursor-default"
+      className=" !w-full !max-w-full !flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200"
     >
       {/* Imagem */}
       <div className="!w-full !h-[180px] !overflow-hidden relative">

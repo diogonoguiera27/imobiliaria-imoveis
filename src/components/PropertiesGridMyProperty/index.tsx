@@ -1,4 +1,3 @@
-
 import Pagination from "@/components/Pagination";
 import type { Imovel } from "@/types";
 import CardPropertiesAdmin from "../CardPropertiesAdmin";
@@ -12,7 +11,6 @@ type Props = {
   onPageChange: (p: number) => void;
   onView: (id: number) => void;
   onEdit: (id: number) => void;
- 
   onToggleAtivo: (id: number, ativo: boolean) => void;
 };
 
@@ -29,7 +27,8 @@ export default function PropertiesGridMyProperty({
 }: Props) {
   return (
     <>
-      <div className="!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-3 xl:!grid-cols-4 !gap-24">
+      {/* ✅ GRID ELÁSTICO COM IMPORTÂNCIA */}
+      <div className="!grid !w-full !gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
         {loading
           ? Array.from({ length: 8 }).map((_, idx) => (
               <CardPropertiesAdmin key={idx} loading />
@@ -44,7 +43,7 @@ export default function PropertiesGridMyProperty({
                   <CardPropertiesAdmin
                     item={it}
                     onView={() => onView(it.id)}
-                    onEdit={() => onEdit(it.id)}                 
+                    onEdit={() => onEdit(it.id)}
                     onToggleAtivo={(novo) => onToggleAtivo(it.id, novo)}
                   />
                 </div>
@@ -52,8 +51,9 @@ export default function PropertiesGridMyProperty({
             })}
       </div>
 
+      
       {!loading && totalPages > 1 && (
-        <div className="!w-full !flex !mt-10 !justify-between">
+        <div className="!w-full !flex !justify-center !mt-10">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

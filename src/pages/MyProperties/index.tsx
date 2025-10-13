@@ -1,6 +1,7 @@
 // ✅ src/pages/MyProperties.tsx
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import heroImage from "@/assets/arbnb.webp";
 import axios from "axios";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -232,15 +233,16 @@ export default function MyProperties() {
   const row1 = hasAnyItem ? items.slice(0, 4) : [];
   const row2 = hasAnyItem ? items.slice(4, 8) : [];
 
-  const footerVariant: "gridTight" | "list" = viewMode === "grid" ? "gridTight" : "list";
+  const footerVariant: "gridTight" | "list" =
+    viewMode === "grid" ? "gridTight" : "list";
 
   return (
     <SidebarProvider>
-      <div className="!w-screen !flex !flex-col !overflow-x-hidden">
+      <div className="!w-full !flex !flex-col !min-h-screen ">
         <main className="!flex-1">
           <SidebarTrigger />
           <section className="!pt-[72px] !w-full">
-            <div className="!w-full !max-w-6xl !mx-auto !px-6 md:!px-10">
+            <div className="!w-[80%] !mx-auto">
               {!loading && !hasAnyItem ? (
                 <div className="!mt-6">
                   <EmptyState onCreate={() => navigate("/imovel/novo")} />
@@ -300,7 +302,7 @@ export default function MyProperties() {
                   </div>
 
                   {/* Cabeçalho - DESKTOP */}
-                  <div className="hidden md:flex !items-center !justify-between !pb-3">
+                  <div className="hidden md:flex !items-center !justify-between !pb-3 !w-full">
                     <div>
                       <h1 className="!text-2xl !font-semibold !mb-0.5">
                         Meus Imóveis
@@ -339,33 +341,115 @@ export default function MyProperties() {
                       </Button>
                     </div>
                   </div>
-
-                  {/* 🔹 Filtros com alinhamento responsivo */}
-                  <div className="!mt-4 !flex !justify-center">
-                    <div className="!w-full !max-w-[90%] sm:!max-w-[380px] md:!max-w-none !mx-auto">
-                      <FiltersMyProperty
-                        q={applied.q || ""}
-                        setQ={(q) => setApplied((p) => ({ ...p, q }))}
-                        cidade={applied.cidade}
-                        setCidade={(cidade) =>
-                          setApplied((p) => ({ ...p, cidade }))
-                        }
-                        tipo={applied.tipo}
-                        setTipo={(tipo) => setApplied((p) => ({ ...p, tipo }))}
-                        negocio={applied.negocio}
-                        setNegocio={(negocio) =>
-                          setApplied((p) => ({ ...p, negocio }))
-                        }
-                        applied={applied}
-                        setApplied={setApplied}
-                        items={items}
-                        allCities={allCities}
-                        onApply={handleApplyFilters}
-                        TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
-                        TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
+                  <section
+                    className="
+    !relative 
+    !w-full 
+    !h-[520px] 
+    !mt-6 
+    !overflow-hidden 
+    !rounded-2xl 
+    !box-border 
+    !shadow-sm
+  "
+                  >
+                    {/* 🔹 IMAGEM à direita com width 75% */}
+                    <div
+                      className="
+      !absolute 
+      !top-0 
+      !right-0 
+      !h-full 
+      !w-[75%] 
+      !box-border 
+      !overflow-hidden
+    "
+                    >
+                      <img
+                        src={heroImage}
+                        alt="Imagem de destaque de imóveis"
+                        className="
+        !absolute 
+        !top-0 
+        !right-0 
+        !h-full 
+        !w-full 
+        !object-cover 
+        !object-center 
+        !aspect-auto 
+        !box-border
+      "
                       />
                     </div>
-                  </div>
+
+                    {/* 🔹 CARD de filtro à esquerda */}
+                    <div
+                      className="
+      !relative 
+      !z-10 
+      !flex 
+      !items-center 
+      !justify-start 
+      !h-full 
+      !w-full 
+      md:!w-[25%] 
+      !px-8 
+      md:!px-16 
+      !box-border
+    "
+                    >
+                      <div
+                        className="
+        !relative 
+        !bg-white 
+        !p-8 
+        !rounded-[12px] 
+        !shadow-[0_8px_28px_rgba(0,0,0,0.1)] 
+        !border 
+        !border-gray-200 
+        !box-border 
+        !w-full 
+        md:!w-[420px] 
+        !mt-0 
+        !translate-y-[-32px]
+      "
+                      >
+                        <h2 className="!text-3xl !font-bold !text-gray-900 !mb-2 !leading-snug">
+                          Descubra imóveis em{" "}
+                          <span className="!text-red-600">Goiás</span>
+                        </h2>
+                        <p className="!text-gray-500 !mb-6 !text-base">
+                          Encontre e gerencie seus anúncios de forma simples e
+                          rápida.
+                        </p>
+
+                        {/* 🔸 Filtros */}
+                        <FiltersMyProperty
+                          q={applied.q || ""}
+                          setQ={(q) => setApplied((p) => ({ ...p, q }))}
+                          cidade={applied.cidade}
+                          setCidade={(cidade) =>
+                            setApplied((p) => ({ ...p, cidade }))
+                          }
+                          tipo={applied.tipo}
+                          setTipo={(tipo) =>
+                            setApplied((p) => ({ ...p, tipo }))
+                          }
+                          negocio={applied.negocio}
+                          setNegocio={(negocio) =>
+                            setApplied((p) => ({ ...p, negocio }))
+                          }
+                          applied={applied}
+                          setApplied={setApplied}
+                          items={items}
+                          allCities={allCities}
+                          onApply={handleApplyFilters}
+                          TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
+                          TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
+                        />
+                      </div>
+                    </div>
+                  </section>
 
                   {/* Conteúdo */}
                   <div className="!mt-6">

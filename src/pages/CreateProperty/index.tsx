@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-
 import LeftPanel from "@/components/LeftPanel";
 import RightPanel from "@/components/RightPanel";
 import { FooterDesktop } from "@/components/FooterDesktop";
 
-
 export default function CreatePropertyPage() {
   const [preview, setPreview] = useState<string | null>(null);
 
-  // Limpa preview ao desmontar
+  // 🔹 Limpa preview ao desmontar
   useEffect(() => {
     return () => {
       if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
@@ -18,26 +16,29 @@ export default function CreatePropertyPage() {
 
   return (
     <SidebarProvider>
-      <div className="!w-screen">
+      <div className="!w-screen !min-h-screen !flex !flex-col">
         <SidebarTrigger />
 
-        <div className="!max-w-6xl !mx-auto !p-6 lg:!p-20">
+        {/* 🔹 Container centralizado com padronização */}
+        <div className="!w-[95%] md:!w-[80%] !mx-auto !p-0 !flex-1 !mt-18">
           {/* GRID responsivo */}
-          <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-0 lg:!items-stretch lg:!h-full !mt-10">
-            <div className="hidden lg:!block lg:!col-span-1">
-              <div className="!h-full">
-                <LeftPanel previewSrc={preview} />
-              </div>
+          <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-0 lg:!items-stretch !h-full ">
+            {/* Painel Esquerdo (Preview da Imagem) */}
+            <div className="hidden lg:!block lg:!col-span-1 !h-full">
+              <LeftPanel previewSrc={preview} />
             </div>
-            <div className="lg:!col-span-2">
+
+            {/* Painel Direito (Formulário de Cadastro) */}
+            <div className="lg:!col-span-2 ">
               <RightPanel onImageSelect={setPreview} />
             </div>
           </div>
         </div>
 
-        <div className="!mt-6">
-  <FooterDesktop variant="create" />
-</div>
+        {/* 🔹 Rodapé */}
+        <div className="!mt-12">
+          <FooterDesktop variant="create" />
+        </div>
       </div>
     </SidebarProvider>
   );

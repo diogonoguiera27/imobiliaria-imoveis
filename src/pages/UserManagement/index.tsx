@@ -1,11 +1,11 @@
-// src/pages/UserManagement/index.tsx
+// ✅ src/pages/UserManagement/index.tsx
 import { useEffect, useState } from "react";
 import { getUsers, User, PaginatedUsers } from "@/service/userService";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Footer } from "@/components/Footer";
 import { AxiosError } from "axios";
 import { UserTable } from "@/components/UserTable";
 import { UserPagination } from "@/components/UserPagination";
+import { FooterDesktop } from "@/components/FooterDesktop";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -48,12 +48,12 @@ const UserManagement = () => {
 
   return (
     <SidebarProvider>
-      <div className="!flex !flex-col !w-screen !overflow-x-hidden">
+      <div className="!flex !flex-col !w-screen !overflow-x-hidden !min-h-screen">
         <SidebarTrigger />
 
         <main className="!flex-grow !mt-10">
-          <div className="!w-full !max-w-[85%] !mx-auto !px-4 !mt-6">
-            <h1 className="!text-3xl !font-bold !mb-8 !text-gray-800">
+          <div className="!w-[95%] md:!w-[80%] !mx-auto !p-0">
+            <h1 className="!text-3xl !font-bold !mb-4 !text-gray-800 !mt-6">
               Gerenciamento de Usuários
             </h1>
 
@@ -77,9 +77,8 @@ const UserManagement = () => {
           </div>
         </main>
 
-        <div className="!mt-6  !w-full !mx-auto">
-          <Footer variant="page" />
-        </div>
+        {/* 🔹 Footer alinhado corretamente (sem wrapper extra) */}
+        <FooterDesktop variant="list" />
       </div>
     </SidebarProvider>
   );
