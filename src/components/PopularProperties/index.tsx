@@ -26,7 +26,7 @@ const PopularProperties = () => {
   const [startIndex, setStartIndex] = useState(0);
   const [mobileIndex, setMobileIndex] = useState(0);
 
-  const visibleCount = 5;
+  const visibleCount = 6;
   const { token, user } = useAuth();
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
@@ -102,21 +102,22 @@ const PopularProperties = () => {
   };
 
   return (
-    <section className="!w-full !px-4 !pt-2 !mt-0">
-      <div className="!w-full !max-w-[80%] !mx-auto md:!max-w-[1412px]">
+    <section className="!w-full !pt-2 !mt-0">
+      {/* ✅ Centralização padrão 80% igual ao Featured */}
+      <div className="!w-full">
         <div className="!w-full !flex !justify-center !mt-6">
-          <h2 className="!text-gray-900 !text-xl !font-bold !text-center !max-w-screen-lg">
+          <h2 className="!text-gray-900 !text-xl !font-bold !text-center !mb-4">
             Apartamentos mais populares perto de você
           </h2>
         </div>
 
         {/* 💻 Desktop */}
-        <div className="!hidden md:!flex !w-full !justify-center !mt-4">
-          <div className="!relative !max-w-[1412px] !w-full">
+        <div className="!hidden md:!flex !w-full !justify-center">
+          <div className="!relative !w-full">
             <button
               onClick={prevPage}
               disabled={apiPage === 1 && startIndex === 0}
-              className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
+              className="!absolute !left-[-24px] !top-1/2 -translate-y-1/2
                          !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
             >
               <ChevronLeft className="!w-5 !h-5" />
@@ -147,7 +148,7 @@ const PopularProperties = () => {
                 apiPage === totalPages &&
                 startIndex + visibleCount >= imoveis.length
               }
-              className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
+              className="!absolute !right-[-24px] !top-1/2 -translate-y-1/2
                          !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
             >
               <ChevronRight className="!w-5 !h-5" />

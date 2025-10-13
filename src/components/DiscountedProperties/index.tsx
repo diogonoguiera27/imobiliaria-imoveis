@@ -20,7 +20,7 @@ const DiscountedProperties = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [startIndex, setStartIndex] = useState(0);
   const [mobileIndex, setMobileIndex] = useState(0);
-  const visibleCount = 5;
+  const visibleCount = 6;
 
   const { token, user } = useAuth();
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
@@ -100,9 +100,9 @@ const DiscountedProperties = () => {
   };
 
   return (
-    <section className="!w-full !px-4 !pt-2 !mt-0">
+    <section className="!w-full  !pt-2 !mt-0">
       {/* 🔹 Container central padronizado */}
-      <div className="!w-full !max-w-[80%] !mx-auto md:!max-w-[1412px]">
+      <div className="!w-full ">
         {/* 🔹 Título */}
         <div className="!w-full !flex !justify-center !mt-6">
           <h2 className="!text-gray-900 !text-xl !font-bold !text-center">
@@ -112,7 +112,7 @@ const DiscountedProperties = () => {
 
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
-          <div className="!relative !max-w-[1412px] !w-full">
+          <div className="!relative  !w-full">
             {/* ⬅️ seta esquerda */}
             <button
               onClick={prevPage}

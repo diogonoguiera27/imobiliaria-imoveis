@@ -1,7 +1,7 @@
 // ✅ src/pages/Home.tsx
 import { useCallback, useEffect, useState } from "react";
-import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { FooterDesktop } from "@/components/FooterDesktop";
 import { Imovel } from "@/types";
 import Pagination from "@/components/Pagination";
 import { Dialog } from "@/components/ui/dialog";
@@ -124,12 +124,13 @@ export function Home() {
   return (
     <SidebarProvider>
       <div className="!min-h-screen flex flex-col !overflow-x-hidden">
+        <SidebarTrigger />
         <main className="flex-grow">
-          <SidebarTrigger />
           <HeroBanner />
 
-          {/* 🔍 Filtro principal */}
-          <div className="!w-full !mx-auto !max-w-[1412px] !px-4">
+          {/* 🔍 Filtro principal (centralizado 80%) */}
+          {/* 🔍 Filtro principal (centralizado 80%) */}
+          <div className="!w-[95%] md:!w-[80%] !mx-auto !mt-6">
             <SearchFilter
               onFiltrar={handleFiltrar}
               onLimparFiltro={handleLimparFiltro}
@@ -139,7 +140,7 @@ export function Home() {
 
           {filtroAtivo ? (
             // 🔹 Quando filtro está ativo
-            <section className="w-full !max-w-[1412px] !mx-auto !px-4 !pt-0 !mt-8">
+            <section className="!w-[95%] md:!w-[80%] !mx-auto !mt-8">
               {loading ? (
                 <GridSkeleton />
               ) : imoveis.length === 0 ? (
@@ -160,7 +161,7 @@ export function Home() {
                       ))}
                     </div>
                     {totalPages > 1 && (
-                      <div className="w-full !flex !mt-10 !justify-center">
+                      <div className="w-full flex mt-10 justify-center">
                         <Pagination
                           currentPage={currentPage}
                           totalPages={totalPages}
@@ -183,19 +184,17 @@ export function Home() {
             </section>
           ) : (
             // 🔹 Quando não há filtro ativo
-            <section className="!p-4 md:!p-0">
+            <section className="!w-[95%] md:!w-[80%] !mx-auto !mt-10">
               {/* 🔹 Destaques */}
-              <div className="!max-w-[1412px] !w-full !mx-auto">
-                <FeaturedCarousel />
-              </div>
+              <FeaturedCarousel />
 
               {/* 🔹 Populares */}
-              <div className="!max-w-[1412px] !w-full !mx-auto !mt-6">
+              <div className="!mt-8">
                 <PopularProperties />
               </div>
 
               {/* 🔹 Promoções */}
-              <div className="!max-w-[1412px] !w-full !mx-auto !mt-6">
+              <div className="!mt-8">
                 <DiscountedProperties />
               </div>
 
@@ -224,8 +223,9 @@ export function Home() {
           <ContactPhoneModal />
         </Dialog>
 
-        <div className="!mt-8 !w-full !mx-auto">
-          <Footer variant="home" />
+        <div className="!mt-4">
+          
+        <FooterDesktop variant="list" />
         </div>
       </div>
     </SidebarProvider>

@@ -39,6 +39,7 @@ const FeaturedCarousel: React.FC = () => {
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
+
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
@@ -61,29 +62,34 @@ const FeaturedCarousel: React.FC = () => {
 
   const prevSlide = () =>
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : imoveis.length - 1));
+
   const nextSlide = () =>
     setCurrentIndex((prev) => (prev < imoveis.length - 1 ? prev + 1 : 0));
 
   return (
-    <section className="!w-full !px-4 !pt-2 !mt-0">
-      <div className="!w-full !max-w-[80%] !mx-auto md:!max-w-[1412px]">
-        <div className="!w-full !flex !justify-center !mt-6"> {/* ✅ mesma margem do populares */}
-          <h2 className="!text-xl !font-bold !text-gray-900 !text-center !max-w-screen-lg !mb-4">
+    <section className="!w-full !pt-2 !mt-0">
+      {/* ✅ Mantém o alinhamento 80% herdado da Home */}
+      <div className="!w-full">
+        {/* 🔹 Título centralizado */}
+        <div className="!w-full !flex !justify-center !mt-6">
+          <h2 className="!text-xl !font-bold !text-gray-900 !text-center !mb-4">
             Imóveis em Destaque
           </h2>
         </div>
 
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center">
-          <div className="!relative !max-w-[1412px] !w-full">
+          <div className="!relative !w-full">
+            {/* ⬅️ Botão esquerda */}
             <button
               onClick={() => scrollDesktop("left")}
-              className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+              className="!absolute !left-[-24px] !top-1/2 -translate-y-1/2
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 transition"
             >
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
+            {/* 🧱 Lista de cards */}
             <div
               ref={containerRef}
               className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center !w-full hide-scrollbar"
@@ -98,17 +104,18 @@ const FeaturedCarousel: React.FC = () => {
                   ))}
             </div>
 
+            {/* ➡️ Botão direita */}
             <button
               onClick={() => scrollDesktop("right")}
-              className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+              className="!absolute !right-[-24px] !top-1/2 -translate-y-1/2
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 transition"
             >
               <ChevronRight className="!w-5 !h-5" />
             </button>
           </div>
         </div>
 
-        {/* 📱 Mobile — largura e altura compatíveis */}
+        {/* 📱 Mobile */}
         <div className="md:!hidden !w-full !flex !flex-col !items-center !mt-6">
           {loading ? (
             <div className="!max-w-[380px] !w-full !mx-auto !flex !justify-center">
@@ -130,13 +137,13 @@ const FeaturedCarousel: React.FC = () => {
                 <div className="!flex !items-center !justify-center !gap-6 !mt-3 !mb-6">
                   <button
                     onClick={prevSlide}
-                    className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+                    className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 transition"
                   >
                     <ChevronLeft className="!w-5 !h-5" />
                   </button>
                   <button
                     onClick={nextSlide}
-                    className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200"
+                    className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 transition"
                   >
                     <ChevronRight className="!w-5 !h-5" />
                   </button>

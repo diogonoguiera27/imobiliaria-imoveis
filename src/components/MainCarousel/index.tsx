@@ -1,4 +1,4 @@
-// src/components/PropertyDetails/MainCarousel.tsx
+// ✅ src/components/MainCarousel.tsx
 type CarrosselProps = {
   imagem: string;
 };
@@ -11,20 +11,16 @@ const CarrosselPrincipal = ({ imagem }: CarrosselProps) => {
   return (
     <section
       className="
-        w-full 
+        !w-full 
         !flex 
         !justify-center 
         !overflow-hidden 
-        !pt-0 md:!pt-2   /* 👉 mobile encosta no topo, desktop mantém espaçamento */
+        !mt-[14px]
+        !pt-0 md:!pt-2
       "
     >
-      <div
-        className="
-          !w-full 
-          md:!max-w-[1280px]   /* 👉 desktop centralizado */
-          !px-0 md:!px-4       /* 👉 mobile sem padding, desktop com padding */
-        "
-      >
+      {/* ✅ container ocupa 100% do pai (que já é 80%) */}
+      <div className="!w-full !px-0">
         <img
           src={fullUrl}
           alt="Imagem do imóvel"
@@ -32,7 +28,9 @@ const CarrosselPrincipal = ({ imagem }: CarrosselProps) => {
             !w-full 
             !object-cover !object-center
             !h-[220px] sm:!h-[300px] lg:!h-[400px]
-            !rounded-none md:!rounded-xl /* 👉 mobile sem borda, desktop com borda */
+            !rounded-none md:!rounded-xl
+            !transition-all !duration-300 hover:!scale-[1.01]
+            !shadow-md md:!shadow-lg
           "
         />
       </div>

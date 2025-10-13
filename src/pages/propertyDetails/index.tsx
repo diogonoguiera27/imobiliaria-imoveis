@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { Footer } from "@/components/Footer";
+
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
-  buscarImovel,             // ✅ função já existente
+  buscarImovel,
   buscarImoveisSimilares,
 } from "@/service/propertyService";
 import { registrarVisualizacao } from "@/service/dashboardService";
@@ -12,11 +12,9 @@ import { Imovel } from "@/types";
 import SimilarProperties from "@/components/SimilarProperties";
 import DescricaoEContato from "@/components/PropertyInfoAndContact";
 import CarrosselPrincipal from "@/components/MainCarousel";
-
-
+import { FooterDesktop } from "@/components/FooterDesktop";
 
 export function ImovelDetalhes() {
-  // ⚡ agora pode ser UUID ou número
   const { id: identifier } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -29,7 +27,6 @@ export function ImovelDetalhes() {
 
     const carregarImovel = async () => {
       try {
-        // ✅ busca por identifier (uuid ou id)
         const dados = await buscarImovel(identifier);
 
         if (!dados || !dados.ativo) {
@@ -39,13 +36,12 @@ export function ImovelDetalhes() {
 
         setImovel(dados);
 
-        // ✅ também aceita identifier (id ou uuid)
         const similaresAPI = await buscarImoveisSimilares(identifier);
         const ativos = similaresAPI.filter((s: Imovel) => s.ativo);
         setSimilares(ativos);
 
         await registrarVisualizacao(identifier);
-      } catch (err: unknown) {
+      } catch (err) {
         console.error("Erro ao buscar imóvel:", err);
         navigate("/home", { replace: true });
       } finally {
@@ -60,22 +56,31 @@ export function ImovelDetalhes() {
 
   return (
     <SidebarProvider>
-      <div className="flex flex-col !w-full !overflow-x-hidden">
+      <div className="!flex !flex-col !w-full !overflow-x-hidden">
         <SidebarTrigger />
 
-        <main className="flex-grow !mt-10">
-          {/* 🚀 Wrapper que força responsividade */}
-          <div className="!w-full !px-3 sm:!px-4 md:!max-w-6xl md:!mx-auto">
+        <main className="!flex-grow !mt-10">
+          {/* 🏠 Container centralizado com 80% no desktop */}
+          <div className="!w-full !px-0 md:!max-w-[80%] md:!mx-auto">
+            {/* 🖼️ Carrossel principal */}
             <CarrosselPrincipal imagem={imovel.imagem} />
-            <DescricaoEContato imovel={imovel} />
+
+            {/* 🧱 Descrição + Contato */}
+            <div className="!mt-10">
+              <DescricaoEContato imovel={imovel} />
+            </div>
+
+            {/* 🏘️ Imóveis Similares */}
             {similares.length > 0 && (
-              <SimilarProperties imoveis={similares} />
+              <div className="!mt-10">
+                <SimilarProperties imoveis={similares} />
+              </div>
             )}
           </div>
         </main>
 
         <div className="!mt-4">
-          <Footer />
+          <FooterDesktop variant="list" />
         </div>
       </div>
     </SidebarProvider>

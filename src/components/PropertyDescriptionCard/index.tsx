@@ -7,21 +7,22 @@ type DescricaoImovelProps = {
 
 export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
   return (
-    <section className="w-full !flex !justify-center !px-0 sm:!px-4 !mt-2">
-      <div className="w-full !flex !flex-col">
+    <section className="!w-full !flex !justify-center !mt-2">
+      <div className="!w-full !flex !flex-col  !mx-auto">
         {/* ===== DESKTOP ===== */}
         <div
           className="
             hidden md:block
-            !w-full lg:!max-w-6xl
+            !w-full
             !bg-white !rounded-xl !shadow-md
             !border !border-gray-200
             !p-8
             !text-gray-800 !space-y-10
             !mx-auto
+            !transition-all !duration-300
           "
         >
-          {/* Título */}
+          {/* 🏷️ Título */}
           <div className="!space-y-1">
             <h2 className="!text-xl !font-semibold">
               {`${imovel.tipo} com ${imovel.quartos} quartos à venda em ${imovel.bairro} - ${imovel.cidade}`}
@@ -31,7 +32,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
             </p>
           </div>
 
-          {/* Preço */}
+          {/* 💰 Preço */}
           <div>
             <h3 className="!text-3xl !font-bold !text-gray-900">
               {imovel.preco.toLocaleString("pt-BR", {
@@ -41,7 +42,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
             </h3>
           </div>
 
-          {/* Características grid */}
+          {/* 📐 Características grid */}
           <div className="!grid !grid-cols-3 md:!grid-cols-4 lg:!grid-cols-5 !gap-6 !text-sm !text-gray-700">
             <div className="!flex !items-center !gap-2">
               <Ruler className="text-pink-600 !w-4 !h-4" />
@@ -78,7 +79,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
             </div>
           </div>
 
-          {/* Descrição */}
+          {/* 📝 Descrição */}
           <div className="!space-y-3">
             <hr className="!border-t !border-gray-300" />
             <h4 className="!text-base !font-semibold">Sobre o imóvel</h4>
@@ -88,7 +89,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
             </p>
           </div>
 
-          {/* Características extras */}
+          {/* 🔹 Características extras */}
           {imovel.caracteristicas && imovel.caracteristicas.length > 0 && (
             <>
               <hr className="!border-t !border-gray-300" />
@@ -114,12 +115,12 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
           className="
             block md:hidden
             !w-full
-            !px-3      /* 🔥 reduzido para chegar mais perto da margem */
+            !px-3 
             !mx-auto
             !space-y-6 !text-gray-800
           "
         >
-          {/* Título */}
+          {/* 🏷️ Título */}
           <div className="!space-y-1">
             <h2 className="!text-lg !font-semibold">
               {`${imovel.tipo} com ${imovel.quartos} quartos à venda em ${imovel.bairro} - ${imovel.cidade}`}
@@ -129,7 +130,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
             </p>
           </div>
 
-          {/* Preço */}
+          {/* 💰 Preço */}
           <div>
             <h3 className="!text-2xl !font-bold !text-gray-900">
               {imovel.preco.toLocaleString("pt-BR", {
@@ -139,7 +140,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
             </h3>
           </div>
 
-          {/* Lista alinhada */}
+          {/* 📋 Lista alinhada */}
           <div className="!mt-4 !space-y-3">
             <div className="!flex !items-center !justify-between">
               <div className="!flex !items-center !gap-2">
@@ -188,7 +189,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
             </div>
           </div>
 
-          {/* Descrição */}
+          {/* 📝 Descrição */}
           <div className="!space-y-3 !mt-6">
             <hr className="!border-t !border-gray-300" />
             <h4 className="!text-base !font-semibold">Sobre o imóvel</h4>
@@ -198,7 +199,7 @@ export function DescricaoImovel({ imovel }: DescricaoImovelProps) {
             </p>
           </div>
 
-          {/* Características extras */}
+          {/* 🔹 Características extras */}
           {imovel.caracteristicas && imovel.caracteristicas.length > 0 && (
             <>
               <hr className="!border-t !border-gray-300" />

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,7 +21,6 @@ const contatoSchema = z.object({
 type ContatoFormData = z.infer<typeof contatoSchema>;
 
 interface ContatoCardProps {
-  
   imovel?: Imovel | null;
 }
 
@@ -37,7 +35,6 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
   });
 
   const onSubmit = async (data: ContatoFormData) => {
-    
     if (!imovel?.id) {
       alert("Imóvel não encontrado. Tente novamente.");
       return;
@@ -48,7 +45,6 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
       ? imovel.user.telefone.replace(/\D/g, "")
       : "";
 
-    
     try {
       await enviarContato(imovel.id, data);
       console.log("✅ Contato registrado no backend:", {
@@ -59,7 +55,6 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
       console.error("❌ Erro ao registrar contato:", err);
     }
 
-    
     if (!numeroWhatsapp) {
       alert("Número de WhatsApp do proprietário não disponível.");
       return;
@@ -75,17 +70,40 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
   };
 
   return (
-    <section className="w-full">
-      <div className="w-full !flex !justify-end !px-2">
-        <div className="w-full !max-w-sm md:w-auto bg-white !rounded-xl !shadow-md border border-gray-200 !p-6 !space-y-6">
+    <section className="!w-full !flex !justify-center">
+      <div
+        className="
+          !w-full  
+          !mx-auto 
+          !flex !justify-end 
+          !px-0
+        "
+      >
+        <div
+          className="
+            !w-full 
+            md:!max-w-sm 
+            !bg-white 
+            !rounded-xl 
+            !shadow-md 
+            !border !border-gray-200 
+            !p-6 
+            !space-y-6
+          "
+        >
+          {/* 🔹 Cabeçalho */}
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Fale com Proprietário</h2>
-            <p className="text-sm text-gray-500">
-              Preencha os campos abaixo com seus dados e um de nossos corretores entrará em contato.
+            <h2 className="!text-lg !font-bold !text-gray-900">
+              Fale com o Proprietário
+            </h2>
+            <p className="!text-sm !text-gray-500">
+              Preencha os campos abaixo e entraremos em contato com você.
             </p>
           </div>
 
+          {/* 🔹 Formulário */}
           <form onSubmit={handleSubmit(onSubmit)} className="!space-y-4">
+            {/* Nome */}
             <div>
               <Label className="!block !text-sm !font-semibold !text-gray-700 !mb-1">
                 Seu nome:
@@ -94,14 +112,17 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
                 type="text"
                 placeholder="Digite seu nome"
                 {...register("nome")}
-                className="w-full !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="!w-full !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm focus:!outline-none focus:!ring-2 focus:!ring-pink-500"
               />
               {errors.nome && (
-                <p className="!text-xs text-red-500 !mt-1">{errors.nome.message}</p>
+                <p className="!text-xs !text-red-500 !mt-1">
+                  {errors.nome.message}
+                </p>
               )}
             </div>
 
-            <div className="grid !grid-cols-1 !md:grid-cols-2 !gap-4">
+            {/* E-mail / Telefone */}
+            <div className="!grid !grid-cols-1 !md:grid-cols-2 !gap-4">
               <div>
                 <Label className="!block !text-sm !font-semibold !text-gray-700 !mb-1">
                   E-mail:
@@ -110,47 +131,55 @@ export function ContatoCard({ imovel }: ContatoCardProps) {
                   type="email"
                   placeholder="Digite seu e-mail"
                   {...register("email")}
-                  className="w-full !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  className="!w-full !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm focus:!outline-none focus:!ring-2 focus:!ring-pink-500"
                 />
                 {errors.email && (
-                  <p className="text-xs text-red-500 !mt-1">{errors.email.message}</p>
+                  <p className="!text-xs !text-red-500 !mt-1">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
-              <div className="!space-y-2">
-                <Label className="!block !text-sm !font-semibold text-gray-700 mb-1">
+              <div>
+                <Label className="!block !text-sm !font-semibold !text-gray-700 !mb-1">
                   Celular:
                 </Label>
                 <Input
                   type="tel"
                   placeholder="(xx) xxxxx-xxxx"
                   {...register("telefone")}
-                  className="w-full !border !border-gray-300 !rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  className="!w-full !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm focus:!outline-none focus:!ring-2 focus:!ring-pink-500"
                 />
                 {errors.telefone && (
-                  <p className="text-xs text-red-500 !mt-1">{errors.telefone.message}</p>
+                  <p className="!text-xs !text-red-500 !mt-1">
+                    {errors.telefone.message}
+                  </p>
                 )}
               </div>
             </div>
 
-            <div className="!space-y-2">
-              <Label className="!block !text-sm !font-semibold text-gray-700 mb-1">
+            {/* Mensagem */}
+            <div>
+              <Label className="!block !text-sm !font-semibold !text-gray-700 !mb-1">
                 Mensagem:
               </Label>
               <Textarea
                 placeholder="Escreva sua mensagem aqui..."
                 {...register("mensagem")}
-                className="w-full !h-24 !scrollbar-none !overflow-hidden !overflow-y-auto !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm !leading-relaxed focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="!w-full !h-24 !border !border-gray-300 !rounded-md !px-4 !py-2 !text-sm !leading-relaxed focus:!outline-none focus:!ring-2 focus:!ring-pink-500"
               />
               {errors.mensagem && (
-                <p className="text-xs text-red-500 !mt-1">{errors.mensagem.message}</p>
+                <p className="!text-xs !text-red-500 !mt-1">
+                  {errors.mensagem.message}
+                </p>
               )}
             </div>
 
+            {/* Botão */}
             <Button
               type="submit"
-              className="w-full !bg-green-700 !hover:bg-green-700 !text-white !font-bold !py-2 !rounded-md !transition"
-              disabled={!imovel?.id} 
+              className="!w-full !bg-green-700 hover:!bg-green-800 !text-white !font-bold !py-2 !rounded-md !transition"
+              disabled={!imovel?.id}
             >
               Enviar Mensagem
             </Button>

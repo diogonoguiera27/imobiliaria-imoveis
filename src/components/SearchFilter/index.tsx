@@ -91,14 +91,12 @@ const SearchFilter = ({ onFiltrar, onLimparFiltro, filtroAtivo }: Props) => {
   };
 
   return (
-    <div
-      className="
-        !w-full
-        !max-w-[278px] sm:!max-w-[400px] md:!max-w-[1412px]
-        !mx-auto
-        !mt-6 !mb-4
-      "
-    >
+   <div
+  className="
+    !w-full
+    !mt-0 !mb-4
+  "
+>
       <form
         onSubmit={handleSubmit}
         className="
