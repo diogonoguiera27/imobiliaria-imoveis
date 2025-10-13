@@ -1,6 +1,4 @@
-import { Footer } from "@/components/Footer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-
 import { useEffect, useState } from "react";
 import { getUserOverview } from "@/service/authService";
 import { format } from "date-fns";
@@ -10,6 +8,7 @@ import ProfileSidebar from "@/components/ProfileSidebar";
 import UserActivitySummaryProfile from "@/components/UserActivitySummaryProfile";
 import ProfileEditFormProfile from "@/components/ProfileEditFormProfile";
 import type { User } from "@/service/userService";
+import { FooterDesktop } from "@/components/FooterDesktop";
 
 export default function ProfilePage() {
   const { user, token } = useAuth();
@@ -20,7 +19,6 @@ export default function ProfilePage() {
   const [loadingResumo, setLoadingResumo] = useState(true);
   const [erroResumo, setErroResumo] = useState<string | null>(null);
 
-  // ✅ reset de estado quando usuário/tokens mudam
   useEffect(() => {
     if (!user || !token) return;
     setFavoritosCount(null);
@@ -30,7 +28,6 @@ export default function ProfilePage() {
     setLoadingResumo(true);
   }, [user, token]);
 
-  // ✅ busca do overview do usuário
   useEffect(() => {
     if (!user || !token) return;
 
@@ -43,12 +40,16 @@ export default function ProfilePage() {
         const membroDesdeFmt = format(
           new Date(data.user.createdAt),
           "MMM/yyyy",
-          { locale: ptBR }
+          {
+            locale: ptBR,
+          }
         );
         const ultimoAcessoFmt = format(
           new Date(data.user.ultimoAcesso),
           "dd/MM/yyyy",
-          { locale: ptBR }
+          {
+            locale: ptBR,
+          }
         );
 
         setMembroDesde(membroDesdeFmt);
@@ -64,7 +65,6 @@ export default function ProfilePage() {
     carregarResumo();
   }, [user, token]);
 
-  // ✅ caso não autenticado
   if (!user) {
     return (
       <div className="text-center mt-20 text-red-500 font-semibold">
@@ -73,7 +73,6 @@ export default function ProfilePage() {
     );
   }
 
-  // 🔹 monta objeto apenas com campos editáveis
   const editableUser: Pick<
     User,
     "id" | "nome" | "telefone" | "email" | "cidade" | "avatarUrl"
@@ -88,26 +87,31 @@ export default function ProfilePage() {
 
   return (
     <SidebarProvider>
-      <div className="flex flex-col min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-white via-red-50 to-red-100 text-gray-900">
+      <div className="!flex !flex-col !min-h-screen !w-full !overflow-x-hidden bg-gradient-to-br from-white via-red-50 to-red-100 text-gray-900">
         <SidebarTrigger />
 
-        <main className="flex-grow flex justify-center !px-4 !pt-20 pb-10">
+        <main className="!flex-grow !mt-18">
+          {/* 🔹 Container centralizado com padrão global */}
           <div
             className="
-              w-full max-w-6xl flex flex-col md:flex-row gap-8
-              md:items-start items-center
+              !w-full 
+              md:!max-w-[80%] md:!mx-auto 
+              !px-0
+              !flex !flex-col md:!flex-row 
+              !gap-8 
+              !items-start
             "
           >
-            {/* Sidebar de navegação do perfil */}
-            <div className="w-full md:w-[320px] flex-shrink-0">
+            {/* 🧭 Sidebar do perfil */}
+            <div className="!w-full md:!w-[320px] !flex-shrink-0">
               <ProfileSidebar />
             </div>
 
-            {/* Conteúdo principal */}
-            <div className="flex-1 flex flex-col gap-6 w-full">
-              {/* 🔹 Resumo de atividades com Skeleton */}
+            {/* 📋 Conteúdo principal */}
+            <div className="!flex-1 !flex !flex-col !gap-6 !w-full">
+              {/* 🔹 Resumo de atividades */}
               {erroResumo ? (
-                <div className="text-red-500 text-sm">{erroResumo}</div>
+                <div className="!text-red-500 !text-sm">{erroResumo}</div>
               ) : (
                 <UserActivitySummaryProfile
                   loading={loadingResumo}
@@ -117,13 +121,15 @@ export default function ProfilePage() {
                 />
               )}
 
-              {/* 🔹 Formulário de edição do perfil */}
+              {/* ✏️ Formulário de edição */}
               <ProfileEditFormProfile user={editableUser} />
             </div>
           </div>
         </main>
 
-        <Footer />
+        <div className="!mt-4">
+          <FooterDesktop variant="list" />
+        </div>
       </div>
     </SidebarProvider>
   );

@@ -73,7 +73,7 @@ export default function MyAccountSidebar({
                 <button
                   onClick={() => onTabChange(label)}
                   className={`
-                    !w-full !flex !items-center !gap-3
+                    !w-full !flex !items-center !gap-3 !cursor-pointer
                     !py-3 !px-4 !rounded-lg !transition
                     ${isActive
                       ? "!bg-red-500 !text-white"

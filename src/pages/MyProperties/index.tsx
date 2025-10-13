@@ -314,7 +314,7 @@ export default function MyProperties() {
                     <div className="!flex !items-center !gap-2">
                       <button
                         onClick={() => setViewMode("grid")}
-                        className={`!p-2 !rounded ${
+                        className={`!p-2 !rounded  ${
                           viewMode === "grid"
                             ? "!bg-red-600 !text-white"
                             : "!bg-gray-200"
