@@ -9,6 +9,7 @@ import UserActivitySummaryProfile from "@/components/UserActivitySummaryProfile"
 import ProfileEditFormProfile from "@/components/ProfileEditFormProfile";
 import type { User } from "@/service/userService";
 import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 export default function ProfilePage() {
   const { user, token } = useAuth();
@@ -121,7 +122,7 @@ export default function ProfilePage() {
                 />
               )}
 
-              {/* ✏️ Formulário de edição */}
+              
               <ProfileEditFormProfile user={editableUser} />
             </div>
           </div>
@@ -129,6 +130,10 @@ export default function ProfilePage() {
 
         <div className="!mt-4">
           <FooterDesktop variant="list" />
+        </div>
+
+        <div className="block md:hidden">
+          <MobileBottomBar />
         </div>
       </div>
     </SidebarProvider>

@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import LeftPanel from "@/components/LeftPanel";
 import RightPanel from "@/components/RightPanel";
 import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 export default function CreatePropertyPage() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -38,6 +39,9 @@ export default function CreatePropertyPage() {
         {/* 🔹 Rodapé */}
         <div className="!mt-12">
           <FooterDesktop variant="create" />
+        </div>
+        <div className="block md:hidden">
+          <MobileBottomBar />
         </div>
       </div>
     </SidebarProvider>

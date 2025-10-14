@@ -7,7 +7,8 @@ import type { Imovel } from "@/types";
 
 import { getUserFavorites } from "@/service/favoriteService";
 import { useAuth } from "@/hooks/auth";
-import PropertyCard from "../CardProperties";
+
+import PropertyCardGridWrapper from "../PropertyCardGridWrapper";
 
 type PropertyListSectionProps = {
   imoveisVenda: Imovel[];
@@ -37,19 +38,16 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
   onOpenPhoneModal,
 }) => {
   const { token } = useAuth();
-  const [favoritedIds, setFavoritedIds] = useState<number[]>([]); // apenas IDs numéricos
+  const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
 
   useEffect(() => {
     async function carregarFavoritos() {
       if (!token) return;
       try {
         const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
-
-        // ✅ Extrai apenas os IDs numéricos para comparação no includes
         const ids = favoritos
           .map((f) => f.propertyId)
           .filter((id): id is number => typeof id === "number");
-
         setFavoritedIds(ids);
       } catch (error) {
         console.error("Erro ao buscar favoritos:", error);
@@ -60,39 +58,38 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
   }, [token]);
 
   return (
-    <section className="w-full px-4 pt-0 !mt-0">
-      <div className="w-full flex justify-center mb-0">
-        <h2 className="!text-black !text-xl !font-bold !text-center !max-w-screen-lg !mt-2 !mb-4">
+    <section className="!w-full !pt-4 !pb-10">
+      {/* 🔹 Cabeçalho da seção (centralizado mas sem largura fixa) */}
+      <div className="!w-full !flex !justify-center">
+        <h2 className="!text-black !text-xl !font-bold !text-center !mt-2 !mb-6">
           Todos os imóveis disponíveis
         </h2>
       </div>
 
-      <div className="w-full flex justify-center">
-        <div
-          className="
-            max-w-[1300px] w-full
-            grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
-            gap-6 justify-items-center mx-auto
-          "
-        >
-          {loading
-            ? Array.from({ length: 8 }).map((_, i) => (
-                <PropertyCard key={`skeleton-${i}`} loading />
-              ))
-            : imoveisVenda.map((item) => (
-                <PropertyCard
-                  key={item.id}
-                  item={item}
-                  // ✅ Verifica se o ID interno do imóvel está na lista
-                  isFavoritedInitially={favoritedIds.includes(item.id)}
-                  onOpenContactModal={onOpenContactModal}
-                  onOpenPhoneModal={onOpenPhoneModal}
-                />
-              ))}
-        </div>
+      {/* 🔹 Grid de imóveis - ocupa 100% do container pai */}
+      <div
+        className="
+          !w-full
+          !grid !grid-cols-1 sm:!grid-cols-2 md:!grid-cols-3 lg:!grid-cols-4
+          !gap-6 !justify-items-center
+        "
+      >
+        {loading
+          ? Array.from({ length: 8 }).map((_, i) => (
+              <PropertyCardGridWrapper key={`skeleton-${i}`} loading />
+            ))
+          : imoveisVenda.map((item) => (
+              <PropertyCardGridWrapper
+                key={item.id}
+                item={item}
+                isFavoritedInitially={favoritedIds.includes(item.id)}
+                onOpenContactModal={onOpenContactModal}
+                onOpenPhoneModal={onOpenPhoneModal}
+              />
+            ))}
       </div>
 
-      {/* Modais de contato */}
+      {/* 🔹 Modais de contato */}
       <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
         <MessageFormModal />
       </Dialog>

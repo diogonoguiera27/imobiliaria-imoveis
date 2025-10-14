@@ -2,6 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 import FavoriteProperties from "@/components/Favorites";
 import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 export default function FavoritosPage() {
   return (
@@ -40,6 +41,9 @@ export default function FavoritosPage() {
 
         <div className="!mt-4">
           <FooterDesktop variant="list" />
+        </div>
+        <div className="block md:hidden">
+          <MobileBottomBar />
         </div>
       </div>
     </SidebarProvider>

@@ -13,6 +13,7 @@ import SimilarProperties from "@/components/SimilarProperties";
 import DescricaoEContato from "@/components/PropertyInfoAndContact";
 import CarrosselPrincipal from "@/components/MainCarousel";
 import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 export function ImovelDetalhes() {
   const { id: identifier } = useParams<{ id: string }>();
@@ -81,6 +82,9 @@ export function ImovelDetalhes() {
 
         <div className="!mt-4">
           <FooterDesktop variant="list" />
+        </div>
+        <div className="block md:hidden">
+          <MobileBottomBar />
         </div>
       </div>
     </SidebarProvider>

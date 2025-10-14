@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import { UserTable } from "@/components/UserTable";
 import { UserPagination } from "@/components/UserPagination";
 import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -79,6 +80,9 @@ const UserManagement = () => {
 
         {/* 🔹 Footer alinhado corretamente (sem wrapper extra) */}
         <FooterDesktop variant="list" />
+        <div className="block md:hidden">
+          <MobileBottomBar />
+        </div>
       </div>
     </SidebarProvider>
   );

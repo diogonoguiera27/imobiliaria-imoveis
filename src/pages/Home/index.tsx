@@ -18,6 +18,7 @@ import FeaturedCarousel from "@/components/FeaturedCarousel";
 import PopularProperties from "@/components/PopularProperties";
 import DiscountedProperties from "@/components/DiscountedProperties";
 import PropertyCard from "@/components/CardProperties";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -226,6 +227,10 @@ export function Home() {
         <div className="!mt-4">
           
         <FooterDesktop variant="list" />
+        </div>
+        {/* 📱 Barra inferior — visível só no mobile */}
+        <div className="!block !md:hidden">
+          <MobileBottomBar />
         </div>
       </div>
     </SidebarProvider>

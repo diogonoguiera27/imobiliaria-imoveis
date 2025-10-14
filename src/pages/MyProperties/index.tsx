@@ -35,6 +35,7 @@ import PropertiesListMyPorperty from "@/components/PropertiesListMyPorperty";
 import CardPropertiesAdmin from "@/components/CardPropertiesAdmin";
 import CardPropertiesAdminMobile from "@/components/CardPropertiesAdminMobile";
 import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 type BackendError = { message?: string; error?: string };
 
@@ -586,7 +587,12 @@ export default function MyProperties() {
           {isDesktop ? (
             <FooterDesktop variant={footerVariant} />
           ) : (
-            <Footer variant="page" />
+            <>
+              <Footer variant="page" />
+              <div className="block md:hidden">
+                <MobileBottomBar />
+              </div>
+            </>
           )}
         </div>
       </div>

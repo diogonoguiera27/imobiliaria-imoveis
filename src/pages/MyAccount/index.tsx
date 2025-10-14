@@ -15,6 +15,7 @@ import MyAccountAccessData from "@/components/MyAccountAccessData";
 import MyAccountPersonalData from "@/components/MyAccountPersonalData";
 import MyAccountPreferences from "@/components/MyAccountPreferences";
 import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 const tabs = [
   { label: "Visão Geral", icon: LayoutDashboard },
@@ -107,6 +108,10 @@ export default function MyAccountPage() {
         {/* ===== 🔹 Footer padronizado ===== */}
         <div className="!mt-4">
           <FooterDesktop variant="list" />
+        </div>
+
+        <div className="block md:hidden">
+          <MobileBottomBar/>
         </div>
       </div>
     </SidebarProvider>
