@@ -251,7 +251,7 @@ export default function SidebarTrigger() {
                    !items-center  
                    !bg-gradient-to-r !from-red-400 !to-red-700 !shadow-xl"
       >
-        <div className="!w-[80%] !mx-auto !flex !items-center !justify-between ">
+        <div className=" !w-[95%]  md:!w-[80%] !mx-auto !flex !items-center !justify-between ">
           {/* ===== ESQUERDA ===== */}
           <div className="!flex !items-center !gap-6 !w-full">
             

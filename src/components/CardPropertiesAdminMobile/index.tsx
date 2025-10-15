@@ -20,9 +20,10 @@ export default function CardPropertiesAdminMobile({
 }: CardPropertiesAdminMobileProps) {
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
+  // ✅ Skeleton responsivo controlado pelo pai (sem largura fixa)
   if (loading) {
     return (
-      <div className="!w-full !max-w-[380px] !mx-auto !rounded-2xl !bg-white !shadow-md !border !border-gray-200">
+      <div className="!w-full !mx-auto !rounded-2xl !bg-white !shadow-md !border !border-gray-200">
         <Skeleton className="!w-full !h-[180px]" />
         <div className="!p-4">
           <Skeleton className="!h-4 !w-3/4" />
@@ -42,7 +43,21 @@ export default function CardPropertiesAdminMobile({
   const isActive = !!item.ativo;
 
   return (
-    <div className="!w-full !max-w-[380px] !mx-auto !rounded-2xl !bg-white !shadow-lg !overflow-hidden !border !border-gray-200 hover:!scale-[1.01] !transition-all !duration-200">
+    <div
+      className="
+    !w-full 
+    !max-w-none 
+    !rounded-2xl 
+    !bg-white 
+    !shadow-lg 
+    !overflow-hidden 
+    !border 
+    !border-gray-200 
+    hover:!scale-[1.01] 
+    !transition-all 
+    !duration-200
+  "
+    >
       {/* 🖼 Imagem */}
       <div className="relative !h-[180px]">
         <img
@@ -73,9 +88,10 @@ export default function CardPropertiesAdminMobile({
         </p>
 
         {/* 📊 Características */}
-        <div className="!flex !items-center !gap-3 !mt-2 !text-[13px] !text-gray-700">
+        <div className="!flex !flex-wrap !items-center !gap-3 !mt-2 !text-[13px] !text-gray-700">
           <div className="!flex !items-center !gap-1">
-            <FaRulerCombined className="text-gray-500" /> {item?.metragem ?? 0} m²
+            <FaRulerCombined className="text-gray-500" /> {item?.metragem ?? 0}{" "}
+            m²
           </div>
           <div className="!flex !items-center !gap-1">
             <FaBed className="text-gray-500" /> {item?.quartos ?? 0}
@@ -94,7 +110,8 @@ export default function CardPropertiesAdminMobile({
             {item?.tipo || "Tipo não informado"}
           </p>
           <p className="!text-[15px] !font-bold !text-gray-900">
-            R$ {item?.preco?.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            R${" "}
+            {item?.preco?.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </p>
         </div>
 

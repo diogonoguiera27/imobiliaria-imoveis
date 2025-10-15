@@ -3,7 +3,6 @@ import { Route, Routes, Navigate } from "react-router-dom";
 
 import NoMatch from "@/pages/NoMatch";
 import { Home } from "@/pages/Home";
-import { ListaImoveisVenda } from "@/pages/PropertiesForSale";
 import { ImovelDetalhes } from "@/pages/propertyDetails";
 import Login from "@/pages/Login";
 import RegisterPage from "@/pages/Register";
@@ -15,6 +14,7 @@ import MyProperties from "@/pages/MyProperties";
 import EditProperty from "@/pages/EditProperty";
 import Dashboard from "@/pages/Dashboard";
 import UserManagement from "@/pages/UserManagement";
+import ListaImoveisVenda from "@/pages/PropertiesForSale";
 
 
 export const Rotas: React.FC = () => (

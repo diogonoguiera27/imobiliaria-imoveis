@@ -30,11 +30,11 @@ export default function MyAccountPage() {
 
   return (
     <SidebarProvider>
-      <div className="!flex !flex-col !min-h-screen !w-full !overflow-x-hidden bg-gradient-to-br from-white via-red-50 to-red-100 !text-gray-900">
+      <div className="!flex !flex-col !min-h-screen !w-full !overflow-x-hidden !bg-gradient-to-br !from-white !via-red-50 !to-red-100 !text-gray-900">
         <SidebarTrigger />
 
         {/* ===== 🧭 Tabs horizontais — apenas no mobile (até md) ===== */}
-        <div className="!w-full !px-4 !mt-24 sm:!mt-28 md:!hidden">
+        <div className="!w-[95%] md:!w-[80%] !mx-auto !mt-24 sm:!mt-28 md:!hidden">
           <div className="!bg-white !rounded-xl !shadow-md !border !border-gray-200 !p-2">
             <ul className="!grid !grid-cols-5 !gap-2">
               {tabs.map(({ label, icon: Icon }) => {
@@ -76,8 +76,7 @@ export default function MyAccountPage() {
           {/* 🧩 Container centralizado padrão global */}
           <div
             className="
-              !w-full 
-              md:!max-w-[80%] md:!mx-auto 
+              !w-[95%] md:!w-[80%] !mx-auto
               !flex 
               !flex-col lg:!flex-row 
               !gap-8
@@ -93,7 +92,7 @@ export default function MyAccountPage() {
             </aside>
 
             {/* ===== Conteúdo dinâmico ===== */}
-            <section className="!flex-1 !flex !flex-col !gap-6 ">
+            <section className="!flex-1 !flex !flex-col !gap-6 !w-full">
               {activeTab === "Visão Geral" && <MyAccountOverview />}
               {activeTab === "Simulações" && <MyAccountSimulations />}
               {activeTab === "Dados de Acesso" && <MyAccountAccessData />}
@@ -110,8 +109,9 @@ export default function MyAccountPage() {
           <FooterDesktop variant="list" />
         </div>
 
-        <div className="block md:hidden">
-          <MobileBottomBar/>
+        {/* ===== 📱 Barra inferior — visível só no mobile ===== */}
+        <div className="!block md:!hidden !mt-8">
+          <MobileBottomBar />
         </div>
       </div>
     </SidebarProvider>

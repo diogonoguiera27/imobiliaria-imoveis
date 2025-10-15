@@ -5,7 +5,6 @@ import heroImage from "@/assets/arbnb.webp";
 import axios from "axios";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Footer } from "@/components/Footer";
 
 import {
   buscarMeusImoveis,
@@ -61,16 +60,22 @@ function RowCarousel({
   const [index, setIndex] = useState(0);
   const prev = () => setIndex((i) => (i > 0 ? i - 1 : items.length - 1));
   const next = () => setIndex((i) => (i < items.length - 1 ? i + 1 : 0));
+
   if (!items || items.length === 0) return null;
 
   return (
-    <div className=" !flex !flex-col !items-center !mb-8">
-      <CardPropertiesAdminMobile
-        item={items[index]}
-        onView={() => onView(items[index].uuid ?? items[index].id)}
-        onEdit={() => onEdit(items[index].uuid ?? items[index].id)}
-        onToggleAtivo={(novo) => onToggleAtivo(items[index].id, novo)}
-      />
+    <div className="!w-full !flex !flex-col  !mb-8">
+      {/* 🔹 Card fluido — agora respeita o 95% do container pai */}
+      <div className="!w-full">
+        <CardPropertiesAdminMobile
+          item={items[index]}
+          onView={() => onView(items[index].uuid ?? items[index].id)}
+          onEdit={() => onEdit(items[index].uuid ?? items[index].id)}
+          onToggleAtivo={(novo) => onToggleAtivo(items[index].id, novo)}
+        />
+      </div>
+
+      {/* 🔹 Botões de navegação */}
       <div className="!flex !items-center !justify-center !gap-6 !mt-3">
         <button
           onClick={prev}
@@ -85,7 +90,9 @@ function RowCarousel({
           <ChevronRight className="!w-5 !h-5" />
         </button>
       </div>
-      <div className="!flex !gap-2 !mt-3">
+
+      {/* 🔹 Indicadores */}
+      <div className="!flex !justify-center !gap-2 !mt-3">
         {items.map((_, i) => (
           <span
             key={i}
@@ -136,7 +143,6 @@ export default function MyProperties() {
   const [items, setItems] = useState<Imovel[]>([]);
   const [allCities, setAllCities] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isDesktop, setIsDesktop] = useState(false);
 
   const [applied, setApplied] = useState<AppliedFilters>({
     q: "",
@@ -151,13 +157,6 @@ export default function MyProperties() {
 
   const createdId = useMemo(() => Number(params.get("createdId")), [params]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const carregarMeusImoveis = useCallback(
     async (page = 1, filtros: Partial<AppliedFilters> = {}) => {
@@ -234,16 +233,13 @@ export default function MyProperties() {
   const row1 = hasAnyItem ? items.slice(0, 4) : [];
   const row2 = hasAnyItem ? items.slice(4, 8) : [];
 
-  const footerVariant: "gridTight" | "list" =
-    viewMode === "grid" ? "gridTight" : "list";
-
   return (
     <SidebarProvider>
       <div className="!w-full !flex !flex-col !min-h-screen ">
         <main className="!flex-1">
           <SidebarTrigger />
-          <section className="!pt-[72px] !w-full">
-            <div className="!w-[80%] !mx-auto">
+          <section className="!pt-[72px] !w-[95%] md:!w-[80%] !mx-auto">
+            <div className="!w-full">
               {!loading && !hasAnyItem ? (
                 <div className="!mt-6">
                   <EmptyState onCreate={() => navigate("/imovel/novo")} />
@@ -253,7 +249,7 @@ export default function MyProperties() {
                   <div className="!flex md:!hidden !flex-col !items-center !justify-center !pb-4">
                     <div className="!w-full !flex !flex-col !items-start">
                       {/* Título e ícones */}
-                      <div className="!w-full !flex !items-center !justify-between !mb-3 !max-w-[380px] !mx-auto !px-4">
+                      <div className="!w-full !flex !items-center !justify-between !mb-3 !max-w-[380px] !mx-auto ">
                         <div>
                           <h1 className="!text-lg !font-semibold !text-gray-900 !leading-tight">
                             Meus Imóveis
@@ -492,23 +488,23 @@ export default function MyProperties() {
 
                         {/* 🔹 MOBILE VIEW */}
                         <div className="!flex md:!hidden !flex-col !items-center !justify-center">
-                          {/* 🔸 Container com mesma largura do filtro */}
-                          <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
+                          {/* 🔸 Container com largura padronizada 95% no mobile */}
+                          <div className="!w-full">
                             {viewMode === "grid" ? (
                               loading ? (
                                 <>
                                   {/* Skeletons alinhados */}
-                                  <div className="!w-full !max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
+                                  <div className="!w-[95%] !mx-auto !flex !flex-col !items-center !mb-8">
                                     <CardPropertiesAdmin loading />
                                   </div>
-                                  <div className="!w-full !max-w-[380px] !mx-auto !flex !flex-col !items-center !mb-8">
+                                  <div className="!w-[95%] !mx-auto !flex !flex-col !items-center !mb-8">
                                     <CardPropertiesAdmin loading />
                                   </div>
                                 </>
                               ) : (
                                 <>
-                                  {/* 🔸 Cards centralizados e alinhados ao filtro */}
-                                  <div className="!w-full !max-w-[380px] !mx-auto">
+                                  {/* 🔸 Cards centralizados e alinhados ao container */}
+                                  <div className="!w-full">
                                     <RowCarousel
                                       items={row1}
                                       onView={handleView}
@@ -583,17 +579,14 @@ export default function MyProperties() {
           </section>
         </main>
 
-        <div className="!mt-4 !w-full !mx-auto">
-          {isDesktop ? (
-            <FooterDesktop variant={footerVariant} />
-          ) : (
-            <>
-              <Footer variant="page" />
-              <div className="block md:hidden">
-                <MobileBottomBar />
-              </div>
-            </>
-          )}
+        {/* ===== 🔹 Footer padronizado ===== */}
+        <div className="!mt-4">
+          <FooterDesktop variant="list" />
+        </div>
+
+        {/* ===== 📱 Barra inferior — visível só no mobile ===== */}
+        <div className="!block md:!hidden !mt-8">
+          <MobileBottomBar />
         </div>
       </div>
       <ToastContainer />

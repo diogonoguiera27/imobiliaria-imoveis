@@ -83,7 +83,7 @@ export function ImovelDetalhes() {
         <div className="!mt-4">
           <FooterDesktop variant="list" />
         </div>
-        <div className="block md:hidden">
+        <div className="block md:hidden !mt-8">
           <MobileBottomBar />
         </div>
       </div>

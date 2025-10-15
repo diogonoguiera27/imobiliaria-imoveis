@@ -80,7 +80,7 @@ const UserManagement = () => {
 
         {/* 🔹 Footer alinhado corretamente (sem wrapper extra) */}
         <FooterDesktop variant="list" />
-        <div className="block md:hidden">
+        <div className="block md:hidden !mt-8">
           <MobileBottomBar />
         </div>
       </div>

@@ -40,7 +40,7 @@ export default function CreatePropertyPage() {
         <div className="!mt-12">
           <FooterDesktop variant="create" />
         </div>
-        <div className="block md:hidden">
+        <div className="block md:hidden !mt-8">
           <MobileBottomBar />
         </div>
       </div>

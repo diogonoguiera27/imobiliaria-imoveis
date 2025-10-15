@@ -10,6 +10,7 @@ import { priorizarImoveisDaCidade } from "@/lib/utils";
 import { useAuth } from "@/hooks/auth";
 import { useContactContext } from "@/hooks/contact/useContact";
 import PropertyCard from "../CardProperties";
+import PropertyCardMobileWrapper from "../PropertyCardMobile";
 
 type FavoriteIdentifier = {
   propertyId: number;
@@ -161,8 +162,8 @@ const PopularProperties = () => {
           {imoveis.length > 0 && (
             <>
               <div className="!relative !flex !justify-center !items-center !w-full">
-                <div className="!max-w-[390px] !w-full !mx-auto !flex !justify-center">
-                  <PropertyCard
+                <div className=" !mx-auto !flex !justify-center">
+                  <PropertyCardMobileWrapper
                     item={imoveis[mobileIndex]}
                     isFavoritedInitially={favoritedIds.includes(
                       imoveis[mobileIndex].id

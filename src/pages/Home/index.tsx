@@ -229,7 +229,7 @@ export function Home() {
         <FooterDesktop variant="list" />
         </div>
         {/* 📱 Barra inferior — visível só no mobile */}
-        <div className="!block !md:hidden">
+        <div className="!block !md:hidden !mt-8">
           <MobileBottomBar />
         </div>
       </div>

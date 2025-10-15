@@ -88,7 +88,7 @@ export default function ListaImoveisVenda() {
           </div>
 
           {/* 📱 Mobile */}
-          <div className="block md:hidden">
+          <div className="block md:hidden !mt-8">
             <MobileBottomBar />
           </div>
         </div>
