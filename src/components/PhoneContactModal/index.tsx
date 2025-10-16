@@ -13,7 +13,7 @@ export function ContactPhoneModal() {
   const numeroWhatsapp = telefoneOriginal ? telefoneOriginal.replace(/\D/g, "") : null;
 
   return (
-    <DialogContent className="!max-w-md !rounded-xl !p-6">
+    <DialogContent className="!max-w-md !rounded-xl !p-6 !w-[90%]">
       <DialogHeader>
         <DialogTitle className="!text-lg !font-bold !text-gray-800">
           Fale com {nomeProprietario}

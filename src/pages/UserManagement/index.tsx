@@ -19,33 +19,39 @@ const UserManagement = () => {
   const take = 10;
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        setError(null);
+  async function fetchData() {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const res: PaginatedUsers = await getUsers(page, take);
+      const res: PaginatedUsers = await getUsers(page, take);
 
-        setUsers(res.data || []);
-        setTotalPages(res.pagination?.totalPages || 1);
-        setTotalUsers(res.pagination?.total || 0);
-      } catch (err: unknown) {
-        if (err instanceof AxiosError) {
-          setError(
-            err.response?.data?.error ||
-              err.response?.data?.message ||
-              "Erro ao carregar usuários."
-          );
-        } else {
-          setError("Erro inesperado ao carregar usuários.");
-        }
-      } finally {
-        setLoading(false);
+      // 🔹 Ordena usuários pelo campo `quantidadeImoveis` (maior → menor)
+      const sortedUsers = [...(res.data || [])].sort(
+        (a, b) => (b.quantidadeImoveis || 0) - (a.quantidadeImoveis || 0)
+      );
+
+      setUsers(sortedUsers);
+      setTotalPages(res.pagination?.totalPages || 1);
+      setTotalUsers(res.pagination?.total || 0);
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        setError(
+          err.response?.data?.error ||
+            err.response?.data?.message ||
+            "Erro ao carregar usuários."
+        );
+      } else {
+        setError("Erro inesperado ao carregar usuários.");
       }
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchData();
-  }, [page, take]);
+  fetchData();
+}, [page, take]);
+
 
   return (
     <SidebarProvider>

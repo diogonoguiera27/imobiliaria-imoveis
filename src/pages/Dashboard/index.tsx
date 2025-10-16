@@ -1,6 +1,7 @@
 // src/pages/UserManagement/index.tsx
 
 import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 import SidebarTrigger, { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Dashboard() {
@@ -27,6 +28,9 @@ export default function Dashboard() {
         <div className="!mt-4">
           <FooterDesktop variant="list" />
         </div>
+         <div className="block md:hidden !mt-8">
+                  <MobileBottomBar />
+          </div>
       </div>
     </SidebarProvider>
   );

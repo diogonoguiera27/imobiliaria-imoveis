@@ -23,7 +23,7 @@ function MessageFormModal() {
   if (!selectedImovel) return null;
 
   return (
-    <DialogContent className="!max-w-md !bg-transparent !shadow-none">
+    <DialogContent className="!max-w-md !bg-transparent !shadow-none !w-[90%]">
       <div className="px-4">
         <ContatoCard imovel={selectedImovel} />
       </div>
