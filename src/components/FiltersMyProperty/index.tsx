@@ -69,12 +69,15 @@ export default function FiltersMyProperty({
     !shadow-[0_8px_28px_rgba(0,0,0,0.08)]
     !border
     !border-gray-200
-    !p-[32px]
-    !w-[420px]
-    !h-[518px]
+    !p-[24px]
+    sm:!p-[28px]
+    !w-full
+    md:!w-[420px]
+    !h-auto
     !flex
     !flex-col
     !justify-start
+    !gap-[12px]
   "
     >
       {/* 🔹 Cabeçalho */}
@@ -89,7 +92,8 @@ export default function FiltersMyProperty({
         !mb-[8px]
       "
         >
-          Descubra acomodações em <span className="!text-red-600">Goiás</span>
+          Encontre e gerencie seus{" "}
+          <span className="!text-red-600">imóveis</span>
         </h1>
 
         <p
@@ -100,8 +104,8 @@ export default function FiltersMyProperty({
         !w-full
       "
         >
-          As melhores viagens começam no Airbnb, com acomodações únicas para
-          todos os tipos de viagem.
+          Encontre seus imóveis com rapidez e praticidade, filtrando por
+          localização, tipo, forma de negócio e status.
         </p>
       </div>
 

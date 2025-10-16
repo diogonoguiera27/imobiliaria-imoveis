@@ -284,16 +284,42 @@ export default function MyProperties() {
                       </div>
 
                       {/* 🔹 Botão com largura igual ao filtro */}
-                      <div className="!w-full !flex !justify-center">
-                        <div className="!w-full !max-w-[90%] sm:!max-w-[380px] !mx-auto">
-                          <Button
-                            className="!w-full !h-11 !rounded-lg !bg-red-600 hover:!opacity-95 !font-semibold !text-white !text-base"
-                            onClick={() => navigate("/imovel/novo")}
-                          >
-                            <Plus className="!mr-2 !h-5 !w-5" />
-                            Cadastrar Imóvel
-                          </Button>
-                        </div>
+                      <div
+                        className="
+    !w-full
+    !flex
+    !justify-center        
+    
+    !mt-3
+    md:!w-auto             
+    md:!justify-end        
+    
+  "
+                      >
+                        <Button
+                          className="
+      !w-full              
+      md:!w-auto           
+      !h-[48px]
+      !rounded-[10px]
+      !bg-red-600
+      hover:!bg-red-700
+      !font-semibold
+      !text-white
+      !tracking-wide
+      !flex
+      !items-center
+      !justify-center
+      !gap-2
+      !transition-all
+      !duration-200
+      !shadow-[0_2px_6px_rgba(0,0,0,0.15)]
+    "
+                          onClick={() => navigate("/imovel/novo")}
+                        >
+                          <Plus className="!h-4 !w-4" />
+                          Cadastrar Imóvel
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -330,7 +356,7 @@ export default function MyProperties() {
                         <ListIcon className="!w-5 !h-5" />
                       </button>
                       <Button
-                        className="!h-10 !rounded-lg !bg-red-600 hover:!opacity-95 !px-4 !font-medium !text-white"
+                        className="!h-10   !rounded-lg !bg-red-600 hover:!opacity-95 !px-4 !font-medium !text-white"
                         onClick={() => navigate("/imovel/novo")}
                       >
                         <Plus className="!mr-2 !h-4 !w-4" />
@@ -338,11 +364,8 @@ export default function MyProperties() {
                       </Button>
                     </div>
                   </div>
-                  {/* ===== HERO ESTILO AIRBNB - PADRONIZADO ===== */}
-                  {/* ===== HERO FINAL — 100% largura + centralizado em 80% ===== */}
-                  {/* ===== HERO FINAL FLEXÍVEL E CENTRALIZADO ===== */}
-                  <div className="!relative !w-full  !overflow-hidden">
-                    {/* 🔹 Wrapper interno ocupa 100% e centraliza conteúdo */}
+                  <div className="!relative !w-full !overflow-hidden">
+                    
                     <div
                       className="
       !relative
@@ -361,43 +384,54 @@ export default function MyProperties() {
       !duration-300
     "
                     >
-                      {/* 🖼️ Imagem de fundo */}
+                      
                       <div
                         className="
-        !absolute
-        !top-0
-        !right-0
-        md:!left-auto
-        !w-full md:!w-[80%]
-        !h-[260px] md:!h-full
-        !overflow-hidden
-        !rounded-t-[16px] md:!rounded-t-none md:!rounded-l-[16px]
-        !z-[0]
-      "
+    !relative
+    !w-full
+    !h-[220px]
+    md:!absolute
+    md:!top-0
+    md:!right-0
+    md:!w-[80%]
+    md:!h-full
+    !overflow-hidden
+    !rounded-[16px]          
+    md:!rounded-none          
+    md:!rounded-l-[16px]      
+    !z-[0]
+  "
                       >
                         <img
                           src={heroImage}
                           alt="Imagem de destaque de imóveis"
                           className="
-          !w-full
-          !h-full
-          !object-cover
-          !object-center
-        "
+      !w-full
+      !h-full
+      !object-cover
+      !object-center
+      !rounded-[16px]         
+      md:!rounded-none        
+      md:!rounded-l-[16px]    
+    "
                         />
                       </div>
 
-                      {/* ✅ Card de filtros */}
+                      {/* ✅ Card de filtros — separado no mobile */}
                       <div
                         className="
         !relative
         !z-[10]
-        !mt-[16px] md:!mt-0
         !flex
+        !flex-col
         !justify-start
         !items-start
-        !w-auto
-        
+        !w-full
+        md:!w-auto
+        !bg-[#f7f7f7]
+        md:!bg-transparent
+        md:!p-0
+        md:!mt-0
       "
                       >
                         <FiltersMyProperty
