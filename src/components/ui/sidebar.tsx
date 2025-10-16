@@ -241,7 +241,6 @@ export default function SidebarTrigger() {
   };
 
   const isAdmin = user?.role === "ADMIN";
-  const isUser = user?.role === "USER";
 
   return (
     <>
@@ -251,27 +250,12 @@ export default function SidebarTrigger() {
                    !items-center  
                    !bg-gradient-to-r !from-red-400 !to-red-700 !shadow-xl"
       >
-        <div className=" !w-[95%]  md:!w-[80%] !mx-auto !flex !items-center !justify-between ">
-          {/* ===== ESQUERDA ===== */}
+        <div className="!w-[95%] md:!w-[80%] !mx-auto !flex !items-center !justify-between">
+          
+          {/* ===== ESQUERDA (apenas Admin) ===== */}
           <div className="!flex !items-center !gap-6 !w-full">
-            
-            
-
-            {/* ===== Menu ADMIN no desktop ===== */}
             {isAdmin && (
-              <nav className="hidden md:flex  !gap-6 items-center text-white text-sm font-semibold">
-                <button
-                  onClick={() => ensureAuth("/meus-imoveis")}
-                  className="hover:underline cursor-pointer"
-                >
-                  Meus Imóveis
-                </button>
-                <button
-                  onClick={() => ensureAuth("/imovel/novo")}
-                  className="hover:underline cursor-pointer"
-                >
-                  Cadastrar Imóveis
-                </button>
+              <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
                 <button
                   onClick={() => ensureAuth("/dashboard")}
                   className="hover:underline cursor-pointer"
@@ -288,15 +272,29 @@ export default function SidebarTrigger() {
             )}
           </div>
 
-          {/* ===== DIREITA ===== */}
+          {/* ===== DIREITA (Admin e User) ===== */}
           <div className="!flex !items-center !gap-6 !w-full !justify-end">
-            {/* Desktop: Home e Contato */}
             <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
+              {/* Itens comuns a ambos */}
               <button
                 onClick={goHome}
                 className="hover:underline cursor-pointer"
               >
                 Home
+              </button>
+
+              <button
+                onClick={() => ensureAuth("/imovel/novo")}
+                className="hover:underline cursor-pointer"
+              >
+                Cadastrar Imóveis
+              </button>
+
+              <button
+                onClick={() => ensureAuth("/meus-imoveis")}
+                className="hover:underline cursor-pointer"
+              >
+                Meus Imóveis
               </button>
 
               <Dialog>
@@ -309,26 +307,9 @@ export default function SidebarTrigger() {
                   <ContactInfoModal />
                 </DialogContent>
               </Dialog>
-
-              {isUser && (
-                <>
-                  <button
-                    onClick={() => ensureAuth("/meus-imoveis")}
-                    className="hover:underline"
-                  >
-                    Meus Imóveis
-                  </button>
-                  <button
-                    onClick={() => ensureAuth("/imovel/novo")}
-                    className="hover:underline"
-                  >
-                    Cadastrar Imóveis
-                  </button>
-                </>
-              )}
             </nav>
 
-            {/* Perfil do usuário */}
+            {/* Perfil do usuário (sempre visível) */}
             <div className="mr-2 sm:mr-4">
               <PerfilUsuarioModal />
             </div>
@@ -338,6 +319,7 @@ export default function SidebarTrigger() {
     </>
   );
 }
+
 
 
 
