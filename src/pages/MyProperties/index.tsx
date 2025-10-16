@@ -338,89 +338,68 @@ export default function MyProperties() {
                       </Button>
                     </div>
                   </div>
-                  <section
-                    className="
-    !relative 
-    !w-full 
-    !h-[520px] 
-    !mt-6 
-    !overflow-hidden 
-    !rounded-2xl 
-    !box-border 
-    !shadow-sm
-  "
-                  >
-                    {/* 🔹 IMAGEM à direita com width 75% */}
+                  {/* ===== HERO ESTILO AIRBNB - PADRONIZADO ===== */}
+                  {/* ===== HERO FINAL — 100% largura + centralizado em 80% ===== */}
+                  {/* ===== HERO FINAL FLEXÍVEL E CENTRALIZADO ===== */}
+                  <div className="!relative !w-full  !overflow-hidden">
+                    {/* 🔹 Wrapper interno ocupa 100% e centraliza conteúdo */}
                     <div
                       className="
-      !absolute 
-      !top-0 
-      !right-0 
-      !h-full 
-      !w-[75%] 
-      !box-border 
+      !relative
+      !flex
+      !flex-col md:!flex-row
+      !items-center
+      !justify-center md:!justify-between
+      !gap-6
+      !rounded-[16px]
       !overflow-hidden
+      !h-auto md:!h-[598px]
+      !z-[0]
+      !m-0
+      !p-0
+      !transition-all
+      !duration-300
     "
                     >
-                      <img
-                        src={heroImage}
-                        alt="Imagem de destaque de imóveis"
-                        className="
-        !absolute 
-        !top-0 
-        !right-0 
-        !h-full 
-        !w-full 
-        !object-cover 
-        !object-center 
-        !aspect-auto 
-        !box-border
-      "
-                      />
-                    </div>
-
-                    {/* 🔹 CARD de filtro à esquerda */}
-                    <div
-                      className="
-      !relative 
-      !z-10 
-      !flex 
-      !items-center 
-      !justify-start 
-      !h-full 
-      !w-full 
-      md:!w-[25%] 
-      !px-8 
-      md:!px-16 
-      !box-border
-    "
-                    >
+                      {/* 🖼️ Imagem de fundo */}
                       <div
                         className="
-        !relative 
-        !bg-white 
-        !p-8 
-        !rounded-[12px] 
-        !shadow-[0_8px_28px_rgba(0,0,0,0.1)] 
-        !border 
-        !border-gray-200 
-        !box-border 
-        !w-full 
-        md:!w-[420px] 
-        !mt-0 
-        !translate-y-[-32px]
+        !absolute
+        !top-0
+        !right-0
+        md:!left-auto
+        !w-full md:!w-[80%]
+        !h-[260px] md:!h-full
+        !overflow-hidden
+        !rounded-t-[16px] md:!rounded-t-none md:!rounded-l-[16px]
+        !z-[0]
       "
                       >
-                        <h2 className="!text-3xl !font-bold !text-gray-900 !mb-2 !leading-snug">
-                          Descubra imóveis em{" "}
-                          <span className="!text-red-600">Goiás</span>
-                        </h2>
-                        <p className="!text-gray-500 !mb-6 !text-base">
-                          Encontre e gerencie seus anúncios de forma simples e
-                          rápida.
-                        </p>
+                        <img
+                          src={heroImage}
+                          alt="Imagem de destaque de imóveis"
+                          className="
+          !w-full
+          !h-full
+          !object-cover
+          !object-center
+        "
+                        />
+                      </div>
 
-                        {/* 🔸 Filtros */}
+                      {/* ✅ Card de filtros */}
+                      <div
+                        className="
+        !relative
+        !z-[10]
+        !mt-[16px] md:!mt-0
+        !flex
+        !justify-start
+        !items-start
+        !w-auto
+        
+      "
+                      >
                         <FiltersMyProperty
                           q={applied.q || ""}
                           setQ={(q) => setApplied((p) => ({ ...p, q }))}
@@ -446,7 +425,7 @@ export default function MyProperties() {
                         />
                       </div>
                     </div>
-                  </section>
+                  </div>
 
                   {/* Conteúdo */}
                   <div className="!mt-6">

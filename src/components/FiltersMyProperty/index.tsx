@@ -56,125 +56,257 @@ export default function FiltersMyProperty({
 
   useEffect(() => {
     if (!filterRef.current) return;
-    const logWidth = (context: string) => {
-      const largura = filterRef.current?.offsetWidth || 0;
-      console.log(`📐 [${context}] Largura do filtro: ${largura}px`);
-    };
-    requestAnimationFrame(() => logWidth("montagem"));
-    const observer = new ResizeObserver(() => logWidth("resize"));
-    observer.observe(filterRef.current);
-    return () => observer.disconnect();
+    console.log("📏 Largura do card:", filterRef.current.offsetWidth);
   }, []);
 
   return (
-    <div ref={filterRef} className="!w-full ">
-      <div
-        className="
+    <div
+      ref={filterRef}
+      className="
+    !relative
+    !bg-white
+    !rounded-[12px]
+    !shadow-[0_8px_28px_rgba(0,0,0,0.08)]
+    !border
+    !border-gray-200
+    !p-[32px]
+    !w-[420px]
+    !h-[518px]
+    !flex
+    !flex-col
+    !justify-start
+  "
+    >
+      {/* 🔹 Cabeçalho */}
+      <div className="!mb-[24px] !w-full">
+        <h1
+          className="
+        !text-[34px]
+        !font-bold
+        !text-gray-900
+        !leading-[1.2]
+        !tracking-tight
+        !mb-[8px]
+      "
+        >
+          Descubra acomodações em <span className="!text-red-600">Goiás</span>
+        </h1>
+
+        <p
+          className="
+        !text-[16px]
+        !text-[#6b6b6b]
+        !leading-snug
+        !w-full
+      "
+        >
+          As melhores viagens começam no Airbnb, com acomodações únicas para
+          todos os tipos de viagem.
+        </p>
+      </div>
+
+      {/* 🔸 Formulário */}
+      <form className="!flex !flex-col !gap-2 !w-full">
+        {/* 🏠 Localização */}
+        <label
+          className="
+        !h-[60px]
+        !w-full
+        !text-[14px]
+        !rounded-[8px]
+        !border
+        !border-[#dddddd]
+        focus-within:!border-black
+        !transition
+        !px-[16px]
+        !pt-[14px]
+        !pb-[8px]
+        !flex
+        !flex-col
+        !justify-center
+      "
+        >
+          <span className="!text-[10px] !font-semibold !uppercase !text-neutral-700 tracking-wide !mb-[2px]">
+            Localização
+          </span>
+          <Input
+            placeholder="Goiás, Brasil"
+            value={q || ""}
+            onChange={(e) => setQ(e.target.value)}
+            className="
+          !h-[22px]
+          !px-0
+          !border-0
+          !shadow-none
+          !text-[15px]
+          !bg-transparent
+          !w-full
+          focus:!ring-0
+          focus:!outline-none
+          placeholder:!text-neutral-400
+        "
+          />
+        </label>
+
+        {/* 🏡 Tipo / Negócio */}
+        <div
+          className="
+        !relative
+        !flex
+        !border
+        !border-[#dddddd]
+        !rounded-[8px]
+        !overflow-hidden
+        focus-within:!border-black
+        !h-[62px]
+        !w-full
+      "
+        >
+          {/* Tipo */}
+          <label
+            className="
+          !w-1/2
+          !h-[60px]
           !flex
           !flex-col
-          !gap-3
-          !w-full
-          !rounded-2xl 
-          !shadow-xl
+          !justify-center
+          !px-[16px]
+          !pt-[14px]
+          !pb-[8px]
+          !text-[13px]
+          !leading-tight
+          !cursor-pointer
         "
-      >
-       
-          {/* 🔎 Buscar */}
-          <div className="!flex !flex-col !gap-1 !w-full">
-            <label className="!text-[11px] !font-semibold !text-neutral-700 !uppercase tracking-wide">
-              Buscar
-            </label>
-            <Input
-              placeholder="Bairro ou cidade"
-              value={q || ""}
-              onChange={(e) => setQ(e.target.value)}
-              className="!h-11 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm focus:!ring-2 focus:!ring-red-500/40 !shadow-sm"
-            />
-          </div>
-
-          {/* 🏙 Cidade */}
-          <div className="!flex !flex-col !gap-1 !w-full">
-            <label className="!text-[11px] !font-semibold !text-neutral-700 !uppercase tracking-wide">
-              Cidade
-            </label>
-            <Select value={cidade} onValueChange={setCidade}>
-              <SelectTrigger className="!h-11 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer !shadow-sm">
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                {allCities.length > 0 ? (
-                  allCities.map((c) => {
-                    const value = c.trim() || "__nao_informado__";
-                    return (
-                      <SelectItem
-                        key={value}
-                        value={value}
-                        className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100 !cursor-pointer"
-                      >
-                        {c.trim() || "Não informado"}
-                      </SelectItem>
-                    );
-                  })
-                ) : (
-                  <SelectItem value="__vazio__" disabled>
-                    Nenhuma cidade encontrada
-                  </SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* 🏠 Tipo */}
-          <div className="!flex !flex-col !gap-1 !w-full">
-            <label className="!text-[11px] !font-semibold !text-neutral-700 !uppercase tracking-wide">
+          >
+            <span className="!text-[10px] !font-semibold !uppercase !text-neutral-700 tracking-wide !mb-[2px]">
               Tipo
-            </label>
-            <Select value={tipo} onValueChange={setTipo}>
-              <SelectTrigger className="!h-11 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer !shadow-sm">
+            </span>
+            <Select
+              value={tipo}
+              onValueChange={(v) => setTipo(v as TipoImovel)}
+            >
+              <SelectTrigger className="!h-[22px] !px-0 !border-0 !shadow-none !bg-transparent focus:!ring-0 focus:!outline-none">
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
                 {TIPO_IMOVEL_OPCOES.map((t) => (
-                  <SelectItem
-                    key={t}
-                    value={t}
-                    className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100 !cursor-pointer"
-                  >
+                  <SelectItem key={t} value={t}>
                     {t}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </label>
 
-          {/* 💰 Negócio */}
-          <div className="!flex !flex-col !gap-1 !w-full">
-            <label className="!text-[11px] !font-semibold !text-neutral-700 !uppercase tracking-wide">
+          {/* Divisor */}
+          <span className="!absolute !top-0 !bottom-0 !left-1/2 !w-px !bg-[#dddddd]" />
+
+          {/* Negócio */}
+          <label
+            className="
+          !w-1/2
+          !h-[60px]
+          !flex
+          !flex-col
+          !justify-center
+          !px-[16px]
+          !pt-[14px]
+          !pb-[8px]
+          !text-[13px]
+          !leading-tight
+          !cursor-pointer
+        "
+          >
+            <span className="!text-[10px] !font-semibold !uppercase !text-neutral-700 tracking-wide !mb-[2px]">
               Negócio
-            </label>
-            <Select value={negocio} onValueChange={setNegocio}>
-              <SelectTrigger className="!h-11 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer !shadow-sm">
+            </span>
+            <Select
+              value={negocio}
+              onValueChange={(v) => setNegocio(v as TipoNegocio)}
+            >
+              <SelectTrigger className="!h-[22px] !px-0 !border-0 !shadow-none !bg-transparent focus:!ring-0 focus:!outline-none">
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
                 {TIPO_NEGOCIO_OPCOES.map((n) => (
-                  <SelectItem
-                    key={n}
-                    value={n}
-                    className="!px-3 !py-2 !text-sm !rounded-md hover:!bg-neutral-100 !cursor-pointer"
-                  >
+                  <SelectItem key={n} value={n}>
                     {n === "venda" ? "Venda" : "Aluguel"}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </label>
+        </div>
 
-          {/* ✅ Status */}
-          <div className="!flex !flex-col !gap-1 !w-full">
-            <label className="!text-[11px] !font-semibold !text-neutral-700 !uppercase tracking-wide">
+        {/* 🌆 Cidade / Status */}
+        <div
+          className="
+        !relative
+        !flex
+        !border
+        !border-[#dddddd]
+        !rounded-[8px]
+        !overflow-hidden
+        focus-within:!border-black
+        !h-[62px]
+        !w-full
+      "
+        >
+          {/* Cidade */}
+          <label
+            className="
+          !w-1/2
+          !h-[60px]
+          !flex
+          !flex-col
+          !justify-center
+          !px-[16px]
+          !pt-[14px]
+          !pb-[8px]
+          !text-[13px]
+          !leading-tight
+          !cursor-pointer
+        "
+          >
+            <span className="!text-[10px] !font-semibold !uppercase !text-neutral-700 tracking-wide !mb-[2px]">
+              Cidade
+            </span>
+            <Select value={cidade} onValueChange={(v) => setCidade(v)}>
+              <SelectTrigger className="!h-[22px] !px-0 !border-0 !shadow-none !bg-transparent focus:!ring-0 focus:!outline-none">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                {allCities.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
+
+          {/* Divisor */}
+          <span className="!absolute !top-0 !bottom-0 !left-1/2 !w-px !bg-[#dddddd]" />
+
+          {/* Status */}
+          <label
+            className="
+          !w-1/2
+          !h-[60px]
+          !flex
+          !flex-col
+          !justify-center
+          !px-[16px]
+          !pt-[14px]
+          !pb-[8px]
+          !text-[13px]
+          !leading-tight
+          !cursor-pointer
+        "
+          >
+            <span className="!text-[10px] !font-semibold !uppercase !text-neutral-700 tracking-wide !mb-[2px]">
               Status
-            </label>
+            </span>
             <Select
               value={
                 typeof applied.ativo === "boolean"
@@ -190,7 +322,7 @@ export default function FiltersMyProperty({
                 }))
               }
             >
-              <SelectTrigger className="!h-11 !px-3 !w-full !rounded-lg !border !border-neutral-300 !bg-white !text-sm !cursor-pointer !shadow-sm">
+              <SelectTrigger className="!h-[22px] !px-0 !border-0 !shadow-none !bg-transparent focus:!ring-0 focus:!outline-none">
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
@@ -199,19 +331,37 @@ export default function FiltersMyProperty({
                 <SelectItem value="inactive">Inativos</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-
-          {/* 🔘 Botão */}
-          <div className="!flex !w-full md:!w-auto">
-            <Button
-              className="!h-11 !w-full md:!w-auto !rounded-lg !bg-red-600 hover:!bg-red-700 !text-white !font-semibold !shadow-sm"
-              onClick={onApply}
-            >
-              Aplicar filtros
-            </Button>
-          </div>
+          </label>
         </div>
-      </div>
-    
+
+        {/* 🔘 Botão */}
+        <div className="!mt-3 !w-full">
+          <Button
+            type="button"
+            className="
+          !w-full
+          !h-[48px]
+          !rounded-[8px]
+          !font-semibold
+          !text-white
+          !text-[15px]
+          !tracking-wide
+          !bg-gradient-to-r
+          !from-[#ff385c]
+          !to-[#e61e4d]
+          hover:!opacity-90
+          !transition
+          !shadow-[0_1px_2px_rgba(0,0,0,0.1)]
+          !flex
+          !items-center
+          !justify-center
+        "
+            onClick={onApply}
+          >
+            Aplicar filtros
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }
