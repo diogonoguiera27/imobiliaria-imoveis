@@ -47,7 +47,7 @@ export default function ListaImoveisVenda() {
           <SidebarTrigger />
           <section className="!pt-[72px] !w-full">
             <div className="!w-[80%] !mx-auto">
-              {/* 🔹 Lista de Imóveis */}
+              
               <PropertyListSection
                 imoveisVenda={imoveis}
                 loading={loading}
@@ -59,7 +59,7 @@ export default function ListaImoveisVenda() {
                 onOpenPhoneModal={() => setShowPhoneModal(true)}
               />
 
-              {/* 🔹 Paginação */}
+             
               {!loading && totalPages > 1 && (
                 <div className="!w-full !flex !mt-10 !justify-center">
                   <Pagination
@@ -73,7 +73,7 @@ export default function ListaImoveisVenda() {
           </section>
         </main>
 
-        {/* 🔹 Modais */}
+        
         <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
           <MessageFormModal />
         </Dialog>
@@ -81,13 +81,13 @@ export default function ListaImoveisVenda() {
           <PhoneContactModal />
         </Dialog>
 
-        {/* 🔹 Footer Responsivo */}
+        
         <div className="!mt-6 !w-full !mx-auto">
           <div className="hidden md:block">
             <FooterDesktop variant="list" />
           </div>
 
-          {/* 📱 Mobile */}
+          
           <div className="block md:hidden !mt-8">
             <MobileBottomBar />
           </div>

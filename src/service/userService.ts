@@ -15,7 +15,7 @@ export interface User {
   createdAt: string;
   ultimoAcesso?: string;
   quantidadeImoveis?: number;
-  role: "ADMIN" | "USER";
+  role: "ADMIN" | "USER" | "CORRETOR";
 }
 
 export interface Simulation {

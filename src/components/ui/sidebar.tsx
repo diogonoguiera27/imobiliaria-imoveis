@@ -240,7 +240,7 @@ export default function SidebarTrigger() {
     navigate(path);
   };
 
-  const isAdmin = user?.role === "ADMIN";
+  const role = user?.role; // ADMIN | CORRETOR | USER
 
   return (
     <>
@@ -251,65 +251,73 @@ export default function SidebarTrigger() {
                    !bg-gradient-to-r !from-red-400 !to-red-700 !shadow-xl"
       >
         <div className="!w-[95%] md:!w-[80%] !mx-auto !flex !items-center !justify-between">
-          
-          {/* ===== ESQUERDA (apenas Admin) ===== */}
+
+          {/* ===== ESQUERDA (Admin / Corretor) ===== */}
           <div className="!flex !items-center !gap-6 !w-full">
-            {isAdmin && (
-              <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
+            {(role === "ADMIN" || role === "CORRETOR") && (
+              <nav className="hidden md:flex !gap-6 !items-center !text-white !text-sm !font-semibold">
+                {/* ADMIN: Dashboard e Gerenciar Usuários */}
+                {role === "ADMIN" && (
+                  <>
+                    <button
+                      onClick={() => ensureAuth("/dashboard")}
+                      className="!hover:underline !cursor-pointer"
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      onClick={() => ensureAuth("/admin/users")}
+                      className="!hover:underline !cursor-pointer"
+                    >
+                      Gerenciar Usuários
+                    </button>
+                  </>
+                )}
+
+                {/* ADMIN e CORRETOR: Imóveis */}
                 <button
-                  onClick={() => ensureAuth("/dashboard")}
-                  className="hover:underline cursor-pointer"
+                  onClick={() => ensureAuth("/imovel/novo")}
+                  className="!hover:underline !cursor-pointer"
                 >
-                  Dashboard
+                  Cadastrar Imóveis
                 </button>
+
                 <button
-                  onClick={() => ensureAuth("/admin/users")}
-                  className="hover:underline cursor-pointer"
+                  onClick={() => ensureAuth("/meus-imoveis")}
+                  className="!hover:underline !cursor-pointer"
                 >
-                  Gerenciar Usuários
+                  Meus Imóveis
                 </button>
               </nav>
             )}
           </div>
 
-          {/* ===== DIREITA (Admin e User) ===== */}
+          {/* ===== DIREITA (Menu principal — todos) ===== */}
           <div className="!flex !items-center !gap-6 !w-full !justify-end">
-            <nav className="hidden md:flex gap-6 items-center text-white text-sm font-semibold">
-              {/* Itens comuns a ambos */}
+            <nav className="hidden md:flex !gap-6 !items-center !text-white !text-sm !font-semibold">
+              
+              {/* 🏠 HOME — todos os tipos */}
               <button
                 onClick={goHome}
-                className="hover:underline cursor-pointer"
+                className="!hover:underline !cursor-pointer"
               >
                 Home
               </button>
 
-              <button
-                onClick={() => ensureAuth("/imovel/novo")}
-                className="hover:underline cursor-pointer"
-              >
-                Cadastrar Imóveis
-              </button>
-
-              <button
-                onClick={() => ensureAuth("/meus-imoveis")}
-                className="hover:underline cursor-pointer"
-              >
-                Meus Imóveis
-              </button>
-
+              {/* 💬 CONTATO — todos */}
               <Dialog>
                 <DialogTrigger asChild>
-                  <button className="hover:underline cursor-pointer">
+                  <button className="!hover:underline !cursor-pointer">
                     Contato
                   </button>
                 </DialogTrigger>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="!max-w-lg">
                   <ContactInfoModal />
                 </DialogContent>
               </Dialog>
             </nav>
 
-            {/* Perfil do usuário (sempre visível) */}
+            {/* 👤 PERFIL — sempre visível */}
             <div className="mr-2 sm:mr-4">
               <PerfilUsuarioModal />
             </div>

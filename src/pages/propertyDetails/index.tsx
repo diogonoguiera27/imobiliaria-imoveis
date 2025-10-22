@@ -61,17 +61,17 @@ export function ImovelDetalhes() {
         <SidebarTrigger />
 
         <main className="!flex-grow !mt-10">
-          {/* 🏠 Container centralizado com 80% no desktop */}
+          
           <div className="!w-full !px-0 md:!max-w-[80%] md:!mx-auto">
-            {/* 🖼️ Carrossel principal */}
+            
             <CarrosselPrincipal imagem={imovel.imagem} />
 
-            {/* 🧱 Descrição + Contato */}
+            
             <div className="!mt-10">
               <DescricaoEContato imovel={imovel} />
             </div>
 
-            {/* 🏘️ Imóveis Similares */}
+            
             {similares.length > 0 && (
               <div className="!mt-10">
                 <SimilarProperties imoveis={similares} />

@@ -1,18 +1,18 @@
-// src/pages/propertyDetails/EditProperty.tsx (ou src/pages/EditProperty/index.tsx)
+// ✅ src/pages/propertyDetails/EditProperty.tsx (ou src/pages/EditProperty/index.tsx)
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { ImageIcon } from "lucide-react";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FooterDesktop } from "@/components/FooterDesktop";
+import MobileBottomBar from "@/components/MobileBottomBar";
 
 import type { Imovel } from "@/types";
-import { buscarImovel } from "@/service/propertyService"; // ✅ atualizado
-
-import Boneco from "@/assets/Boneco.png";
+import { buscarImovel } from "@/service/propertyService";
 import PropertyFormCreate from "@/components/PropertyFormCreate";
+import Boneco from "@/assets/Boneco.png";
 
 export default function EditProperty() {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +28,7 @@ export default function EditProperty() {
     previewRef.current = preview;
   }, [preview]);
 
+  // 🔹 Carregar imóvel
   useEffect(() => {
     let isMounted = true;
 
@@ -39,7 +40,6 @@ export default function EditProperty() {
       }
 
       try {
-        // ✅ agora usa a função genérica que aceita id numérico ou uuid
         const imovel = await buscarImovel(id);
 
         if (isMounted) {
@@ -48,7 +48,7 @@ export default function EditProperty() {
           if (imovel.imagem) {
             let url = imovel.imagem;
 
-            // normaliza URL da imagem
+            // Normaliza a URL da imagem
             if (!url.startsWith("http")) {
               if (url.startsWith("/uploads")) {
                 url = `${import.meta.env.VITE_API_URL}${url}`;
@@ -84,19 +84,18 @@ export default function EditProperty() {
     };
   }, [id, navigate]);
 
+  // 🔹 Caso o imóvel não exista
   if (!property) {
     return (
       <SidebarProvider>
         <div className="!min-h-screen !flex !flex-col">
           <main className="!flex-1">
             <SidebarTrigger />
-            <div className="!pt-[72px] !w-full !max-w-6xl !mx-auto !px-6 md:!px-10 !py-6">
-              <p className="!text-red-600 font-medium">
-                ❌ Imóvel não encontrado.
-              </p>
+            <div className="!pt-[72px] !w-[95%] md:!w-[80%] !mx-auto !py-6">
+              <p className="!text-red-600 font-medium">❌ Imóvel não encontrado.</p>
             </div>
           </main>
-          <Footer />
+          <FooterDesktop variant="list" />
         </div>
       </SidebarProvider>
     );
@@ -104,15 +103,16 @@ export default function EditProperty() {
 
   return (
     <SidebarProvider>
-      <div className="!w-screen !flex !flex-col">
-        <main className="!flex-1">
-          <SidebarTrigger />
+      <div className="!w-screen !min-h-screen !flex !flex-col !overflow-x-hidden">
+        <SidebarTrigger />
 
+        {/* CONTEÚDO PRINCIPAL */}
+        <main className="!flex-1 !flex !flex-col">
           <section className="!pt-[72px] !w-full">
-            <div className="!max-w-6xl !mx-auto !p-6 lg:!p-20">
-              {/* GRID responsivo */}
+            {/* 🔹 Container central padronizado */}
+            <div className="!w-[95%] md:!w-[80%] !mx-auto !p-0 md:!p-4 !pb-12">
               <div className="!grid !grid-cols-1 lg:!grid-cols-3 !gap-0 lg:!items-stretch lg:!h-full !mt-4">
-                {/* Painel esquerdo (oculto no mobile) */}
+                {/* Painel esquerdo (desktop) */}
                 <div className="hidden lg:!block lg:!col-span-1">
                   <div className="!h-full !bg-white !rounded-2xl !shadow-sm !border !border-neutral-200 !p-6 !flex !flex-col !items-center !justify-between">
                     <div className="!w-full">
@@ -156,22 +156,16 @@ export default function EditProperty() {
                     </div>
 
                     <div className="!mt-8">
-                      <img
-                        src={Boneco}
-                        alt="Ilustração"
-                        className="!w-40 !h-auto"
-                      />
+                      <img src={Boneco} alt="Ilustração" className="!w-40 !h-auto" />
                     </div>
                   </div>
                 </div>
 
-                {/* Painel direito (formulário) */}
+                {/* Formulário de Edição */}
                 <div className="lg:!col-span-2">
                   <Card className="!bg-white !rounded-2xl !shadow-sm !border !border-neutral-200">
                     <CardHeader className="!px-6 !py-4 !border-b !border-neutral-200">
-                      <CardTitle className="!text-xl !font-semibold">
-                        Editar Imóvel
-                      </CardTitle>
+                      <CardTitle className="!text-xl !font-semibold">Editar Imóvel</CardTitle>
                       <p className="!text-sm !text-neutral-500 !mt-1">
                         Atualize as informações do seu anúncio
                       </p>
@@ -195,7 +189,15 @@ export default function EditProperty() {
           </section>
         </main>
 
-        <Footer />
+        {/* 🔹 Footer fixo no fim da tela */}
+        <div className="!mt-auto">
+          <FooterDesktop variant="list" />
+        </div>
+
+        {/* 🔹 Bottom bar (mobile) */}
+        <div className="!block !md:hidden !mt-8">
+          <MobileBottomBar />
+        </div>
       </div>
     </SidebarProvider>
   );

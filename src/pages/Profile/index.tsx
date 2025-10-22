@@ -92,7 +92,7 @@ export default function ProfilePage() {
         <SidebarTrigger />
 
         <main className="!flex-grow !mt-18">
-          {/* 🔹 Container centralizado com padrão global */}
+          
           <div
             className="
               !w-[95%] md:!w-[80%] !mx-auto 
@@ -101,14 +101,14 @@ export default function ProfilePage() {
               !items-start
             "
           >
-            {/* 🧭 Sidebar do perfil */}
+            
             <div className="!w-full md:!w-[320px] !flex-shrink-0">
               <ProfileSidebar />
             </div>
 
-            {/* 📋 Conteúdo principal */}
+           
             <div className="!flex-1 !flex !flex-col !gap-6 !w-full">
-              {/* 🔹 Resumo de atividades */}
+              
               {erroResumo ? (
                 <div className="!text-red-500 !text-sm">{erroResumo}</div>
               ) : (
@@ -120,18 +120,18 @@ export default function ProfilePage() {
                 />
               )}
 
-              {/* ✏️ Formulário de edição */}
+              
               <ProfileEditFormProfile user={editableUser} />
             </div>
           </div>
         </main>
 
-        {/* 🦶 Rodapé Desktop */}
+        
         <div className="!mt-4">
           <FooterDesktop variant="list" />
         </div>
 
-        {/* 📱 Barra inferior — visível só no mobile */}
+        
         <div className="!block md:!hidden !mt-8">
           <MobileBottomBar />
         </div>

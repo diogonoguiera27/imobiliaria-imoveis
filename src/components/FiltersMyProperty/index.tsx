@@ -131,10 +131,10 @@ export default function FiltersMyProperty({
       "
         >
           <span className="!text-[10px] !font-semibold !uppercase !text-neutral-700 tracking-wide !mb-[2px]">
-            Localização
+           Cidade ou Bairro
           </span>
           <Input
-            placeholder="Goiás, Brasil"
+            placeholder="Ex: Senador Canedo, Goiânia, Setor Bueno..."
             value={q || ""}
             onChange={(e) => setQ(e.target.value)}
             className="
@@ -190,11 +190,18 @@ export default function FiltersMyProperty({
               onValueChange={(v) => setTipo(v as TipoImovel)}
             >
               <SelectTrigger className="!h-[22px] !px-0 !border-0 !shadow-none !bg-transparent focus:!ring-0 focus:!outline-none">
-                <SelectValue placeholder="Selecione" />
+                <SelectValue  placeholder="Selecione" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="!cursor-pointer">
                 {TIPO_IMOVEL_OPCOES.map((t) => (
-                  <SelectItem key={t} value={t}>
+                  <SelectItem
+                    key={t}
+                    value={t}
+                    className="!px-4 !py-2.5 !text-gray-700 !text-[15px] 
+                   hover:!bg-red-50 hover:!text-red-600 
+                   focus:!bg-red-100 focus:!text-red-700 
+                   !cursor-pointer !rounded-lg !transition-all !duration-150"
+                  >
                     {t}
                   </SelectItem>
                 ))}
@@ -233,7 +240,14 @@ export default function FiltersMyProperty({
               </SelectTrigger>
               <SelectContent>
                 {TIPO_NEGOCIO_OPCOES.map((n) => (
-                  <SelectItem key={n} value={n}>
+                  <SelectItem
+                    key={n}
+                    value={n}
+                    className="!px-4 !py-2.5 !text-gray-700 !text-[15px] 
+                   hover:!bg-red-50 hover:!text-red-600 
+                   focus:!bg-red-100 focus:!text-red-700 
+                   !cursor-pointer !rounded-lg !transition-all !duration-150"
+                  >
                     {n === "venda" ? "Venda" : "Aluguel"}
                   </SelectItem>
                 ))}
@@ -281,7 +295,14 @@ export default function FiltersMyProperty({
               </SelectTrigger>
               <SelectContent>
                 {allCities.map((c) => (
-                  <SelectItem key={c} value={c}>
+                  <SelectItem
+                    key={c}
+                    value={c}
+                    className="!px-4 !py-2.5 !text-gray-700 !text-[15px] 
+                   hover:!bg-red-50 hover:!text-red-600 
+                   focus:!bg-red-100 focus:!text-red-700 
+                   !cursor-pointer !rounded-lg !transition-all !duration-150"
+                  >
                     {c}
                   </SelectItem>
                 ))}
@@ -330,9 +351,33 @@ export default function FiltersMyProperty({
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="active">Ativos</SelectItem>
-                <SelectItem value="inactive">Inativos</SelectItem>
+                <SelectItem
+                  value="all"
+                  className="!px-4 !py-2.5 !text-gray-700 !text-[15px] 
+                   hover:!bg-red-50 hover:!text-red-600 
+                   focus:!bg-red-100 focus:!text-red-700 
+                   !cursor-pointer !rounded-lg !transition-all !duration-150"
+                >
+                  Todos
+                </SelectItem>
+                <SelectItem
+                  value="active"
+                  className="!px-4 !py-2.5 !text-gray-700 !text-[15px] 
+                   hover:!bg-red-50 hover:!text-red-600 
+                   focus:!bg-red-100 focus:!text-red-700 
+                   !cursor-pointer !rounded-lg !transition-all !duration-150"
+                >
+                  Ativos
+                </SelectItem>
+                <SelectItem
+                  value="inactive"
+                  className="!px-4 !py-2.5 !text-gray-700 !text-[15px] 
+                   hover:!bg-red-50 hover:!text-red-600 
+                   focus:!bg-red-100 focus:!text-red-700 
+                   !cursor-pointer !rounded-lg !transition-all !duration-150"
+                >
+                  Inativos
+                </SelectItem>
               </SelectContent>
             </Select>
           </label>
@@ -343,23 +388,26 @@ export default function FiltersMyProperty({
           <Button
             type="button"
             className="
-          !w-full
-          !h-[48px]
-          !rounded-[8px]
-          !font-semibold
-          !text-white
-          !text-[15px]
-          !tracking-wide
-          !bg-gradient-to-r
-          !from-[#ff385c]
-          !to-[#e61e4d]
-          hover:!opacity-90
-          !transition
-          !shadow-[0_1px_2px_rgba(0,0,0,0.1)]
-          !flex
-          !items-center
-          !justify-center
-        "
+    !w-full
+    !h-[48px]
+    !rounded-[10px]
+    !font-semibold
+    !text-white
+    !text-[15px]
+    !tracking-wide
+    !bg-gradient-to-r
+    !from-red-500
+    !to-red-700
+    hover:!from-red-600
+    hover:!to-red-800
+    active:!scale-[0.98]
+    !transition-all
+    !duration-200
+    !shadow-[0_4px_12px_rgba(0,0,0,0.1)]
+    !flex
+    !items-center
+    !justify-center
+  "
             onClick={onApply}
           >
             Aplicar filtros

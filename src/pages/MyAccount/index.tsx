@@ -33,7 +33,7 @@ export default function MyAccountPage() {
       <div className="!flex !flex-col !min-h-screen !w-full !overflow-x-hidden !bg-gradient-to-br !from-white !via-red-50 !to-red-100 !text-gray-900">
         <SidebarTrigger />
 
-        {/* ===== 🧭 Tabs horizontais — apenas no mobile (até md) ===== */}
+        
         <div className="!w-[95%] md:!w-[80%] !mx-auto !mt-24 sm:!mt-28 md:!hidden">
           <div className="!bg-white !rounded-xl !shadow-md !border !border-gray-200 !p-2">
             <ul className="!grid !grid-cols-5 !gap-2">
@@ -62,7 +62,7 @@ export default function MyAccountPage() {
           </div>
         </div>
 
-        {/* ===== 📦 CONTEÚDO PRINCIPAL ===== */}
+        
         <main
           className="
             !flex-grow 
@@ -73,7 +73,7 @@ export default function MyAccountPage() {
             !pb-16
           "
         >
-          {/* 🧩 Container centralizado padrão global */}
+         
           <div
             className="
               !w-[95%] md:!w-[80%] !mx-auto
@@ -82,7 +82,7 @@ export default function MyAccountPage() {
               !gap-8
             "
           >
-            {/* ===== Sidebar (visível no desktop) ===== */}
+            
             <aside className="!hidden md:!block !w-[320px] !flex-shrink-0">
               <MyAccountSidebar
                 activeTab={activeTab}
@@ -91,7 +91,7 @@ export default function MyAccountPage() {
               />
             </aside>
 
-            {/* ===== Conteúdo dinâmico ===== */}
+            
             <section className="!flex-1 !flex !flex-col !gap-6 !w-full">
               {activeTab === "Visão Geral" && <MyAccountOverview />}
               {activeTab === "Simulações" && <MyAccountSimulations />}
@@ -104,12 +104,12 @@ export default function MyAccountPage() {
           </div>
         </main>
 
-        {/* ===== 🔹 Footer padronizado ===== */}
+        
         <div className="!mt-4">
           <FooterDesktop variant="list" />
         </div>
 
-        {/* ===== 📱 Barra inferior — visível só no mobile ===== */}
+        
         <div className="!block md:!hidden !mt-8">
           <MobileBottomBar />
         </div>

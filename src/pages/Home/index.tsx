@@ -1,4 +1,3 @@
-// ✅ src/pages/Home.tsx
 import { useCallback, useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { FooterDesktop } from "@/components/FooterDesktop";
@@ -25,11 +24,7 @@ const ITEMS_PER_PAGE = 8;
 export function Home() {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
   const [filtroAtivo, setFiltroAtivo] = useState(false);
-  const [filtros, setFiltros] = useState<{
-    cidade?: string;
-    tipo?: string;
-    precoMax?: number;
-  }>({});
+  const [filtros, setFiltros] = useState<{ cidade?: string; tipo?: string; precoMax?: number }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -124,114 +119,101 @@ export function Home() {
 
   return (
     <SidebarProvider>
-      <div className="!min-h-screen flex flex-col !overflow-x-hidden">
+      <div className="!w-screen !min-h-screen !flex !flex-col !overflow-x-hidden">
         <SidebarTrigger />
-        <main className="flex-grow">
+
+        {/* CONTEÚDO PRINCIPAL */}
+        <main className="!flex-1 !flex !flex-col">
           <HeroBanner />
 
-          {/* 🔍 Filtro principal (centralizado 80%) */}
-          {/* 🔍 Filtro principal (centralizado 80%) */}
-          <div className="!w-[95%] md:!w-[80%] !mx-auto !mt-6">
+          <div className="!w-[95%] md:!w-[80%] !mx-auto !mt-6 !flex-1">
             <SearchFilter
               onFiltrar={handleFiltrar}
               onLimparFiltro={handleLimparFiltro}
               filtroAtivo={filtroAtivo}
             />
-          </div>
 
-          {filtroAtivo ? (
-            // 🔹 Quando filtro está ativo
-            <section className="!w-[95%] md:!w-[80%] !mx-auto !mt-8">
-              {loading ? (
-                <GridSkeleton />
-              ) : imoveis.length === 0 ? (
-                <div className="text-center text-gray-600 text-lg font-semibold mt-12 mb-24">
-                  Nenhum imóvel encontrado
-                </div>
-              ) : (
-                <>
-                  {/* 💻 Desktop */}
-                  <div className="hidden md:block">
-                    <div
-                      className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6 ${
-                        totalPages <= 1 ? "!mb-12" : ""
-                      }`}
-                    >
+            {filtroAtivo ? (
+              <section className="!w-full !mt-8 !pb-12">
+                {loading ? (
+                  <GridSkeleton />
+                ) : imoveis.length === 0 ? (
+                  <div className="text-center text-gray-600 text-lg font-semibold mt-12 mb-24">
+                    Nenhum imóvel encontrado
+                  </div>
+                ) : (
+                  <>
+                    {/* 💻 Desktop */}
+                    <div className="hidden md:block">
+                      <div
+                        className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6 ${
+                          totalPages <= 1 ? "!mb-12" : ""
+                        }`}
+                      >
+                        {imoveis.map((item) => (
+                          <PropertyCard key={item.id} item={item} />
+                        ))}
+                      </div>
+                      {totalPages > 1 && (
+                        <div className="w-full flex mt-10 justify-center">
+                          <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 📱 Mobile */}
+                    <div className="block md:hidden mt-6 !max-w-[90%] !mx-auto">
                       {imoveis.map((item) => (
-                        <PropertyCard key={item.id} item={item} />
+                        <div key={item.id} className="mb-4">
+                          <PropertyCard item={item} />
+                        </div>
                       ))}
                     </div>
-                    {totalPages > 1 && (
-                      <div className="w-full flex mt-10 justify-center">
-                        <Pagination
-                          currentPage={currentPage}
-                          totalPages={totalPages}
-                          onPageChange={setCurrentPage}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 📱 Mobile */}
-                  <div className="block md:hidden mt-6 !max-w-[90%] !mx-auto">
-                    {imoveis.map((item) => (
-                      <div key={item.id} className="mb-4">
-                        <PropertyCard item={item} />
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </section>
-          ) : (
-            // 🔹 Quando não há filtro ativo
-            <section className="!w-[95%] md:!w-[80%] !mx-auto !mt-10">
-              {/* 🔹 Destaques */}
-              <FeaturedCarousel />
-
-              {/* 🔹 Populares */}
-              <div className="!mt-8">
-                <PopularProperties />
-              </div>
-
-              {/* 🔹 Promoções */}
-              <div className="!mt-8">
-                <DiscountedProperties />
-              </div>
-
-              {/* 🔘 Botão Ver todos */}
-              <div className="w-full flex justify-center !mt-12">
-                <Button
-                  onClick={() => navigate("/imoveis-venda")}
-                  className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
-                >
-                  Ver todos os imóveis
-                </Button>
-              </div>
-            </section>
-          )}
+                  </>
+                )}
+              </section>
+            ) : (
+              <section className="!w-full !mt-10 !pb-12">
+                <FeaturedCarousel />
+                <div className="!mt-8">
+                  <PopularProperties />
+                </div>
+                <div className="!mt-8">
+                  <DiscountedProperties />
+                </div>
+                <div className="w-full flex justify-center !mt-12">
+                  <Button
+                    onClick={() => navigate("/imoveis-venda")}
+                    className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
+                  >
+                    Ver todos os imóveis
+                  </Button>
+                </div>
+              </section>
+            )}
+          </div>
         </main>
 
-        {/* 🧩 Modais */}
-        <Dialog
-          open={showContactModal}
-          onOpenChange={(o) => !o && closeModals()}
-        >
+        
+        <div className="!mt-auto">
+          <FooterDesktop variant="list" />
+        </div>
+
+        
+        <div className="!block md:!hidden !mt-8">
+          <MobileBottomBar />
+        </div>
+
+        <Dialog open={showContactModal} onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />
         </Dialog>
-
         <Dialog open={showPhoneModal} onOpenChange={(o) => !o && closeModals()}>
           <ContactPhoneModal />
         </Dialog>
-
-        <div className="!mt-4">
-          
-        <FooterDesktop variant="list" />
-        </div>
-        {/* 📱 Barra inferior — visível só no mobile */}
-        <div className="!block !md:hidden !mt-8">
-          <MobileBottomBar />
-        </div>
       </div>
     </SidebarProvider>
   );

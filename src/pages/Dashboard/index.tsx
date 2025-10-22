@@ -11,7 +11,7 @@ export default function Dashboard() {
         <main className="!flex-grow">
           <SidebarTrigger />
 
-          {/* MENSAGEM FIXA NO CENTRO DA TELA */}
+          
           <div className="!fixed !inset-0 !flex !items-center !justify-center !pointer-events-none">
             <div
               className="!bg-yellow-100 !border !border-yellow-300 !text-yellow-900

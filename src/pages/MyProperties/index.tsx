@@ -283,7 +283,7 @@ export default function MyProperties() {
                         </div>
                       </div>
 
-                      {/* 🔹 Botão com largura igual ao filtro */}
+                      
                       <div
                         className="
     !w-full
@@ -417,7 +417,7 @@ export default function MyProperties() {
                         />
                       </div>
 
-                      {/* ✅ Card de filtros — separado no mobile */}
+                      
                       <div
                         className="
         !relative
@@ -461,7 +461,7 @@ export default function MyProperties() {
                     </div>
                   </div>
 
-                  {/* Conteúdo */}
+                  
                   <div className="!mt-6">
                     {!loading && hasAnyItem && items.length === 0 ? (
                       <NoResults />
@@ -501,12 +501,12 @@ export default function MyProperties() {
 
                         {/* 🔹 MOBILE VIEW */}
                         <div className="!flex md:!hidden !flex-col !items-center !justify-center">
-                          {/* 🔸 Container com largura padronizada 95% no mobile */}
+                         
                           <div className="!w-full">
                             {viewMode === "grid" ? (
                               loading ? (
                                 <>
-                                  {/* Skeletons alinhados */}
+                                  
                                   <div className="!w-[95%] !mx-auto !flex !flex-col !items-center !mb-8">
                                     <CardPropertiesAdmin loading />
                                   </div>
@@ -516,7 +516,7 @@ export default function MyProperties() {
                                 </>
                               ) : (
                                 <>
-                                  {/* 🔸 Cards centralizados e alinhados ao container */}
+                                  
                                   <div className="!w-full">
                                     <RowCarousel
                                       items={row1}
@@ -592,12 +592,12 @@ export default function MyProperties() {
           </section>
         </main>
 
-        {/* ===== 🔹 Footer padronizado ===== */}
+       
         <div className="!mt-4">
           <FooterDesktop variant="list" />
         </div>
 
-        {/* ===== 📱 Barra inferior — visível só no mobile ===== */}
+        
         <div className="!block md:!hidden !mt-8">
           <MobileBottomBar />
         </div>

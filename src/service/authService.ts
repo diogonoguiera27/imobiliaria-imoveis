@@ -11,7 +11,7 @@ export interface User {
   createdAt: string;
   ultimoAcesso: string;
 
-  role: "ADMIN" | "USER";
+  role: "ADMIN" | "USER"| "CORRETOR";
 }
 
 interface LoginResponse {

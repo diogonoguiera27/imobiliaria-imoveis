@@ -1,4 +1,4 @@
-// ✅ src/pages/UserManagement/index.tsx
+
 import { useEffect, useState } from "react";
 import { getUsers, User, PaginatedUsers } from "@/service/userService";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -26,7 +26,7 @@ const UserManagement = () => {
 
       const res: PaginatedUsers = await getUsers(page, take);
 
-      // 🔹 Ordena usuários pelo campo `quantidadeImoveis` (maior → menor)
+      
       const sortedUsers = [...(res.data || [])].sort(
         (a, b) => (b.quantidadeImoveis || 0) - (a.quantidadeImoveis || 0)
       );
@@ -64,17 +64,17 @@ const UserManagement = () => {
               Gerenciamento de Usuários
             </h1>
 
-            {/* Exibe erro se houver */}
+            
             {error && (
               <div className="!mb-4 !p-4 !text-red-700 !bg-red-100 !rounded-lg !border !border-red-300">
                 {error}
               </div>
             )}
 
-            {/* Tabela de usuários */}
+            
             <UserTable users={users} loading={loading} />
 
-            {/* Paginação */}
+            
             <UserPagination
               page={page}
               totalPages={totalPages}
@@ -84,7 +84,7 @@ const UserManagement = () => {
           </div>
         </main>
 
-        {/* 🔹 Footer alinhado corretamente (sem wrapper extra) */}
+       
         <FooterDesktop variant="list" />
         <div className="block md:hidden !mt-8">
           <MobileBottomBar />
