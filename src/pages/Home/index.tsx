@@ -10,10 +10,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
 import ContactPhoneModal from "@/components/PhoneContactModal";
 import { useContactContext } from "@/hooks/contact/useContact";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import HeroBanner from "@/components/HeroBanner";
 import SearchFilter from "@/components/SearchFilter";
 import FeaturedCarousel from "@/components/FeaturedCarousel";
+import heroImage from "@/assets/b.jpeg";
 import PopularProperties from "@/components/PopularProperties";
 import DiscountedProperties from "@/components/DiscountedProperties";
 import PropertyCard from "@/components/CardProperties";
@@ -24,7 +25,11 @@ const ITEMS_PER_PAGE = 8;
 export function Home() {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
   const [filtroAtivo, setFiltroAtivo] = useState(false);
-  const [filtros, setFiltros] = useState<{ cidade?: string; tipo?: string; precoMax?: number }>({});
+  const [filtros, setFiltros] = useState<{
+    cidade?: string;
+    tipo?: string;
+    precoMax?: number;
+  }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -124,15 +129,113 @@ export function Home() {
 
         {/* CONTEÚDO PRINCIPAL */}
         <main className="!flex-1 !flex !flex-col">
-          <HeroBanner />
+          {/* 🏠 HERO + FILTRO SOBREPOSTO */}
+          <section
+            className="relative w-full flex flex-col !mb-[120px]        
+            !md:mb-[180px]  "
+          >
+            {/* 🔴 Imagem/banner de fundo */}
 
-          <div className="!w-[95%] md:!w-[80%] !mx-auto !mt-6 !flex-1">
-            <SearchFilter
-              onFiltrar={handleFiltrar}
-              onLimparFiltro={handleLimparFiltro}
-              filtroAtivo={filtroAtivo}
-            />
+            <HeroBanner />
 
+            {/* 🔳 Filtro sobreposto (metade dentro / metade fora da imagem) */}
+            <div
+              className="
+      absolute
+      
+      left-1/2
+      -translate-x-1/2
+      top-[calc(60vh-180px)]
+      w-[95%]
+      md:w-[80%]
+      
+      justify-start
+      
+      !flex
+      !flex-col md:!flex-row
+      !items-center
+      
+      !gap-6
+      !rounded-[16px]
+      !overflow-hidden
+      !h-auto md:!h-[598px]
+      !z-[0]
+      !m-0
+      !p-0
+      !transition-all
+      !duration-300
+      
+    "
+            >
+              {/* 🖼️ Imagem com border radius */}
+              <div
+                className="
+    !relative
+    !w-full
+    !h-[220px]
+    md:!absolute
+    md:!top-0
+    -mt-[60px] 
+    md:!right-0
+    md:!w-[80%]
+    md:!h-full
+    !overflow-hidden
+    !rounded-[16px]          
+    md:!rounded-none          
+    md:!rounded-l-[16px]      
+    !z-[0]
+  "
+              >
+                <img
+                  src={heroImage}
+                  alt="Imagem de destaque de imóveis"
+                  className="
+      !w-full
+      !h-full
+      !object-cover
+      !object-center
+      !rounded-[16px]         
+      md:!rounded-none        
+      md:!rounded-l-[16px]    
+      
+    "
+                />
+              </div>
+
+              {/* 🧭 Card de filtro flutuante por cima da imagem */}
+              <div
+                className="
+        relative
+        z-20
+        max-w-[440px]
+        -mt-[60px]
+        md:-mt-[80px]
+        ml-[2%]
+        md:ml-[4%]
+      "
+              >
+                <div
+                  className="
+          !bg-white
+          !rounded-[16px]
+          !shadow-[0_8px_30px_rgba(0,0,0,0.15)]
+          !overflow-hidden
+          !border
+          !border-[#f1f1f1]
+        "
+                >
+                  <SearchFilter
+                    onFiltrar={handleFiltrar}
+                    onLimparFiltro={handleLimparFiltro}
+                    filtroAtivo={filtroAtivo}
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 🔹 CONTEÚDO ABAIXO DO HERO */}
+          <div className="!w-[95%] md:!w-[80%] !mx-auto !mt-[220px] !flex-1">
             {filtroAtivo ? (
               <section className="!w-full !mt-8 !pb-12">
                 {loading ? (
@@ -198,19 +301,24 @@ export function Home() {
           </div>
         </main>
 
-        
+        {/* ⚙️ Rodapé */}
         <div className="!mt-auto">
           <FooterDesktop variant="list" />
         </div>
 
-        
+        {/* 📱 Barra inferior mobile */}
         <div className="!block md:!hidden !mt-8">
           <MobileBottomBar />
         </div>
 
-        <Dialog open={showContactModal} onOpenChange={(o) => !o && closeModals()}>
+        {/* 💬 Modais */}
+        <Dialog
+          open={showContactModal}
+          onOpenChange={(o) => !o && closeModals()}
+        >
           <MessageFormModal />
         </Dialog>
+
         <Dialog open={showPhoneModal} onOpenChange={(o) => !o && closeModals()}>
           <ContactPhoneModal />
         </Dialog>
