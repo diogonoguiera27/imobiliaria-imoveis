@@ -1,6 +1,5 @@
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useState, useRef } from "react";
-
 import {
   getNotificationPreferences,
   saveNotificationPreference,
@@ -17,8 +16,11 @@ export default function PromocaoOptions() {
     if (!user || !token) return;
 
     getNotificationPreferences("Promocoes", token).then((pref) => {
-      setPushEnabled(pref?.porPush ?? false);
-      setEmailEnabled(pref?.porEmail ?? true);
+      // 🔧 Corrigido: se o backend retornar um array, usa o primeiro item
+      const p = Array.isArray(pref) ? pref[0] : pref;
+
+      setPushEnabled(p?.porPush ?? false);
+      setEmailEnabled(p?.porEmail ?? true);
       isFirstLoad.current = false;
     });
   }, [user, token]);
@@ -26,7 +28,7 @@ export default function PromocaoOptions() {
   const handleToggle = async (field: "porEmail" | "porPush", value: boolean) => {
     if (!user || !token) return;
 
-    
+    // Atualiza o estado local
     if (field === "porPush") setPushEnabled(value);
     if (field === "porEmail") setEmailEnabled(value);
 
@@ -39,7 +41,7 @@ export default function PromocaoOptions() {
     try {
       await saveNotificationPreference(updated, token);
     } catch (error) {
-      
+      // 🔁 rollback automático se falhar
       if (field === "porPush") setPushEnabled((prev) => !prev);
       if (field === "porEmail") setEmailEnabled((prev) => !prev);
       console.error("Erro ao salvar preferência:", error);
@@ -48,6 +50,7 @@ export default function PromocaoOptions() {
 
   return (
     <div className="mt-4 space-y-3">
+      {/* 🔔 Notificação Push */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-700">Receber promoções por Push</span>
         <Switch
@@ -58,6 +61,7 @@ export default function PromocaoOptions() {
         />
       </div>
 
+      {/* 💌 Notificação E-mail */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-700">Receber promoções por E-mail</span>
         <Switch

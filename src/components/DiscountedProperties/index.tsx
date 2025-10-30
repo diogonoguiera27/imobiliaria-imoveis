@@ -26,7 +26,10 @@ const DiscountedProperties = () => {
   const { token, user } = useAuth();
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
+  // ✅ Correção: sincronização e reset seguro ao carregar imóveis
   useEffect(() => {
+    let ativo = true;
+
     async function carregarImoveis() {
       try {
         setLoading(true);
@@ -40,12 +43,18 @@ const DiscountedProperties = () => {
           ? priorizarImoveisDaCidade(response.data, user.cidade)
           : response.data;
 
-        const semPrimeiro = ordenados.slice(1);
+        const semPrimeiro = ordenados.length > 0 ? ordenados.slice(1) : [];
+
+        if (!ativo) return;
+
         setImoveis(semPrimeiro);
         setTotalPages(response.pagination.totalPages);
+
+        // 🔹 Reset controlado (após carregar)
         setStartIndex(0);
         setMobileIndex(0);
 
+        // 🔹 Favoritos (com tratamento de erro)
         if (token) {
           try {
             const favoritos = await getUserFavorites(token);
@@ -54,23 +63,35 @@ const DiscountedProperties = () => {
               .filter(Boolean);
             setFavoritedIds([...new Set(idsOuUuids)]);
           } catch (err) {
-            console.error("Erro ao buscar favoritos:", err);
+            console.warn("⚠️ Erro ao buscar favoritos:", err);
             setFavoritedIds([]);
           }
         }
+      } catch (err) {
+        console.error("❌ Erro ao carregar imóveis com desconto:", err);
+        setImoveis([]);
       } finally {
-        setLoading(false);
+        if (ativo) setLoading(false);
       }
     }
 
     carregarImoveis();
+
+    return () => {
+      ativo = false;
+    };
   }, [apiPage, token, user]);
 
+  // ======================
+  // 🔹 Paginação Desktop
+  // ======================
   const prevPage = () => {
-    if (startIndex > 0) setStartIndex((prev) => Math.max(prev - visibleCount, 0));
-    else if (apiPage > 1) {
+    if (startIndex > 0) {
+      setStartIndex((prev) => Math.max(prev - visibleCount, 0));
+    } else if (apiPage > 1) {
+      setImoveis([]);
+      setLoading(true);
       setApiPage((prev) => prev - 1);
-      setStartIndex(5);
     }
   };
 
@@ -78,32 +99,44 @@ const DiscountedProperties = () => {
     const nextIndex = startIndex + visibleCount;
     if (nextIndex >= imoveis.length) {
       if (apiPage < totalPages) {
+        setImoveis([]);
+        setLoading(true);
         setApiPage((prev) => prev + 1);
-        setStartIndex(0);
       }
-    } else setStartIndex(nextIndex);
+    } else {
+      setStartIndex(nextIndex);
+    }
   };
 
+  // ======================
+  // 🔹 Paginação Mobile
+  // ======================
   const prevMobile = () => {
-    if (mobileIndex > 0) setMobileIndex((prev) => prev - 1);
-    else if (apiPage > 1) {
+    if (mobileIndex > 0) {
+      setMobileIndex((prev) => prev - 1);
+    } else if (apiPage > 1) {
+      setImoveis([]);
+      setLoading(true);
       setApiPage((prev) => prev - 1);
-      setMobileIndex(9);
     }
   };
 
   const nextMobile = () => {
-    if (mobileIndex < imoveis.length - 1) setMobileIndex((prev) => prev + 1);
-    else if (apiPage < totalPages) {
+    if (mobileIndex < imoveis.length - 1) {
+      setMobileIndex((prev) => prev + 1);
+    } else if (apiPage < totalPages) {
+      setImoveis([]);
+      setLoading(true);
       setApiPage((prev) => prev + 1);
-      setMobileIndex(0);
     }
   };
 
+  // ======================
+  // 🔹 Renderização
+  // ======================
   return (
-    <section className="!w-full  !pt-2 !mt-0">
-      {/* 🔹 Container central padronizado */}
-      <div className="!w-full ">
+    <section className="!w-full !pt-2 !mt-0">
+      <div className="!w-full !max-w-[1920px] !mx-auto ">
         {/* 🔹 Título */}
         <div className="!w-full !flex !justify-center !mt-6">
           <h2 className="!text-gray-900 !text-xl !font-bold !text-center">
@@ -113,18 +146,18 @@ const DiscountedProperties = () => {
 
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
-          <div className="!relative  !w-full">
-            {/* ⬅️ seta esquerda */}
+          <div className="!relative !w-full">
+            {/* ⬅️ Seta esquerda */}
             <button
               onClick={prevPage}
               disabled={apiPage === 1 && startIndex === 0}
               className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 !z-10"
             >
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
-            {/* lista de cards */}
+            {/* 🧱 Lista de cards */}
             <div
               className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
@@ -150,7 +183,7 @@ const DiscountedProperties = () => {
                     })}
             </div>
 
-            {/* ➡️ seta direita */}
+            {/* ➡️ Seta direita */}
             <button
               onClick={nextPage}
               disabled={
@@ -158,7 +191,7 @@ const DiscountedProperties = () => {
                 startIndex + visibleCount >= imoveis.length
               }
               className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 !z-10"
             >
               <ChevronRight className="!w-5 !h-5" />
             </button>
@@ -167,19 +200,20 @@ const DiscountedProperties = () => {
 
         {/* 📱 Mobile */}
         <div className="md:!hidden !w-full !flex !flex-col !items-center !mt-6">
-          {imoveis.length > 0 && (
+          {imoveis.length > 0 ? (
             <>
               <div className="!w-full !mx-auto !flex !justify-center">
                 <PropertyCardMobileWrapper
-                  item={imoveis[mobileIndex]}
+                  item={imoveis[mobileIndex] ?? null}
                   isFavoritedInitially={
-                    favoritedIds.includes(imoveis[mobileIndex].uuid ?? "") ||
-                    favoritedIds.includes(imoveis[mobileIndex].id ?? 0)
+                    !!imoveis[mobileIndex] &&
+                    (favoritedIds.includes(imoveis[mobileIndex].uuid ?? "") ||
+                      favoritedIds.includes(imoveis[mobileIndex].id ?? 0))
                   }
                 />
               </div>
 
-              {/* setas */}
+              {/* 🔘 Navegação Mobile */}
               <div className="!flex !items-center !justify-center !gap-6 !mt-3">
                 <button
                   onClick={prevMobile}
@@ -199,7 +233,7 @@ const DiscountedProperties = () => {
                 </button>
               </div>
 
-              {/* Indicadores */}
+              {/* 🔴 Indicadores */}
               <div className="!flex !gap-2 !mt-3">
                 {imoveis.map((_, i) => (
                   <span
@@ -211,11 +245,18 @@ const DiscountedProperties = () => {
                 ))}
               </div>
             </>
+          ) : (
+            // 🔹 Fallback seguro no mobile
+            <div className="!h-[480px] !flex !items-center !justify-center">
+              <span className="!text-gray-400 !text-sm">
+                Carregando imóveis...
+              </span>
+            </div>
           )}
         </div>
       </div>
 
-      {/* 🔹 Modais globais */}
+      {/* 🪟 Modais Globais */}
       {showContactModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />

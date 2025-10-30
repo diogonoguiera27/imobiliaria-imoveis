@@ -22,7 +22,10 @@ export default function Dashboard() {
 
               {/* Componente dos Cards */}
               <DashboardCards />
-              <DashboardChart />
+              <div className="!mt-4">
+                <DashboardChart />
+              </div>
+              
             </div>
           </div>
         </main>

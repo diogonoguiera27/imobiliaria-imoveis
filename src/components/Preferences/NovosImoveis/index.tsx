@@ -1,6 +1,5 @@
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useState, useRef } from "react";
-
 import {
   getNotificationPreferences,
   saveNotificationPreference,
@@ -17,8 +16,11 @@ export default function NovoImoveisOptions() {
     if (!token) return;
 
     getNotificationPreferences("NovosImoveis", token).then((pref) => {
-      setEmail(pref?.porEmail ?? true);
-      setPush(pref?.porPush ?? false);
+      // 🔧 Se vier um array, pega o primeiro item
+      const p = Array.isArray(pref) ? pref[0] : pref;
+
+      setEmail(p?.porEmail ?? true);
+      setPush(p?.porPush ?? false);
       isFirstLoad.current = false;
     });
   }, [token]);
@@ -26,7 +28,7 @@ export default function NovoImoveisOptions() {
   const handleToggle = async (field: "porEmail" | "porPush", value: boolean) => {
     if (!token) return;
 
-    
+    // Atualiza estado local
     if (field === "porEmail") setEmail(value);
     if (field === "porPush") setPush(value);
 
@@ -39,7 +41,7 @@ export default function NovoImoveisOptions() {
     try {
       await saveNotificationPreference(updated, token);
     } catch (error) {
-      
+      // 🔁 rollback se falhar
       if (field === "porEmail") setEmail((prev) => !prev);
       if (field === "porPush") setPush((prev) => !prev);
       console.error("Erro ao salvar preferência:", error);
@@ -48,6 +50,7 @@ export default function NovoImoveisOptions() {
 
   return (
     <div className="space-y-3">
+      {/* 💌 Notificação por E-mail */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-700">Notificação por E-mail</span>
         <Switch
@@ -58,6 +61,7 @@ export default function NovoImoveisOptions() {
         />
       </div>
 
+      {/* 🔔 Notificação Push */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-700">Notificação Push</span>
         <Switch
@@ -70,3 +74,4 @@ export default function NovoImoveisOptions() {
     </div>
   );
 }
+ 

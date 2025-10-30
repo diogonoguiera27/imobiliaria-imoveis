@@ -16,8 +16,11 @@ export default function AgendamentosOptions() {
     if (!user || !token) return;
 
     getNotificationPreferences("Agendamentos", token).then((pref) => {
-      setPushEnabled(pref?.porPush ?? false);
-      setEmailEnabled(pref?.porEmail ?? true);
+      // 🔧 Se for um array, pega o primeiro item
+      const p = Array.isArray(pref) ? pref[0] : pref;
+
+      setPushEnabled(p?.porPush ?? false);
+      setEmailEnabled(p?.porEmail ?? true);
       isFirstLoad.current = false;
     });
   }, [user, token]);
@@ -25,7 +28,6 @@ export default function AgendamentosOptions() {
   const handleToggle = async (field: "porEmail" | "porPush", value: boolean) => {
     if (!user || !token) return;
 
-    
     if (field === "porPush") setPushEnabled(value);
     if (field === "porEmail") setEmailEnabled(value);
 
@@ -38,7 +40,6 @@ export default function AgendamentosOptions() {
     try {
       await saveNotificationPreference(updated, token);
     } catch (error) {
-      
       if (field === "porPush") setPushEnabled((prev) => !prev);
       if (field === "porEmail") setEmailEnabled((prev) => !prev);
       console.error("Erro ao salvar preferência:", error);

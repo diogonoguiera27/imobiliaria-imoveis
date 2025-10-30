@@ -16,4 +16,5 @@ export interface AuthContextData {
   isAdmin: boolean;
 }
 
+export type { User };
 export const AuthContext = createContext<AuthContextData | undefined>(undefined);

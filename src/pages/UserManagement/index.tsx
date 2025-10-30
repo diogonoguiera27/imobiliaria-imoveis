@@ -60,7 +60,7 @@ const UserManagement = () => {
 
         <main className="!flex-grow !mt-10">
           <div className="!w-[95%] md:!w-[80%] !mx-auto !p-0">
-            <h1 className="!text-3xl !font-bold !mb-4 !text-gray-800 !mt-6">
+            <h1 className="!text-3xl !font-bold !mb-4 !text-gray-800 !mt-16">
               Gerenciamento de Usuários
             </h1>
 

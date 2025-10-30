@@ -28,7 +28,17 @@ export default function PropertiesGridMyProperty({
   return (
     <>
       {/* ✅ GRID ELÁSTICO COM IMPORTÂNCIA */}
-      <div className="!grid !w-full !gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+      <div  className="
+    !grid
+    !gap-6
+    !w-full
+    sm:!grid-cols-2
+    lg:!grid-cols-3
+    xl:!grid-cols-4
+    
+    !transition-all
+    !duration-300
+  ">
         {loading
           ? Array.from({ length: 8 }).map((_, idx) => (
               <CardPropertiesAdmin key={idx} loading />

@@ -23,7 +23,6 @@ import {
 import type { Imovel, TipoImovel, TipoNegocio, CategoriaImovel } from "@/types";
 import { Upload } from "lucide-react";
 
-
 const TIPO_IMOVEL_OPCOES: TipoImovel[] = [
   "Apartamento",
   "Casa Residencial",
@@ -36,7 +35,6 @@ const CATEGORIA_OPCOES: CategoriaImovel[] = [
   "popular",
   "promocao",
 ];
-
 
 const createSchema = z.object({
   imagem: z
@@ -89,14 +87,12 @@ type CreateValues = z.infer<typeof createSchema>;
 type EditValues = z.infer<typeof editSchema>;
 type FormValues = CreateValues | EditValues;
 
-
 export type PropertyFormProps = {
   mode?: "create" | "edit";
   initialData?: Imovel;
   onSuccess?: (id: number) => void;
   onImageSelect?: (url: string | null) => void;
 };
-
 
 type BackendFieldErrors = Record<string, string[] | undefined>;
 type BackendError = {
@@ -105,11 +101,9 @@ type BackendError = {
   errors?: BackendFieldErrors;
 };
 
-
 function withError(base: string, hasError?: boolean) {
   return `${base} ${hasError ? "!border-red-500 !ring-1 !ring-red-500/60" : ""}`;
 }
-
 
 export default function PropertyFormCreate({
   mode = "create",
@@ -153,11 +147,9 @@ export default function PropertyFormCreate({
 
   const selectedFile = watch("imagem");
 
-  
   useEffect(() => {
     if (!onImageSelect) return;
 
-    
     if (selectedFile && (selectedFile as FileList).length > 0) {
       const file = (selectedFile as FileList)[0];
       const url = URL.createObjectURL(file);
@@ -165,11 +157,9 @@ export default function PropertyFormCreate({
       return () => URL.revokeObjectURL(url);
     }
 
-   
     if (mode === "edit" && initialData?.imagem) {
       let url = initialData.imagem;
 
-     
       if (!url.startsWith("http")) {
         url = `${import.meta.env.VITE_API_URL}/uploads/${url.replace(
           /^\/?uploads\/?/,
@@ -182,13 +172,11 @@ export default function PropertyFormCreate({
       return;
     }
 
-    
     if (mode === "create") {
       onImageSelect(null);
     }
   }, [selectedFile, mode, initialData?.imagem, onImageSelect]);
 
-  
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     try {
       if (mode === "create") {
@@ -211,7 +199,9 @@ export default function PropertyFormCreate({
           onSuccess(created.id);
         } else {
           setTimeout(() => {
-            navigate(`/meus-imoveis?createdId=${created.id}`, { replace: true });
+            navigate(`/meus-imoveis?createdId=${created.id}`, {
+              replace: true,
+            });
           }, 2000);
         }
         return;
@@ -297,14 +287,12 @@ export default function PropertyFormCreate({
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        
         <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="imagem" className="!text-sm !font-medium">
               Imagem
             </Label>
 
-            
             <input
               id="imagem"
               type="file"
@@ -313,7 +301,6 @@ export default function PropertyFormCreate({
               {...register("imagem")}
             />
 
-            
             <label
               htmlFor="imagem"
               className={withError(
@@ -330,7 +317,6 @@ export default function PropertyFormCreate({
             )}
           </div>
 
-          
           <div className="!space-y-1">
             <Label htmlFor="bairro" className="!text-sm !font-medium">
               Bairro
@@ -351,7 +337,6 @@ export default function PropertyFormCreate({
           </div>
         </div>
 
-       
         <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="endereco" className="!text-sm !font-medium">
@@ -371,7 +356,6 @@ export default function PropertyFormCreate({
             )}
           </div>
 
-          
           <div className="!space-y-1">
             <Label htmlFor="categoria" className="!text-sm !font-medium">
               Categoria
@@ -412,7 +396,6 @@ export default function PropertyFormCreate({
             )}
           </div>
 
-          
           <div className="!space-y-1">
             <Label htmlFor="tipoNegocio" className="!text-sm !font-medium">
               Tipo de Negócio
@@ -454,7 +437,6 @@ export default function PropertyFormCreate({
           </div>
         </div>
 
-       
         <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="cidade" className="!text-sm !font-medium">
@@ -472,7 +454,6 @@ export default function PropertyFormCreate({
             )}
           </div>
 
-                                                           
           <div className="!space-y-1">
             <Label htmlFor="tipo" className="!text-sm !font-medium">
               Tipo
@@ -530,7 +511,6 @@ export default function PropertyFormCreate({
           </div>
         </div>
 
-       
         <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="areaConstruida" className="!text-sm !font-medium">
@@ -583,7 +563,6 @@ export default function PropertyFormCreate({
           </div>
         </div>
 
-        
         <div className="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="banheiros" className="!text-sm !font-medium">
@@ -635,7 +614,6 @@ export default function PropertyFormCreate({
           </div>
         </div>
 
-        
         <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4">
           <div className="!space-y-1">
             <Label htmlFor="caracteristicas" className="!text-sm !font-medium">
@@ -692,16 +670,34 @@ export default function PropertyFormCreate({
           </div>
         </div>
 
-        {/* Botões */}
-        <div className="!flex !justify-end !gap-3 !pt-3 !border-t !border-neutral-200">
-          <Button type="submit" disabled={isSubmitting}>
+        {/* 🔘 Botões de ação */}
+        <div className="!flex !justify-end !gap-3 !pt-4 !mt-6 !border-t !border-neutral-200">
+          {/* ✅ Botão principal (Salvar) */}
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="!bg-gradient-to-r !from-red-500 !to-red-600 
+               !text-white !font-semibold !px-6 !py-2 
+               !rounded-full !shadow-md hover:!from-red-600 hover:!to-red-700 
+               hover:!shadow-lg !transition-all !duration-200 
+               disabled:!opacity-60 disabled:!cursor-not-allowed"
+          >
             {isSubmitting
               ? "Salvando..."
               : mode === "edit"
-                ? "Salvar alterações"
-                : "Salvar Imóvel"}
+                ? " Salvar alterações"
+                : " Salvar Imóvel"}
           </Button>
-          <Button type="button" onClick={() => window.history.back()}>
+
+          {/* ❌ Botão cancelar */}
+          <Button
+            type="button"
+            onClick={() => window.history.back()}
+            className="!bg-gradient-to-r !from-gray-200 !to-gray-300 
+               !text-gray-800 !font-semibold !px-6 !py-2 
+               !rounded-full !shadow-sm hover:!from-gray-300 hover:!to-gray-400 
+               hover:!scale-105 !transition-all !duration-200"
+          >
             Cancelar
           </Button>
         </div>

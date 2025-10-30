@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
 import ContactPhoneModal from "@/components/PhoneContactModal";
 import { useContactContext } from "@/hooks/contact/useContact";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import HeroBanner from "@/components/HeroBanner";
 import SearchFilter from "@/components/SearchFilter";
 import FeaturedCarousel from "@/components/FeaturedCarousel";
@@ -38,7 +38,9 @@ export function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 🔄 Buscar imóveis
+  // =============================
+  // 🔹 Função: Carregar imóveis
+  // =============================
   const carregarImoveis = useCallback(
     async (page: number, activeFilters = filtros) => {
       try {
@@ -63,6 +65,9 @@ export function Home() {
     carregarImoveis(currentPage);
   }, [carregarImoveis, currentPage]);
 
+  // =============================
+  // 🔹 Resetar filtro via URL
+  // =============================
   const handleLimparFiltro = useCallback(() => {
     setFiltroAtivo(false);
     setFiltros({});
@@ -78,6 +83,9 @@ export function Home() {
     }
   }, [location.search, navigate, handleLimparFiltro]);
 
+  // =============================
+  // 🔹 Aplicar filtros
+  // =============================
   const handleFiltrar = async (novosFiltros: {
     cidade?: string;
     tipo?: string;
@@ -102,12 +110,15 @@ export function Home() {
     }
   };
 
+  // =============================
+  // 🔹 Skeleton de carregamento
+  // =============================
   const GridSkeleton = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+    <div className="!grid !grid-cols-1 sm:!grid-cols-2 md:!grid-cols-4 !gap-6 !mt-6">
       {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
         <div
           key={i}
-          className="!w-[285px] !h-[460px] !bg-white !rounded-xl !shadow-md !border !border-gray-200 !p-4 mx-auto"
+          className="!w-full !max-w-[285px] !h-[460px] !bg-white !rounded-xl !shadow-md !border !border-gray-200 !p-4 !mx-auto"
         >
           <Skeleton className="!w-full !h-[180px] !mb-4" />
           <div className="!flex !flex-col !gap-2">
@@ -124,106 +135,22 @@ export function Home() {
 
   return (
     <SidebarProvider>
-      <div className="!w-screen !min-h-screen !flex !flex-col !overflow-x-hidden">
+      <div className="!w-full !min-h-screen !flex !flex-col">
         <SidebarTrigger />
 
-        {/* CONTEÚDO PRINCIPAL */}
-        <main className="!flex-1 !flex !flex-col">
-          {/* 🏠 HERO + FILTRO SOBREPOSTO */}
-          <section
-            className="relative w-full flex flex-col !mb-[120px]        
-            !md:mb-[180px]  "
-          >
-            {/* 🔴 Imagem/banner de fundo */}
-
+        {/* ================= HERO SECTION ================= */}
+        <section className="!relative !w-full">
+          {/* 🔹 HERO BANNER (FUNDO VERMELHO) */}
+          <div className="!absolute !top-0 !left-0 !w-full !h-[600px] !z-[0]">
             <HeroBanner />
+          </div>
 
-            {/* 🔳 Filtro sobreposto (metade dentro / metade fora da imagem) */}
-            <div
-              className="
-      absolute
-      
-      left-1/2
-      -translate-x-1/2
-      top-[calc(60vh-180px)]
-      w-[95%]
-      md:w-[80%]
-      
-      justify-start
-      
-      !flex
-      !flex-col md:!flex-row
-      !items-center
-      
-      !gap-6
-      !rounded-[16px]
-      !overflow-hidden
-      !h-auto md:!h-[598px]
-      !z-[0]
-      !m-0
-      !p-0
-      !transition-all
-      !duration-300
-      
-    "
-            >
-              {/* 🖼️ Imagem com border radius */}
-              <div
-                className="
-    !relative
-    !w-full
-    !h-[220px]
-    md:!absolute
-    md:!top-0
-    -mt-[60px] 
-    md:!right-0
-    md:!w-[80%]
-    md:!h-full
-    !overflow-hidden
-    !rounded-[16px]          
-    md:!rounded-none          
-    md:!rounded-l-[16px]      
-    !z-[0]
-  "
-              >
-                <img
-                  src={heroImage}
-                  alt="Imagem de destaque de imóveis"
-                  className="
-      !w-full
-      !h-full
-      !object-cover
-      !object-center
-      !rounded-[16px]         
-      md:!rounded-none        
-      md:!rounded-l-[16px]    
-      
-    "
-                />
-              </div>
-
-              {/* 🧭 Card de filtro flutuante por cima da imagem */}
-              <div
-                className="
-        relative
-        z-20
-        max-w-[440px]
-        -mt-[60px]
-        md:-mt-[80px]
-        ml-[2%]
-        md:ml-[4%]
-      "
-              >
-                <div
-                  className="
-          !bg-white
-          !rounded-[16px]
-          !shadow-[0_8px_30px_rgba(0,0,0,0.15)]
-          !overflow-hidden
-          !border
-          !border-[#f1f1f1]
-        "
-                >
+          {/* 🔹 BLOCO SOBREPOSTO (CARD + IMAGEM DE DESTAQUE) */}
+          <div className="!relative !w-[95%] md:!w-[80%] !mx-auto !z-[10] !pt-[220px] md:!pt-[280px]">
+            <div className="!relative !flex !flex-col md:!flex-row !items-start !gap-8 !z-[5]">
+              {/* 🔹 CARD DE FILTRO */}
+              <div className="!relative !z-[20] !w-full md:!w-[420px] !max-w-[440px] !mt-10">
+                <div className="!bg-white !rounded-2xl !shadow-2xl !border !border-gray-100 !overflow-hidden">
                   <SearchFilter
                     onFiltrar={handleFiltrar}
                     onLimparFiltro={handleLimparFiltro}
@@ -231,56 +158,75 @@ export function Home() {
                   />
                 </div>
               </div>
+
+              {/* 🔹 IMAGEM DE DESTAQUE */}
+              <div
+                className="!relative !z-[10] 
+                  !w-full md:!flex-1 
+                  !h-[340px] md:!h-[590px] 
+                  !rounded-2xl !overflow-hidden 
+                  !shadow-xl 
+                  md:!ml-[-120px]"
+              >
+                <img
+                  src={heroImage}
+                  alt="Imagem de destaque de imóveis"
+                  className="!w-full !h-full !object-cover"
+                />
+              </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* 🔹 CONTEÚDO ABAIXO DO HERO */}
-          <div className="!w-[95%] md:!w-[80%] !mx-auto !mt-[220px] !flex-1">
-            {filtroAtivo ? (
-              <section className="!w-full !mt-8 !pb-12">
-                {loading ? (
-                  <GridSkeleton />
-                ) : imoveis.length === 0 ? (
-                  <div className="text-center text-gray-600 text-lg font-semibold mt-12 mb-24">
-                    Nenhum imóvel encontrado
-                  </div>
-                ) : (
-                  <>
-                    {/* 💻 Desktop */}
-                    <div className="hidden md:block">
-                      <div
-                        className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6 ${
-                          totalPages <= 1 ? "!mb-12" : ""
-                        }`}
-                      >
-                        {imoveis.map((item) => (
-                          <PropertyCard key={item.id} item={item} />
-                        ))}
-                      </div>
-                      {totalPages > 1 && (
-                        <div className="w-full flex mt-10 justify-center">
-                          <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onPageChange={setCurrentPage}
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* 📱 Mobile */}
-                    <div className="block md:hidden mt-6 !max-w-[90%] !mx-auto">
+        {/* ================= CONTEÚDO PRINCIPAL ================= */}
+        <main className="!flex-1 !flex !flex-col !w-[95%] md:!w-[80%] !mx-auto">
+          {filtroAtivo ? (
+            <section className="!w-full !mt-8 !pb-12">
+              {loading ? (
+                <GridSkeleton />
+              ) : imoveis.length === 0 ? (
+                <div className="!text-center !text-gray-600 !text-lg !font-semibold !mt-12 !mb-24">
+                  Nenhum imóvel encontrado
+                </div>
+              ) : (
+                <>
+                  {/* DESKTOP */}
+                  <div className="!hidden md:!block">
+                    <div
+                      className={`!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-3 xl:!grid-cols-4 2xl:!grid-cols-5 !gap-6 !mt-6 ${
+                        totalPages <= 1 ? "!mb-12" : ""
+                      }`}
+                    >
                       {imoveis.map((item) => (
-                        <div key={item.id} className="mb-4">
-                          <PropertyCard item={item} />
-                        </div>
+                        <PropertyCard key={item.id} item={item} size="default" />
                       ))}
                     </div>
-                  </>
-                )}
-              </section>
-            ) : (
-              <section className="!w-full !mt-10 !pb-12">
+
+                    {totalPages > 1 && (
+                      <div className="!w-full !flex !mt-10 !justify-center">
+                        <Pagination
+                          currentPage={currentPage}
+                          totalPages={totalPages}
+                          onPageChange={setCurrentPage}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* MOBILE */}
+                  <div className="!block md:!hidden !mt-6 !max-w-[90%] !mx-auto">
+                    {imoveis.map((item) => (
+                      <div key={item.id} className="!mb-4">
+                        <PropertyCard item={item} size="mobile" />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </section>
+          ) : (
+            <section className="!w-full !mt-10 !pb-12">
+              <div className="!max-w-[1920px] !mx-auto">
                 <FeaturedCarousel />
                 <div className="!mt-8">
                   <PopularProperties />
@@ -288,34 +234,31 @@ export function Home() {
                 <div className="!mt-8">
                   <DiscountedProperties />
                 </div>
-                <div className="w-full flex justify-center !mt-12">
+                <div className="!w-full !flex !justify-center !mt-12">
                   <Button
                     onClick={() => navigate("/imoveis-venda")}
-                    className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 transition-colors duration-200"
+                    className="!bg-red-500 !text-white !font-semibold !px-6 !py-3 !rounded !shadow-md hover:!bg-red-700 !transition-colors !duration-200"
                   >
                     Ver todos os imóveis
                   </Button>
                 </div>
-              </section>
-            )}
-          </div>
+              </div>
+            </section>
+          )}
         </main>
 
-        {/* ⚙️ Rodapé */}
+        {/* 🔻 RODAPÉ */}
         <div className="!mt-auto">
           <FooterDesktop variant="list" />
         </div>
 
-        {/* 📱 Barra inferior mobile */}
+        {/* 📱 MOBILE BOTTOM BAR */}
         <div className="!block md:!hidden !mt-8">
           <MobileBottomBar />
         </div>
 
-        {/* 💬 Modais */}
-        <Dialog
-          open={showContactModal}
-          onOpenChange={(o) => !o && closeModals()}
-        >
+        {/* 🧩 MODAIS */}
+        <Dialog open={showContactModal} onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />
         </Dialog>
 

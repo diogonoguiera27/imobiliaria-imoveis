@@ -178,7 +178,7 @@ export default function DashboardChart() {
                 <Line
                   type="linear"
                   dataKey="imoveis"
-                  stroke="#f97316"
+                  stroke="#374151"
                   strokeWidth={2.5}
                   dot={{ r: 3 }}
                   activeDot={{ r: 5 }}
@@ -189,7 +189,7 @@ export default function DashboardChart() {
                     offset={10}
                     style={{
                       fontSize: "12px",
-                      fill: "#f97316",
+                      fill: "#374151",
                       fontWeight: 600,
                     }}
                   />

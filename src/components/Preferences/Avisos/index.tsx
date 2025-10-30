@@ -16,8 +16,11 @@ export default function AvisosOptions() {
     if (!user || !token) return;
 
     getNotificationPreferences("Avisos", token).then((pref) => {
-      setStatusEnabled(pref?.porPush ?? false); 
-      setAprovacoesEnabled(pref?.porEmail ?? true); 
+      // 🔧 Se vier um array, pega o primeiro item
+      const p = Array.isArray(pref) ? pref[0] : pref;
+
+      setStatusEnabled(p?.porPush ?? false);
+      setAprovacoesEnabled(p?.porEmail ?? true);
       isFirstLoad.current = false;
     });
   }, [user, token]);
@@ -25,7 +28,6 @@ export default function AvisosOptions() {
   const handleToggle = async (field: "porEmail" | "porPush", value: boolean) => {
     if (!user || !token) return;
 
-   
     if (field === "porPush") setStatusEnabled(value);
     if (field === "porEmail") setAprovacoesEnabled(value);
 
@@ -38,7 +40,6 @@ export default function AvisosOptions() {
     try {
       await saveNotificationPreference(updated, token);
     } catch (error) {
-      
       if (field === "porPush") setStatusEnabled((prev) => !prev);
       if (field === "porEmail") setAprovacoesEnabled((prev) => !prev);
       console.error("Erro ao salvar preferência:", error);
@@ -47,6 +48,7 @@ export default function AvisosOptions() {
 
   return (
     <div className="mt-4 space-y-3">
+      {/* 🔔 Preferência de status */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-700">Mudanças de status do imóvel</span>
         <Switch
@@ -57,6 +59,7 @@ export default function AvisosOptions() {
         />
       </div>
 
+      {/* 📧 Preferência de aprovações */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-700">Aprovações e rejeições</span>
         <Switch

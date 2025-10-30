@@ -31,10 +31,14 @@ const PopularProperties = () => {
   const { token, user } = useAuth();
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
+  // ✅ Correção principal — sincronização entre troca de página e carregamento
   useEffect(() => {
+    let ativo = true;
+
     async function carregarImoveis() {
       try {
         setLoading(true);
+
         const response: PaginatedProperties = await buscarImoveis({
           categoria: "popular",
           page: apiPage,
@@ -45,34 +49,54 @@ const PopularProperties = () => {
           ? priorizarImoveisDaCidade(response.data, user.cidade)
           : response.data;
 
-        const semPrimeiro = ordenados.slice(1);
+        const semPrimeiro = ordenados.length > 0 ? ordenados.slice(1) : [];
+
+        if (!ativo) return;
+
         setImoveis(semPrimeiro);
         setTotalPages(response.pagination.totalPages);
+
+        // 🔹 Reset controlado
         setStartIndex(0);
         setMobileIndex(0);
 
+        // 🔹 Favoritos
         if (token) {
-          const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
-          const ids = favoritos
-            .map((f) => f.propertyId)
-            .filter((id): id is number => typeof id === "number");
-          setFavoritedIds(ids);
+          try {
+            const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
+            const ids = favoritos
+              .map((f) => f.propertyId)
+              .filter((id): id is number => typeof id === "number");
+            setFavoritedIds(ids);
+          } catch (err) {
+            console.warn("⚠️ Erro ao buscar favoritos:", err);
+            setFavoritedIds([]);
+          }
         }
       } catch (err) {
-        console.error("Erro ao carregar imóveis populares:", err);
+        console.error("❌ Erro ao carregar imóveis populares:", err);
+        setImoveis([]);
       } finally {
-        setLoading(false);
+        if (ativo) setLoading(false);
       }
     }
 
     carregarImoveis();
+    return () => {
+      ativo = false;
+    };
   }, [token, user, apiPage]);
 
+  // ======================
+  // 🔹 Paginação Desktop
+  // ======================
   const prevPage = () => {
-    if (startIndex > 0) setStartIndex((prev) => Math.max(prev - visibleCount, 0));
-    else if (apiPage > 1) {
+    if (startIndex > 0) {
+      setStartIndex((prev) => Math.max(prev - visibleCount, 0));
+    } else if (apiPage > 1) {
+      setImoveis([]); // Evita render de imóveis antigos
+      setLoading(true);
       setApiPage((prev) => prev - 1);
-      setStartIndex(5);
     }
   };
 
@@ -80,32 +104,45 @@ const PopularProperties = () => {
     const nextIndex = startIndex + visibleCount;
     if (nextIndex >= imoveis.length) {
       if (apiPage < totalPages) {
+        setImoveis([]);
+        setLoading(true);
         setApiPage((prev) => prev + 1);
-        setStartIndex(0);
       }
-    } else setStartIndex(nextIndex);
+    } else {
+      setStartIndex(nextIndex);
+    }
   };
 
+  // ======================
+  // 🔹 Paginação Mobile
+  // ======================
   const prevMobile = () => {
-    if (mobileIndex > 0) setMobileIndex((prev) => prev - 1);
-    else if (apiPage > 1) {
+    if (mobileIndex > 0) {
+      setMobileIndex((prev) => prev - 1);
+    } else if (apiPage > 1) {
+      setImoveis([]);
+      setLoading(true);
       setApiPage((prev) => prev - 1);
-      setMobileIndex(9);
     }
   };
 
   const nextMobile = () => {
-    if (mobileIndex < imoveis.length - 1) setMobileIndex((prev) => prev + 1);
-    else if (apiPage < totalPages) {
+    if (mobileIndex < imoveis.length - 1) {
+      setMobileIndex((prev) => prev + 1);
+    } else if (apiPage < totalPages) {
+      setImoveis([]);
+      setLoading(true);
       setApiPage((prev) => prev + 1);
-      setMobileIndex(0);
     }
   };
 
+  // ======================
+  // 🔹 Renderização
+  // ======================
   return (
     <section className="!w-full !pt-2 !mt-0">
-      {/* ✅ Centralização padrão 80% igual ao Featured */}
-      <div className="!w-full">
+      <div className="!w-full !max-w-[1920px] !mx-auto ">
+        {/* 🔹 Título */}
         <div className="!w-full !flex !justify-center !mt-6">
           <h2 className="!text-gray-900 !text-xl !font-bold !text-center !mb-4">
             Apartamentos mais populares perto de você
@@ -115,15 +152,17 @@ const PopularProperties = () => {
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center">
           <div className="!relative !w-full">
+            {/* ⬅️ Botão esquerda */}
             <button
               onClick={prevPage}
               disabled={apiPage === 1 && startIndex === 0}
               className="!absolute !left-[-24px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 !z-10"
             >
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
+            {/* 🧱 Lista de cards */}
             <div
               className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center hide-scrollbar"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
@@ -143,6 +182,7 @@ const PopularProperties = () => {
                     ))}
             </div>
 
+            {/* ➡️ Botão direita */}
             <button
               onClick={nextPage}
               disabled={
@@ -150,7 +190,7 @@ const PopularProperties = () => {
                 startIndex + visibleCount >= imoveis.length
               }
               className="!absolute !right-[-24px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 z-10"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 !z-10"
             >
               <ChevronRight className="!w-5 !h-5" />
             </button>
@@ -159,19 +199,19 @@ const PopularProperties = () => {
 
         {/* 📱 Mobile */}
         <div className="md:!hidden !w-full !flex !flex-col !items-center !mt-6">
-          {imoveis.length > 0 && (
+          {imoveis.length > 0 ? (
             <>
-              <div className="!relative !flex !justify-center !items-center !w-full">
-                <div className=" !mx-auto !flex !justify-center">
-                  <PropertyCardMobileWrapper
-                    item={imoveis[mobileIndex]}
-                    isFavoritedInitially={favoritedIds.includes(
-                      imoveis[mobileIndex].id
-                    )}
-                  />
-                </div>
+              <div className="!relative !w-full">
+                <PropertyCardMobileWrapper
+                  item={imoveis[mobileIndex] ?? null}
+                  isFavoritedInitially={
+                    !!imoveis[mobileIndex] &&
+                    favoritedIds.includes(imoveis[mobileIndex].id)
+                  }
+                />
               </div>
 
+              {/* 🔘 Navegação mobile */}
               <div className="!flex !items-center !justify-center !gap-6 !mt-3">
                 <button
                   onClick={prevMobile}
@@ -183,8 +223,7 @@ const PopularProperties = () => {
                 <button
                   onClick={nextMobile}
                   disabled={
-                    apiPage === totalPages &&
-                    mobileIndex === imoveis.length - 1
+                    apiPage === totalPages && mobileIndex === imoveis.length - 1
                   }
                   className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
                 >
@@ -192,6 +231,7 @@ const PopularProperties = () => {
                 </button>
               </div>
 
+              {/* 🔴 Indicadores */}
               <div className="!flex !gap-2 !mt-3">
                 {imoveis.map((_, i) => (
                   <span
@@ -203,10 +243,18 @@ const PopularProperties = () => {
                 ))}
               </div>
             </>
+          ) : (
+            // 🔹 Fallback seguro para evitar tela branca
+            <div className="!h-[480px] !flex !items-center !justify-center">
+              <span className="!text-gray-400 !text-sm">
+                Carregando imóveis...
+              </span>
+            </div>
           )}
         </div>
       </div>
 
+      {/* 🪟 Modais */}
       {showContactModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />

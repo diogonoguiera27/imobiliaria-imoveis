@@ -11,7 +11,10 @@ interface UploadAvatarModalProps {
   onClose: () => void;
 }
 
-export default function UploadAvatarModal({ open, onClose }: UploadAvatarModalProps) {
+export default function UploadAvatarModal({
+  open,
+  onClose,
+}: UploadAvatarModalProps) {
   const { user, updateUser } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -49,7 +52,7 @@ export default function UploadAvatarModal({ open, onClose }: UploadAvatarModalPr
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
-  className="
+        className="
     !bg-white 
     !rounded-xl 
     !p-6 
@@ -60,45 +63,68 @@ export default function UploadAvatarModal({ open, onClose }: UploadAvatarModalPr
     !max-w-[400px]    /* limite fixo para desktop */
     !mx-auto          /* centraliza horizontalmente */
   "
->
-  <h2 className="!text-lg !font-bold !text-center !mb-4">
-    Atualizar Foto de Perfil
-  </h2>
+      >
+        <h2 className="!text-lg !font-bold !text-center !mb-4">
+          Atualizar Foto de Perfil
+        </h2>
 
-  <label className="!bg-red-50 !text-red-700 !py-2 !px-4 !rounded-md !cursor-pointer !text-sm !font-medium !hover:bg-red-100">
-    Selecionar imagem
-    <input
-      type="file"
-      accept="image/*"
-      onChange={handleFileChange}
-      className="!hidden"
-    />
-  </label>
+        <label className="!bg-red-50 !text-red-700 !py-2 !px-4 !rounded-md !cursor-pointer !text-sm !font-medium !hover:bg-red-100">
+          Selecionar imagem
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="!hidden"
+          />
+        </label>
 
-  <div className="!mt-3 !text-center !text-sm !text-gray-600">
-    {file ? (
-      <span>
-        Arquivo selecionado: <strong>{file.name}</strong>
-      </span>
-    ) : (
-      <span>Nenhum arquivo selecionado</span>
-    )}
-  </div>
+        <div className="!mt-3 !text-center !text-sm !text-gray-600">
+          {file ? (
+            <span>
+              Arquivo selecionado: <strong>{file.name}</strong>
+            </span>
+          ) : (
+            <span>Nenhum arquivo selecionado</span>
+          )}
+        </div>
 
-  <div className="!flex !justify-center !gap-4 !mt-6 w-full">
-    <Button onClick={onClose} variant="ghost" className="!px-4">
-      Cancelar
-    </Button>
-    <Button
-      onClick={handleUpload}
-      disabled={loading || !file}
-      className="!bg-red-600 hover:!bg-red-700 !text-white !px-6"
-    >
-      {loading ? "Salvando..." : "Salvar"}
-    </Button>
-  </div>
-</DialogContent>
+        <div className="!flex !justify-center !gap-4 !mt-6 w-full">
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            className="
+    !bg-gradient-to-r !from-gray-200 !to-gray-300 
+    hover:!from-gray-300 hover:!to-gray-400 
+    !text-gray-800 !font-semibold 
+    !px-6 !py-2.5 
+    !rounded-full 
+    !shadow-sm hover:!shadow-md 
+    active:!scale-95 
+    !transition-all !duration-200
+  "
+          >
+            Cancelar
+          </Button>
 
+          <Button
+            onClick={handleUpload}
+            disabled={loading || !file}
+            className="
+    !bg-gradient-to-r !from-red-500 !to-red-600 
+    hover:!from-red-600 hover:!to-red-700 
+    !text-white !font-semibold 
+    !px-6 !py-2.5 
+    !rounded-full 
+    !shadow-md hover:!shadow-lg 
+    active:!scale-95 
+    !transition-all !duration-200 
+    disabled:!opacity-60 disabled:!cursor-not-allowed
+  "
+          >
+            {loading ? "Salvando..." : "Salvar"}
+          </Button>
+        </div>
+      </DialogContent>
     </Dialog>
   );
 }

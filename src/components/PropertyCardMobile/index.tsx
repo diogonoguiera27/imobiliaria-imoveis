@@ -2,16 +2,16 @@ import { FC } from "react";
 import PropertyCard, { PropertyCardProps } from "../CardProperties";
 
 /**
- * Variante mobile do PropertyCard.
- * Remove as larguras fixas e faz o card preencher 95% do espaço disponível.
- * Ideal para uso em carrosséis e seções com containers responsivos.
+ * 📱 Variante Mobile do PropertyCard (corrigida)
+ * --------------------------------------------------
+ * - Ocupa 95% da viewport real (não do container pai)
+ * - Mantém centralização e padding automático
+ * - Garante responsividade uniforme entre seções
  */
 const PropertyCardMobileWrapper: FC<PropertyCardProps> = (props) => {
   return (
-    <div className="!w-full !flex !justify-center">
-      <div className=" !max-w-none [&>div]:!w-full [&>div]:!max-w-none">
-        <PropertyCard {...props} />
-      </div>
+    <div className="!w-[95vw] !max-w-[95vw] !mx-auto">
+      <PropertyCard {...props} size="mobile" />
     </div>
   );
 };

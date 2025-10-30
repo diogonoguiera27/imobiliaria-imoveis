@@ -70,14 +70,21 @@ export default function PerfilUsuarioModal() {
             {user ? (
               <Button
                 size="sm"
-                className="
-                  !px-6 !py-3 !text-sm !font-bold
-                  !text-white !bg-red-600 !hover:bg-red-500
-                  w-full sm:w-auto sm:!px-3 sm:!py-1 sm:!text-xs
-                "
                 onClick={() => navigate("/profile")}
+                className="
+    !px-6 !py-2.5 
+    !text-sm !font-semibold !tracking-wide
+    !text-white 
+    !bg-gradient-to-r !from-red-500 !to-red-600
+    hover:!from-red-600 hover:!to-red-700
+    active:!scale-95
+    !rounded-full
+    !shadow-md hover:!shadow-lg
+    !transition-all !duration-200
+    w-full sm:w-auto
+  "
               >
-                VER PERFIL
+                 VER PERFIL
               </Button>
             ) : (
               <Skeleton className="!h-9 !w-24 !rounded-md" />

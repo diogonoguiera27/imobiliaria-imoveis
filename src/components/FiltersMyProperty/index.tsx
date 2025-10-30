@@ -92,6 +92,7 @@ export default function FiltersMyProperty({
         !mb-[8px]
       "
         >
+          Meus  Imoveis 
           Encontre e gerencie seus{" "}
           <span className="!text-red-600">imóveis</span>
         </h1>

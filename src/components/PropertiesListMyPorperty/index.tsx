@@ -156,25 +156,33 @@ export default function PropertiesListMyPorperty({
 
       {/* 📑 Paginação */}
       {totalPages > 1 && (
-        <div className="!flex !justify-center !items-center !gap-2 !mt-4">
+        <div className="!flex !justify-center !items-center !gap-3 !mt-6">
           <Button
-            variant="outline"
-            size="sm"
             onClick={() => onPageChange(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
+            className="!bg-gradient-to-r !from-gray-200 !to-gray-300 !text-gray-800 
+                       !font-semibold !rounded-full !px-4 !py-2 
+                       hover:!from-gray-300 hover:!to-gray-400 hover:!scale-105 
+                       disabled:!opacity-60 disabled:cursor-not-allowed"
           >
-            Anterior
+             Anterior
           </Button>
-          <span className="!text-sm">
-            Página {currentPage} de {totalPages}
+
+          <span className="!text-sm !font-semibold !text-gray-700">
+            Página{" "}
+            <span className="!text-red-600 !font-bold">{currentPage}</span> de{" "}
+            <span className="!text-gray-800">{totalPages}</span>
           </span>
+
           <Button
-            variant="outline"
-            size="sm"
             onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
+            className="!bg-gradient-to-r !from-red-500 !to-red-600 !text-white 
+                       !font-semibold !rounded-full !px-4 !py-2 
+                       hover:!from-red-600 hover:!to-red-700 hover:!scale-105 
+                       disabled:!opacity-60 disabled:cursor-not-allowed"
           >
-            Próximo
+            Próximo 
           </Button>
         </div>
       )}

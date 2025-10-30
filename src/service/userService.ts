@@ -9,6 +9,7 @@ export interface User {
   uuid?: string;
   nome: string;
   email: string;
+  username?: string;
   cidade: string;
   telefone?: string; // 🔹 agora opcional para alinhar com authService
   avatarUrl?: string;

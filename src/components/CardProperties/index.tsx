@@ -1,4 +1,3 @@
-// ✅ src/components/PropertyCard/index.tsx
 import { useState, useEffect } from "react";
 import { FaRulerCombined, FaBed, FaCar, FaBath } from "react-icons/fa";
 import { Heart } from "lucide-react";
@@ -13,6 +12,7 @@ import { useContactContext } from "@/hooks/contact/useContact";
 export interface PropertyCardProps {
   item?: Imovel;
   variant?: "default" | "featured";
+  size?: "default" | "mobile";
   isFavoritedInitially?: boolean;
   loading?: boolean;
   onOpenContactModal?: () => void;
@@ -22,17 +22,20 @@ export interface PropertyCardProps {
 const PropertyCard = ({
   item,
   variant = "default",
+  size = "default",
   isFavoritedInitially = false,
   loading = false,
   onOpenContactModal,
   onOpenPhoneModal,
 }: PropertyCardProps) => {
-  const isFeatured = variant === "featured";
   const { token } = useAuth();
   const navigate = useNavigate();
   const { openContactModal, openPhoneModal } = useContactContext();
-
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially);
+
+  // ✅ agora é realmente usado — define se o card é “em destaque”
+  const isFeatured = variant === "featured";
+  const isMobile = size === "mobile";
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
   useEffect(() => {
@@ -42,11 +45,9 @@ const PropertyCard = ({
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-
     if (!token || !item) return;
 
     try {
-      // ✅ Detecta corretamente UUID ou ID
       const identifier =
         item.uuid && /^[0-9a-fA-F-]{36}$/.test(item.uuid)
           ? item.uuid
@@ -65,23 +66,21 @@ const PropertyCard = ({
   };
 
   // =====================
-  // SKELETON (Carregamento)
+  // 🦴 SKELETON (Carregando)
   // =====================
   if (loading) {
     return (
       <div
-        className={`${
-          isFeatured ? "w-[460px]" : "w-[285px]"
-        } !h-[460px] !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-300 !flex !flex-col`}
+        className={`flex flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-300 
+          ${isMobile ? "w-full !min-h-[480px]" : "flex-1 min-w-[260px] sm:!max-w-[360px] md:!max-w-[320px] !min-h-[460px]"}
+        `}
       >
         <Skeleton className="!h-[180px] !w-full" />
         <div className="!p-4 !flex !flex-col !gap-3 !flex-1">
-          <div className="!flex !flex-col !gap-2">
-            <Skeleton className="!h-5 !w-3/4" />
-            <Skeleton className="!h-4 !w-2/3" />
-            <Skeleton className="!h-3 !w-1/4" />
-            <Skeleton className="!h-3 !w-1/3" />
-          </div>
+          <Skeleton className="!h-5 !w-3/4" />
+          <Skeleton className="!h-4 !w-2/3" />
+          <Skeleton className="!h-3 !w-1/4" />
+          <Skeleton className="!h-3 !w-1/3" />
           <div className="!flex !flex-wrap !gap-3 !mt-3">
             <Skeleton className="!h-4 !w-16" />
             <Skeleton className="!h-4 !w-12" />
@@ -102,18 +101,31 @@ const PropertyCard = ({
   }
 
   // =====================
-  // CARD NORMAL
+  // 💡 CARD NORMAL
   // =====================
   if (!item) return null;
 
   return (
     <div
       onClick={handleNavigateToDetails}
-      className={`${
-        isFeatured ? "w-[460px]" : "w-[270px]"
-      } !h-[460px] flex-shrink-0 flex flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-700 hover:scale-[1.01] transition cursor-pointer`}
+      className={`
+        flex flex-col relative
+        ${isMobile
+          ? "w-full !max-w-none !min-h-[480px]"
+          : "flex-1 min-w-[260px] sm:!max-w-[360px] md:!max-w-[320px] !min-h-[460px]"} 
+        !bg-white !rounded-xl !shadow-md !overflow-hidden
+        !border ${isFeatured ? "!border-red-500" : "!border-gray-700"}
+        hover:scale-[1.01] transition-transform duration-200 cursor-pointer
+      `}
     >
-      {/* Imagem */}
+      {/* 🔖 Selo de Destaque */}
+      {isFeatured && (
+        <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+          Destaque
+        </div>
+      )}
+
+      {/* 🏠 Imagem */}
       <div className="w-full !h-[180px] !overflow-hidden">
         <img
           src={`${API_URL}${item.imagem}`}
@@ -122,7 +134,7 @@ const PropertyCard = ({
         />
       </div>
 
-      {/* Conteúdo */}
+      {/* 📝 Conteúdo */}
       <div className="!p-4 !bg-gray-100 !border-t !border-gray-800 flex flex-col justify-between gap-4 !rounded-b-xl flex-1">
         <div className="flex flex-col gap-2 text-left">
           <h3 className="!text-base !font-semibold !text-gray-900 !leading-snug break-words">
