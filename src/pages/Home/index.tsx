@@ -226,7 +226,7 @@ export function Home() {
             </section>
           ) : (
             <section className="!w-full !mt-10 !pb-12">
-              <div className="!max-w-[1920px] !mx-auto">
+              <div className=" !mx-auto">
                 <FeaturedCarousel />
                 <div className="!mt-8">
                   <PopularProperties />

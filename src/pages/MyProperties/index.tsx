@@ -238,7 +238,6 @@ export default function MyProperties() {
           {/* 🔹 CONTAINER GLOBAL PADRÃO 80/10/10 */}
           <section className="!pt-[72px] !flex !justify-center">
             <div className="!w-[95%] md:!w-[80%] ">
-
               {/* 🧭 CONTEÚDO PRINCIPAL */}
               <div className="!w-full">
                 {!loading && !hasAnyItem ? (
@@ -332,45 +331,62 @@ export default function MyProperties() {
                     </div>
 
                     {/* 🏠 HERO SECTION */}
-                    <div className="!relative !w-full  !mt-8">
-                      <div
-                        className="!relative !flex !flex-col md:!flex-row !items-center !justify-between !gap-6 !rounded-[16px] !overflow-hidden !h-auto md:!h-[598px] !z-[0] !transition-all !duration-300"
-                      >
-                        {/* 🔹 IMAGEM */}
-                        <div className="!relative !w-full !h-[220px] md:!absolute md:!top-0 md:!right-0 md:!h-full md:!w-[80%] !overflow-hidden !rounded-[16px] md:!rounded-none md:!rounded-l-[16px] !z-[0]">
-                          <img
-                            src={heroImage}
-                            alt="Imagem de destaque de imóveis"
-                            className="!w-full !h-full !object-cover !object-center !rounded-[16px] md:!rounded-none md:!rounded-l-[16px]"
-                          />
-                        </div>
+                    <section className="!relative !w-full !mt-8">
+                      <div className="!absolute !top-0 !left-0 !w-full !h-[600px] !z-[0]">
+                        {/* 🔹 fundo gradiente opcional, se quiser */}
+                        {/* <HeroBanner /> */}
+                      </div>
 
-                        {/* 🔹 CARD DE FILTRO */}
-                        <div className="!relative !z-[10] !flex !flex-col !justify-center !items-start !bg-transparent !p-0 md:!mt-0 !w-full md:!w-auto">
-                          <FiltersMyProperty
-                            q={applied.q || ""}
-                            setQ={(q) => setApplied((p) => ({ ...p, q }))}
-                            cidade={applied.cidade}
-                            setCidade={(cidade) =>
-                              setApplied((p) => ({ ...p, cidade }))
-                            }
-                            tipo={applied.tipo}
-                            setTipo={(tipo) => setApplied((p) => ({ ...p, tipo }))}
-                            negocio={applied.negocio}
-                            setNegocio={(negocio) =>
-                              setApplied((p) => ({ ...p, negocio }))
-                            }
-                            applied={applied}
-                            setApplied={setApplied}
-                            items={items}
-                            allCities={allCities}
-                            onApply={handleApplyFilters}
-                            TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
-                            TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
-                          />
+                      {/* 🔹 BLOCO SOBREPOSTO (CARD + IMAGEM DE DESTAQUE) */}
+                      <div className="!relative  !mx-auto !z-[20]  ">
+                        <div className="!relative !flex !flex-col md:!flex-row !items-start !gap-8 !z-[5]">
+                          {/* 🔹 CARD DE FILTRO */}
+                          <div className="!relative !z-[20] !w-full md:!w-[420px] !max-w-[440px] !mt-10">
+                            <div className="!bg-white !rounded-2xl !shadow-2xl !border !border-gray-100 !overflow-hidden">
+                              <FiltersMyProperty
+                                q={applied.q || ""}
+                                setQ={(q) => setApplied((p) => ({ ...p, q }))}
+                                cidade={applied.cidade}
+                                setCidade={(cidade) =>
+                                  setApplied((p) => ({ ...p, cidade }))
+                                }
+                                tipo={applied.tipo}
+                                setTipo={(tipo) =>
+                                  setApplied((p) => ({ ...p, tipo }))
+                                }
+                                negocio={applied.negocio}
+                                setNegocio={(negocio) =>
+                                  setApplied((p) => ({ ...p, negocio }))
+                                }
+                                applied={applied}
+                                setApplied={setApplied}
+                                items={items}
+                                allCities={allCities}
+                                onApply={handleApplyFilters}
+                                TIPO_IMOVEL_OPCOES={TIPO_IMOVEL_OPCOES}
+                                TIPO_NEGOCIO_OPCOES={TIPO_NEGOCIO_OPCOES}
+                              />
+                            </div>
+                          </div>
+
+                          {/* 🔹 IMAGEM DE DESTAQUE */}
+                          <div
+                            className="!relative !z-[10] 
+                   !w-full md:!flex-1 
+                   !h-[340px] md:!h-[590px] 
+                   !rounded-2xl !overflow-hidden 
+                   !shadow-xl 
+                   md:!ml-[-120px]"
+                          >
+                            <img
+                              src={heroImage}
+                              alt="Imagem de destaque de imóveis"
+                              className="!w-full !h-full !object-cover"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </section>
 
                     {/* 🔹 GRID DE CARDS */}
                     <div className="!mt-10  !mx-auto ">

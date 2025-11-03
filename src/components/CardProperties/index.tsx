@@ -33,7 +33,7 @@ const PropertyCard = ({
   const { openContactModal, openPhoneModal } = useContactContext();
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially);
 
-  // ✅ agora é realmente usado — define se o card é “em destaque”
+  // ✅ define se é destaque
   const isFeatured = variant === "featured";
   const isMobile = size === "mobile";
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
@@ -66,21 +66,20 @@ const PropertyCard = ({
   };
 
   // =====================
-  // 🦴 SKELETON (Carregando)
+  // 🦴 Skeleton (Carregando)
   // =====================
   if (loading) {
     return (
       <div
-        className={`flex flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-300 
-          ${isMobile ? "w-full !min-h-[480px]" : "flex-1 min-w-[260px] sm:!max-w-[360px] md:!max-w-[320px] !min-h-[460px]"}
-        `}
+        className={`!flex !flex-col !bg-white !rounded-xl !shadow-md !overflow-hidden !border !border-gray-200 ${
+          isMobile ? "w-full !min-h-[480px]" : "!w-[340px] !h-[480px]"
+        }`}
       >
-        <Skeleton className="!h-[180px] !w-full" />
-        <div className="!p-4 !flex !flex-col !gap-3 !flex-1">
+        <Skeleton className="!h-[220px] !w-full" />
+        <div className="!p-4 !flex !flex-col !justify-between !flex-1">
           <Skeleton className="!h-5 !w-3/4" />
           <Skeleton className="!h-4 !w-2/3" />
           <Skeleton className="!h-3 !w-1/4" />
-          <Skeleton className="!h-3 !w-1/3" />
           <div className="!flex !flex-wrap !gap-3 !mt-3">
             <Skeleton className="!h-4 !w-16" />
             <Skeleton className="!h-4 !w-12" />
@@ -101,7 +100,7 @@ const PropertyCard = ({
   }
 
   // =====================
-  // 💡 CARD NORMAL
+  // 💡 Card normal
   // =====================
   if (!item) return null;
 
@@ -109,69 +108,71 @@ const PropertyCard = ({
     <div
       onClick={handleNavigateToDetails}
       className={`
-        flex flex-col relative
-        ${isMobile
-          ? "w-full !max-w-none !min-h-[480px]"
-          : "flex-1 min-w-[260px] sm:!max-w-[360px] md:!max-w-[320px] !min-h-[460px]"} 
+        !flex !flex-col !relative
+        ${isMobile ? "w-full !max-w-none !min-h-[480px]" : "!w-[340px] !h-[480px]"}
         !bg-white !rounded-xl !shadow-md !overflow-hidden
-        !border ${isFeatured ? "!border-red-500" : "!border-gray-700"}
-        hover:scale-[1.01] transition-transform duration-200 cursor-pointer
+        !border ${isFeatured ? "!border-red-500" : "!border-gray-200"}
+        hover:!shadow-lg transition-all duration-200 !cursor-pointer
       `}
     >
-      {/* 🔖 Selo de Destaque */}
+      {/* 🔖 selo destaque */}
       {isFeatured && (
-        <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+        <div className="!absolute !top-2 !left-2 !bg-red-600 !text-white !text-xs !font-bold !px-2 !py-1 !rounded">
           Destaque
         </div>
       )}
 
-      {/* 🏠 Imagem */}
-      <div className="w-full !h-[180px] !overflow-hidden">
+      {/* 🏠 imagem */}
+      <div className="!w-full !h-[220px] !overflow-hidden">
         <img
           src={`${API_URL}${item.imagem}`}
           alt={`${item.tipo} em ${item.bairro}, ${item.cidade}`}
-          className="w-full h-full !object-cover !block"
+          className="!w-full !h-full !object-cover !block"
         />
       </div>
 
-      {/* 📝 Conteúdo */}
-      <div className="!p-4 !bg-gray-100 !border-t !border-gray-800 flex flex-col justify-between gap-4 !rounded-b-xl flex-1">
-        <div className="flex flex-col gap-2 text-left">
-          <h3 className="!text-base !font-semibold !text-gray-900 !leading-snug break-words">
+      {/* 📝 conteúdo */}
+      <div className="!p-4 !flex !flex-col !justify-between !flex-1">
+        <div className="!flex !flex-col !gap-1 !text-left">
+          <h3 className="!text-[15px] !font-semibold !text-gray-900 !line-clamp-1">
             {item.bairro}, {item.cidade}
           </h3>
-          <p className="!text-sm !text-gray-500 break-words">{item.endereco}</p>
-          <p className="!text-xs !font-semibold !uppercase !text-red-600">
-            {item.tipoNegocio === "venda" ? "Venda" : "Aluga-se"}
+          <p className="!text-[13px] !text-gray-500 !line-clamp-1">
+            {item.endereco}
           </p>
-
+          <p className="!text-[12px] !font-bold !uppercase !text-red-600 !mt-1">
+            {item.tipoNegocio === "venda" ? "VENDA" : "ALUGA-SE"}
+          </p>
           {item.user?.nome && (
-            <p className="!text-xs !text-gray-700 !font-bold">
-              Proprietário:{" "}
-              <span className="font-medium">{item.user.nome}</span>
+            <p className="!text-[12px] !text-gray-700 !font-medium !mt-1">
+              Proprietário: {item.user.nome}
             </p>
           )}
         </div>
 
-        <div className="flex flex-wrap gap-x-3 gap-y-2 !text-gray-600 !text-sm">
-          <div className="flex items-center gap-2">
-            <FaRulerCombined className="text-[15px]" /> {item.metragem} m²
+        {/* 🔹 infos */}
+        <div className="!flex !flex-wrap !gap-x-3 !gap-y-1 !text-gray-600 !text-[13px] !mt-2">
+          <div className="!flex !items-center !gap-1">
+            <FaRulerCombined className="!text-[14px]" /> {item.metragem} m²
           </div>
-          <div className="flex items-center gap-2">
-            <FaBed className="text-[15px]" /> {item.quartos}
+          <div className="!flex !items-center !gap-1">
+            <FaBed className="!text-[14px]" /> {item.quartos}
           </div>
-          <div className="flex items-center gap-2">
-            <FaBath className="text-[15px]" /> {item.banheiros}
+          <div className="!flex !items-center !gap-1">
+            <FaBath className="!text-[14px]" /> {item.banheiros}
           </div>
-          <div className="flex items-center gap-2">
-            <FaCar className="text-[15px]" /> {item.vagas}
+          <div className="!flex !items-center !gap-1">
+            <FaCar className="!text-[14px]" /> {item.vagas}
           </div>
         </div>
 
-        <div className="flex justify-between items-center mt-3">
+        {/* 🔹 preço + favorito */}
+        <div className="!flex !justify-between !items-center !mt-3">
           <div>
-            <p className="!text-xs !text-gray-800 !font-bold mb-1">{item.tipo}</p>
-            <p className="!text-base !font-bold !text-gray-900">
+            <p className="!text-[12px] !text-gray-800 !font-semibold !mb-0.5">
+              {item.tipo}
+            </p>
+            <p className="!text-[15px] !font-bold !text-gray-900">
               R${" "}
               {item.preco.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
@@ -189,7 +190,8 @@ const PropertyCard = ({
           </button>
         </div>
 
-        <div className="flex justify-between gap-2 mt-4">
+        {/* 🔹 botões */}
+        <div className="!flex !justify-between !gap-2 !mt-3">
           <Button
             onClick={(e) => {
               e.stopPropagation();
@@ -197,7 +199,7 @@ const PropertyCard = ({
               openContactModal(item);
               onOpenContactModal?.();
             }}
-            className="flex-1 !bg-red-500 !text-white !text-sm !rounded hover:!bg-red-700 transition-colors duration-200"
+            className="!flex-1 !bg-red-500 !text-white !text-[13px] !rounded hover:!bg-red-600 transition-colors duration-200"
           >
             Mensagem
           </Button>
@@ -209,7 +211,7 @@ const PropertyCard = ({
               openPhoneModal(item);
               onOpenPhoneModal?.();
             }}
-            className="flex-1 !bg-transparent !text-red-600 !text-sm !rounded hover:!bg-white"
+            className="!flex-1 !border !border-red-500 !text-red-500 !text-[13px] !rounded hover:!bg-red-50"
           >
             Telefone
           </Button>

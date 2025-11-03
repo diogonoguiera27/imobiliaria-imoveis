@@ -69,7 +69,7 @@ const FeaturedCarousel: React.FC = () => {
   return (
     <section className="!w-full !flex !justify-center !pt-2 !mt-0">
       {/* Container travado dentro do limite da HOME */}
-      <div className="!w-full !max-w-[1920px] !mx-auto">
+      <div className="!w-full !mx-auto">
         {/* Título */}
         <div className="!w-full !flex !justify-center !mt-6">
           <h2 className="!text-xl !font-bold !text-gray-900 !text-center !mb-4">
@@ -79,7 +79,7 @@ const FeaturedCarousel: React.FC = () => {
 
         {/* Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center">
-          <div className="!relative !w-full !max-w-[1920px] !mx-auto">
+          <div className="!relative !w-full  !mx-auto">
             {/* Botão esquerda */}
             <button
               onClick={() => scrollDesktop("left")}
