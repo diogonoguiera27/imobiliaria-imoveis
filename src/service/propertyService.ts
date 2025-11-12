@@ -148,3 +148,10 @@ export async function buscarCidadesDoUsuario(): Promise<string[]> {
   return data;
 }
 
+// src/service/propertyService.ts
+export async function getCorretorByProperty(propertyId: number | string) {
+  if (!propertyId) throw new Error("ID do imóvel inválido");
+
+  const response = await api.get(`/property/${propertyId}/corretor`);
+  return response.data.corretor;
+}

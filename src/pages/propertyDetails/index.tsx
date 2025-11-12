@@ -12,6 +12,7 @@ import DescricaoEContato from "@/components/PropertyInfoAndContact";
 import CarrosselPrincipal from "@/components/MainCarousel";
 import { FooterDesktop } from "@/components/FooterDesktop";
 import MobileBottomBar from "@/components/MobileBottomBar";
+import ChatModal from "@/components/ChatModal"; // 🟢 Novo componente importado
 
 /**
  * ============================================================
@@ -19,7 +20,7 @@ import MobileBottomBar from "@/components/MobileBottomBar";
  * ============================================================
  * - Busca o imóvel pelo ID (ou UUID)
  * - Mostra informações, descrição, imagens e imóveis similares
- * - Não registra mais visualizações (essa lógica foi removida)
+ * - Adiciona modal de conversa com corretor
  * ============================================================
  */
 export function ImovelDetalhes() {
@@ -93,6 +94,9 @@ export function ImovelDetalhes() {
         <div className="block md:hidden !mt-8">
           <MobileBottomBar />
         </div>
+
+        {/* ===== MODAL DE CONVERSA (BOTÃO + JANELA DE CHAT) ===== */}
+        <ChatModal />
       </div>
     </SidebarProvider>
   );
