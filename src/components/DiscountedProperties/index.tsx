@@ -5,16 +5,14 @@ import MessageFormModal from "@/components/MessageFormModal";
 import PhoneContactModal from "@/components/PhoneContactModal";
 import { Imovel } from "@/types";
 import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
-import { getUserFavorites } from "@/service/favoriteService";
-import { priorizarImoveisDaCidade } from "@/lib/utils";
 import { useAuth } from "@/hooks/auth";
 import { useContactContext } from "@/hooks/contact/useContact";
 import PropertyCard from "../CardProperties";
 import PropertyCardMobileWrapper from "../PropertyCardMobile";
+import { priorizarImoveisDaCidade } from "@/lib/utils";
 
 const DiscountedProperties = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
-  const [favoritedIds, setFavoritedIds] = useState<(number | string)[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
@@ -22,10 +20,10 @@ const DiscountedProperties = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [mobileIndex, setMobileIndex] = useState(0);
 
-  const { token, user } = useAuth();
+  const { user } = useAuth();
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
-  // ✅ Ref para scroll real
+  // Ref para scroll real
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const cardWidth = 340;
@@ -49,32 +47,20 @@ const DiscountedProperties = () => {
           take: 10,
         });
 
+        // Ordenação por cidade (se o usuário tiver cidade definida)
         const ordenados = user?.cidade
           ? priorizarImoveisDaCidade(response.data, user.cidade)
           : response.data;
 
-        const novos = ordenados.length > 0 ? ordenados.slice(1) : [];
+        const novos = ordenados; // ✔ sem slice(1)
 
         if (!ativo) return;
 
         setImoveis((prev) =>
-          apiPage === 1 ? novos : [...prev, ...novos] // concatenação incremental
+          apiPage === 1 ? novos : [...prev, ...novos]
         );
-        setTotalPages(response.pagination.totalPages);
 
-        // 🔹 Buscar favoritos
-        if (token) {
-          try {
-            const favoritos = await getUserFavorites(token);
-            const idsOuUuids = favoritos
-              .map((f) => f.propertyUuid || f.propertyId)
-              .filter(Boolean);
-            setFavoritedIds([...new Set(idsOuUuids)]);
-          } catch (err) {
-            console.warn("⚠️ Erro ao buscar favoritos:", err);
-            setFavoritedIds([]);
-          }
-        }
+        setTotalPages(response.pagination.totalPages);
       } catch (err) {
         console.error("❌ Erro ao carregar imóveis com desconto:", err);
         if (apiPage === 1) setImoveis([]);
@@ -91,7 +77,7 @@ const DiscountedProperties = () => {
     return () => {
       ativo = false;
     };
-  }, [apiPage, token, user]);
+  }, [apiPage, user]);
 
   // ======================
   // 🔹 Scroll infinito automático
@@ -116,7 +102,7 @@ const DiscountedProperties = () => {
   // ======================
   // 🔹 Scroll por setas
   // ======================
-  const scrollAmount = (cardWidth + gap) * 3; // 3 cards por clique
+  const scrollAmount = (cardWidth + gap) * 3;
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -147,7 +133,6 @@ const DiscountedProperties = () => {
   return (
     <section className="!w-full !pt-2 !mt-0">
       <div className="!w-full !mx-auto">
-        {/* 🔹 Título */}
         <div className="!w-full !flex !justify-center !mt-6">
           <h2 className="!text-gray-900 !text-xl !font-bold !text-center">
             Imóveis que baixaram de preço em até 32% próximos a você
@@ -157,7 +142,8 @@ const DiscountedProperties = () => {
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center !mt-4">
           <div className="!relative !w-full">
-            {/* ⬅️ Seta esquerda */}
+
+            {/* Seta esquerda */}
             <button
               onClick={scrollLeft}
               className="!absolute !left-[-20px] !top-1/2 -translate-y-1/2
@@ -166,7 +152,7 @@ const DiscountedProperties = () => {
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
-            {/* 🧱 Lista de cards com rolagem real e paginação incremental */}
+            {/* Lista */}
             <div
               ref={scrollRef}
               className="!flex !gap-4 !overflow-x-scroll !scroll-smooth !items-center !justify-start hide-scrollbar"
@@ -182,9 +168,8 @@ const DiscountedProperties = () => {
                     </div>
                   ))
                 : imoveis.map((item) => {
-                    const isFav =
-                      favoritedIds.includes(item.uuid ?? "") ||
-                      favoritedIds.includes(item.id ?? 0);
+                    const isFav = item.isFavorito === true;
+
                     return (
                       <div key={item.uuid ?? item.id} className="!flex-shrink-0 !w-[340px]">
                         <PropertyCard
@@ -195,7 +180,6 @@ const DiscountedProperties = () => {
                     );
                   })}
 
-              {/* 🔁 Loader no fim do scroll */}
               {isFetchingMore && (
                 <div className="!flex-shrink-0 !w-[340px] !flex !items-center !justify-center">
                   <span className="!text-gray-400 !text-sm">
@@ -205,7 +189,7 @@ const DiscountedProperties = () => {
               )}
             </div>
 
-            {/* ➡️ Seta direita */}
+            {/* Seta direita */}
             <button
               onClick={scrollRight}
               className="!absolute !right-[-20px] !top-1/2 -translate-y-1/2
@@ -213,6 +197,7 @@ const DiscountedProperties = () => {
             >
               <ChevronRight className="!w-5 !h-5" />
             </button>
+
           </div>
         </div>
 
@@ -223,15 +208,10 @@ const DiscountedProperties = () => {
               <div className="!w-full !mx-auto !flex !justify-center">
                 <PropertyCardMobileWrapper
                   item={imoveis[mobileIndex] ?? null}
-                  isFavoritedInitially={
-                    !!imoveis[mobileIndex] &&
-                    (favoritedIds.includes(imoveis[mobileIndex].uuid ?? "") ||
-                      favoritedIds.includes(imoveis[mobileIndex].id ?? 0))
-                  }
+                  isFavoritedInitially={imoveis[mobileIndex]?.isFavorito === true}
                 />
               </div>
 
-              {/* 🔘 Navegação Mobile */}
               <div className="!flex !items-center !justify-center !gap-6 !mt-3">
                 <button
                   onClick={prevMobile}
@@ -249,7 +229,6 @@ const DiscountedProperties = () => {
                 </button>
               </div>
 
-              {/* 🔴 Indicadores */}
               <div className="!flex !gap-2 !mt-3">
                 {imoveis.map((_, i) => (
                   <span
@@ -269,14 +248,16 @@ const DiscountedProperties = () => {
             </div>
           )}
         </div>
+
       </div>
 
-      {/* 🪟 Modais Globais */}
+      {/* Modais */}
       {showContactModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />
         </Dialog>
       )}
+
       {showPhoneModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <PhoneContactModal />

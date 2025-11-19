@@ -5,21 +5,14 @@ import PhoneContactModal from "@/components/PhoneContactModal";
 import { Dialog } from "../ui/dialog";
 import { Imovel } from "@/types";
 import { buscarImoveis, PaginatedProperties } from "@/service/propertyService";
-import { getUserFavorites } from "@/service/favoriteService";
 import { priorizarImoveisDaCidade } from "@/lib/utils";
 import { useAuth } from "@/hooks/auth";
 import { useContactContext } from "@/hooks/contact/useContact";
 import PropertyCard from "../CardProperties";
 import PropertyCardMobileWrapper from "../PropertyCardMobile";
 
-type FavoriteIdentifier = {
-  propertyId: number;
-  propertyUuid?: string | null;
-};
-
 const PopularProperties = () => {
   const [imoveis, setImoveis] = useState<Imovel[]>([]);
-  const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
@@ -27,13 +20,12 @@ const PopularProperties = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [mobileIndex, setMobileIndex] = useState(0);
 
-  const { token, user } = useAuth();
+  const { user } = useAuth(); // ✔ removido token
   const { showContactModal, showPhoneModal, closeModals } = useContactContext();
 
-  // ✅ ref do container para scroll real
+  // ref do container para scroll real
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // ✅ largura e gap (precisa bater com Tailwind)
   const cardWidth = 340;
   const gap = 16;
   const visibleCount = 6;
@@ -59,28 +51,16 @@ const PopularProperties = () => {
           ? priorizarImoveisDaCidade(response.data, user.cidade)
           : response.data;
 
-        const novos = ordenados.length > 0 ? ordenados.slice(1) : [];
+        const novos = ordenados; // ✔ sem slice(1)
 
         if (!ativo) return;
 
         setImoveis((prev) =>
-          apiPage === 1 ? novos : [...prev, ...novos] // concatenação incremental
+          apiPage === 1 ? novos : [...prev, ...novos]
         );
+
         setTotalPages(response.pagination.totalPages);
 
-        // 🔹 Favoritos
-        if (token) {
-          try {
-            const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
-            const ids = favoritos
-              .map((f) => f.propertyId)
-              .filter((id): id is number => typeof id === "number");
-            setFavoritedIds(ids);
-          } catch (err) {
-            console.warn("⚠️ Erro ao buscar favoritos:", err);
-            setFavoritedIds([]);
-          }
-        }
       } catch (err) {
         console.error("❌ Erro ao carregar imóveis populares:", err);
         if (apiPage === 1) setImoveis([]);
@@ -96,7 +76,7 @@ const PopularProperties = () => {
     return () => {
       ativo = false;
     };
-  }, [token, user, apiPage]);
+  }, [user, apiPage]);
 
   // ======================
   // 🔹 Scroll infinito automático
@@ -107,7 +87,7 @@ const PopularProperties = () => {
 
     const handleScroll = () => {
       const nearEnd =
-        el.scrollLeft + el.clientWidth >= el.scrollWidth * 0.8; // 80% do fim
+        el.scrollLeft + el.clientWidth >= el.scrollWidth * 0.8;
 
       if (nearEnd && !isFetchingMore && apiPage < totalPages) {
         setApiPage((prev) => prev + 1);
@@ -119,9 +99,9 @@ const PopularProperties = () => {
   }, [apiPage, totalPages, isFetchingMore]);
 
   // ======================
-  // 🔹 Scroll por setas (rolagem suave real)
+  // 🔹 Scroll por setas
   // ======================
-  const scrollAmount = (cardWidth + gap) * 3; // rola 3 cards por clique
+  const scrollAmount = (cardWidth + gap) * 3;
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -151,7 +131,8 @@ const PopularProperties = () => {
   // ======================
   return (
     <section className="!w-full !pt-2 !mt-0">
-      <div className="!w-full  !mx-auto ">
+      <div className="!w-full !mx-auto">
+        
         {/* 🔹 Título */}
         <div className="!w-full !flex !justify-center !mt-6">
           <h2 className="!text-gray-900 !text-xl !font-bold !text-center !mb-4">
@@ -162,16 +143,17 @@ const PopularProperties = () => {
         {/* 💻 Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center">
           <div className="!relative !w-full">
-            {/* ⬅️ Botão esquerda */}
+
+            {/* Seta esquerda */}
             <button
               onClick={scrollLeft}
               className="!absolute !left-[-24px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 !z-10"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 !z-10"
             >
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
-            {/* 🧱 Lista de cards com rolagem real e paginação incremental */}
+            {/* Lista */}
             <div
               ref={scrollRef}
               className="!flex !gap-4 !overflow-x-scroll !scroll-smooth !items-center !justify-start hide-scrollbar"
@@ -180,37 +162,45 @@ const PopularProperties = () => {
                 msOverflowStyle: "none",
               }}
             >
-              {loading && imoveis.length === 0
-                ? Array.from({ length: visibleCount }).map((_, i) => (
-                    <div key={`skeleton-${i}`} className="!flex-shrink-0 !w-[340px]">
-                      <PropertyCard loading />
-                    </div>
-                  ))
-                : imoveis.map((item) => (
-                    <div key={item.id} className="!flex-shrink-0 !w-[340px]">
+              {loading && imoveis.length === 0 ? (
+                Array.from({ length: visibleCount }).map((_, i) => (
+                  <div key={`skeleton-${i}`} className="!flex-shrink-0 !w-[340px]">
+                    <PropertyCard loading />
+                  </div>
+                ))
+              ) : (
+                imoveis.map((item) => {
+                  const isFav = item.isFavorito === true;
+
+                  return (
+                    <div key={item.uuid ?? item.id} className="!flex-shrink-0 !w-[340px]">
                       <PropertyCard
                         item={item}
-                        isFavoritedInitially={favoritedIds.includes(item.id)}
+                        isFavoritedInitially={isFav}
                       />
                     </div>
-                  ))}
+                  );
+                })
+              )}
 
-              {/* 🔁 Loader no fim do scroll */}
               {isFetchingMore && (
                 <div className="!flex-shrink-0 !w-[340px] !flex !items-center !justify-center">
-                  <span className="!text-gray-400 !text-sm">Carregando mais...</span>
+                  <span className="!text-gray-400 !text-sm">
+                    Carregando mais...
+                  </span>
                 </div>
               )}
             </div>
 
-            {/* ➡️ Botão direita */}
+            {/* Seta direita */}
             <button
               onClick={scrollRight}
               className="!absolute !right-[-24px] !top-1/2 -translate-y-1/2
-                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50 !z-10"
+                         !bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 !z-10"
             >
               <ChevronRight className="!w-5 !h-5" />
             </button>
+
           </div>
         </div>
 
@@ -221,32 +211,29 @@ const PopularProperties = () => {
               <div className="!relative !w-full">
                 <PropertyCardMobileWrapper
                   item={imoveis[mobileIndex] ?? null}
-                  isFavoritedInitially={
-                    !!imoveis[mobileIndex] &&
-                    favoritedIds.includes(imoveis[mobileIndex].id)
-                  }
+                  isFavoritedInitially={imoveis[mobileIndex]?.isFavorito === true}
                 />
               </div>
 
-              {/* 🔘 Navegação mobile */}
+              {/* Navegação mobile */}
               <div className="!flex !items-center !justify-center !gap-6 !mt-3">
                 <button
                   onClick={prevMobile}
                   disabled={mobileIndex === 0}
                   className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
                 >
-                  <ChevronLeft className="!w-5 !h-5 !cursor-pointer" />
+                  <ChevronLeft className="!w-5 !h-5" />
                 </button>
                 <button
                   onClick={nextMobile}
                   disabled={mobileIndex === imoveis.length - 1}
                   className="!bg-white !rounded-full !shadow-md !p-2 hover:!bg-gray-200 disabled:!opacity-50"
                 >
-                  <ChevronRight className="!w-5 !h-5 !cursor-pointer" />
+                  <ChevronRight className="!w-5 !h-5" />
                 </button>
               </div>
 
-              {/* 🔴 Indicadores */}
+              {/* Indicadores */}
               <div className="!flex !gap-2 !mt-3">
                 {imoveis.map((_, i) => (
                   <span
@@ -268,17 +255,19 @@ const PopularProperties = () => {
         </div>
       </div>
 
-      {/* 🪟 Modais */}
+      {/* Modais */}
       {showContactModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />
         </Dialog>
       )}
+
       {showPhoneModal && (
         <Dialog open onOpenChange={(o) => !o && closeModals()}>
           <PhoneContactModal />
         </Dialog>
       )}
+
     </section>
   );
 };

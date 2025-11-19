@@ -140,15 +140,14 @@ export function Home() {
 
         {/* ================= HERO SECTION ================= */}
         <section className="!relative !w-full">
-          {/* 🔹 HERO BANNER (FUNDO VERMELHO) */}
           <div className="!absolute !top-0 !left-0 !w-full !h-[600px] !z-[0]">
             <HeroBanner />
           </div>
 
-          {/* 🔹 BLOCO SOBREPOSTO (CARD + IMAGEM DE DESTAQUE) */}
           <div className="!relative !w-[95%] md:!w-[80%] !mx-auto !z-[10] !pt-[220px] md:!pt-[280px]">
             <div className="!relative !flex !flex-col md:!flex-row !items-start !gap-8 !z-[5]">
-              {/* 🔹 CARD DE FILTRO */}
+
+              {/* CARD DE FILTRO */}
               <div className="!relative !z-[20] !w-full md:!w-[420px] !max-w-[440px] !mt-10">
                 <div className="!bg-white !rounded-2xl !shadow-2xl !border !border-gray-100 !overflow-hidden">
                   <SearchFilter
@@ -159,7 +158,7 @@ export function Home() {
                 </div>
               </div>
 
-              {/* 🔹 IMAGEM DE DESTAQUE */}
+              {/* IMAGEM DE DESTAQUE */}
               <div
                 className="!relative !z-[10] 
                   !w-full md:!flex-1 
@@ -198,7 +197,12 @@ export function Home() {
                       }`}
                     >
                       {imoveis.map((item) => (
-                        <PropertyCard key={item.id} item={item} size="default" />
+                        <PropertyCard
+                          key={item.id}
+                          item={item}
+                          size="default"
+                          isFavoritedInitially={item.isFavorito}
+                        />
                       ))}
                     </div>
 
@@ -217,7 +221,11 @@ export function Home() {
                   <div className="!block md:!hidden !mt-6 !max-w-[90%] !mx-auto">
                     {imoveis.map((item) => (
                       <div key={item.id} className="!mb-4">
-                        <PropertyCard item={item} size="mobile" />
+                        <PropertyCard
+                          item={item}
+                          size="mobile"
+                          isFavoritedInitially={item.isFavorito}
+                        />
                       </div>
                     ))}
                   </div>
@@ -247,17 +255,17 @@ export function Home() {
           )}
         </main>
 
-        {/* 🔻 RODAPÉ */}
+        {/* RODAPÉ */}
         <div className="!mt-auto">
           <FooterDesktop variant="list" />
         </div>
 
-        {/* 📱 MOBILE BOTTOM BAR */}
+        {/* MOBILE BOTTOM BAR */}
         <div className="!block md:!hidden !mt-8">
           <MobileBottomBar />
         </div>
 
-        {/* 🧩 MODAIS */}
+        {/* MODAIS */}
         <Dialog open={showContactModal} onOpenChange={(o) => !o && closeModals()}>
           <MessageFormModal />
         </Dialog>

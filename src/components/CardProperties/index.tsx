@@ -31,13 +31,15 @@ const PropertyCard = ({
   const { token } = useAuth();
   const navigate = useNavigate();
   const { openContactModal, openPhoneModal } = useContactContext();
+
+  // 🔥 Estado de favorito sincronizado com o backend
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially);
 
-  // ✅ define se é destaque
   const isFeatured = variant === "featured";
   const isMobile = size === "mobile";
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
+  // 🔥 Atualiza o estado quando o backend manda novo valor
   useEffect(() => {
     setIsFavorited(isFavoritedInitially);
   }, [isFavoritedInitially]);
@@ -54,6 +56,8 @@ const PropertyCard = ({
           : item.id;
 
       await toggleFavorite(identifier, isFavorited, token);
+
+      // Atualiza UI local
       setIsFavorited(!isFavorited);
     } catch (err) {
       console.error("❌ Erro ao favoritar imóvel:", err);
@@ -173,12 +177,14 @@ const PropertyCard = ({
               {item.tipo}
             </p>
             <p className="!text-[15px] !font-bold !text-gray-900">
-              R${" "}
+              R{" "}
               {item.preco.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
               })}
             </p>
           </div>
+
+          {/* ❤️ FAVORITO */}
           <button
             onClick={handleToggleFavorite}
             className="!text-red-500 hover:!text-red-600 !cursor-pointer"

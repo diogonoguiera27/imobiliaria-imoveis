@@ -83,4 +83,6 @@ export type Imovel = {
   updatedAt?: string;
 
   user?: UsuarioResumo;
+   /** 🔴 ESTE É O CAMPO NOVO QUE FALTAVA */
+  isFavorito?: boolean;
 };
