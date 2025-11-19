@@ -3,15 +3,13 @@ import { socket } from "@/service/socket";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
-  isConnected: boolean;
   defaultValue?: string;
-  userId: number;          // 👈 ID do usuário logado (vem do ChatModal)
-  destinatarioId: number;  // 👈 ID do outro usuário (corretor ou cliente)
+  userId: number;
+  destinatarioId: number;
 }
 
 export default function ChatInput({
   onSend,
-  isConnected,
   defaultValue,
   userId,
   destinatarioId,
@@ -20,12 +18,11 @@ export default function ChatInput({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // ✅ Preenche com mensagem inicial (vinda do ChatModal)
   useEffect(() => {
     if (defaultValue) setMessage(defaultValue);
   }, [defaultValue]);
 
-  // 🔹 Ajustar altura do textarea automaticamente
+  // 🔹 Auto-ajuste da altura
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "40px";
@@ -33,35 +30,27 @@ export default function ChatInput({
     }
   }, [message]);
 
-  // ✍️ Notifica o servidor quando o usuário está digitando
+  // ✍️ Evento de digitação
   const handleTyping = (text: string) => {
     setMessage(text);
-
-    if (!isConnected) return;
+    if (!socket.connected) return;
     if (!text.trim()) return;
 
-    // 🔹 Envia evento "digitando" imediatamente
     socket.emit("digitando", { remetenteId: userId, destinatarioId });
 
-    // ⏳ Se parar de digitar por 2s, envia "parou_digitando"
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       socket.emit("parou_digitando", { remetenteId: userId, destinatarioId });
     }, 2000);
   };
 
-  // 🚀 Envia a mensagem
+  // 🚀 Enviar mensagem
   const handleSend = () => {
     if (!message.trim()) return;
     onSend(message.trim());
     setMessage("");
-    
-    // 🔹 Reset da altura do textarea
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "40px";
-    }
 
-    // 🔹 Notifica que parou de digitar
+    if (textareaRef.current) textareaRef.current.style.height = "40px";
     socket.emit("parou_digitando", { remetenteId: userId, destinatarioId });
   };
 
@@ -74,26 +63,15 @@ export default function ChatInput({
   };
 
   return (
-    <div
-      className="
-        !border-t 
-        !p-3 
-        !flex 
-        !items-end 
-        !gap-2 
-        !bg-white
-      "
-    >
+    <div className="!border-t !p-3 !flex !items-end !gap-2 !bg-white">
       <textarea
         ref={textareaRef}
         rows={1}
-        placeholder={
-          isConnected ? "Escreva uma mensagem..." : "Conectando ao chat..."
-        }
+        placeholder="Escreva uma mensagem..."
         value={message}
         onChange={(e) => handleTyping(e.target.value)}
         onKeyDown={handleKeyDown}
-        disabled={!isConnected}
+        disabled={!socket.connected}
         className="
           !flex-1 
           !resize-none 
@@ -113,14 +91,12 @@ export default function ChatInput({
           !whitespace-pre-wrap 
           !break-words
         "
-        style={{
-          transition: "height 0.1s ease-out",
-        }}
+        style={{ transition: "height 0.1s ease-out" }}
       />
 
       <button
         onClick={handleSend}
-        disabled={!isConnected || !message.trim()}
+        disabled={!socket.connected || !message.trim()}
         className="
           !bg-green-600 
           hover:!bg-green-700 
@@ -133,7 +109,7 @@ export default function ChatInput({
           disabled:!cursor-not-allowed
           !transition-all
         "
-        title={isConnected ? 'Enviar mensagem' : 'Chat desconectado'}
+        title="Enviar mensagem"
       >
         ➤
       </button>

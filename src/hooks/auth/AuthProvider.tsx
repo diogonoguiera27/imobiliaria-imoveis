@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { AuthContext, type AuthState } from "./AuthContext";
 import type { User } from "@/service/userService"; // ✅ centraliza o tipo
 import { login as loginSvc, getMe, setAuthToken } from "@/service/authService";
+import { socket } from "@/service/socket";
 
 interface AppProviderProps {
   children: ReactNode;
@@ -81,6 +82,17 @@ export function AuthProvider({ children }: AppProviderProps) {
     localStorage.removeItem("@Imobiliaria:token");
     localStorage.removeItem("@Imobiliaria:user");
     setAuthToken(null);
+    // Se o socket estiver conectado, desconectar para disparar o evento
+    // de `disconnect` no backend e marcar o usuário como offline.
+    try {
+      if (socket && socket.connected) {
+        socket.disconnect();
+        console.log("🔌 Socket desconectado pelo signOut");
+      }
+    } catch (err) {
+      console.warn("⚠️ Falha ao desconectar socket no signOut:", err);
+    }
+
     setData(null);
   }, []);
 

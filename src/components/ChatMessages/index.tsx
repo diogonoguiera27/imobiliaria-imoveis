@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "@/hooks/useChatSocket";
 import { formatarHorario, formatarDia } from "@/utils/formatarHorario";
 
@@ -6,38 +6,70 @@ interface ChatMessagesProps {
   messages: ChatMessage[];
   userId: number;
   destinatarioId: number;
-  digitandoPor?: number | null; // 👈 novo: indica quem está digitando
+  digitandoPor?: number | null;
+  carregando?: boolean; // 👈 controla estado de carregamento
 }
 
 /**
- * 💬 Exibe as mensagens do chat com agrupamento estilo WhatsApp
- * + separadores de dia (Hoje, Ontem, Segunda, etc)
- * + horários nas bolhas
+ * 💬 ChatMessages — exibe histórico agrupado + scroll automático no fim
  */
 export default function ChatMessages({
   messages,
   userId,
   destinatarioId,
   digitandoPor,
+  carregando = false,
 }: ChatMessagesProps) {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [exibindo, setExibindo] = useState<ChatMessage[]>([]);
 
-  /* ------------------------------------------
-     🔄 Scroll automático até a última mensagem
-  ------------------------------------------ */
+  /* ===========================================================
+     🧹 Filtra duplicadas e ordena por data
+  ============================================================ */
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, digitandoPor]);
+    const unicos = messages
+      .filter(
+        (v, i, a) =>
+          a.findIndex(
+            (x) =>
+              x.id === v.id &&
+              x.conteudo === v.conteudo &&
+              x.remetenteId === v.remetenteId
+          ) === i
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.criadoEm || "").getTime() -
+          new Date(b.criadoEm || "").getTime()
+      );
 
-  /* ------------------------------------------
+    setExibindo(unicos);
+  }, [messages]);
+
+  /* ===========================================================
+     🔄 Scroll automático até a última mensagem
+  ============================================================ */
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    // Pequeno delay garante que DOM terminou de renderizar
+    const timeout = setTimeout(() => {
+      containerRef.current!.scrollTop = containerRef.current!.scrollHeight;
+    }, 150); // 150ms = timing seguro após render
+
+    return () => clearTimeout(timeout);
+  }, [exibindo, carregando, digitandoPor]);
+
+  /* ===========================================================
      🧩 Agrupa mensagens consecutivas do mesmo autor
-  ------------------------------------------ */
+  ============================================================ */
   const grupos: ChatMessage[][] = [];
   let grupoAtual: ChatMessage[] = [];
 
-  for (let i = 0; i < messages.length; i++) {
-    const msg = messages[i];
-    const anterior = messages[i - 1];
+  for (let i = 0; i < exibindo.length; i++) {
+    const msg = exibindo[i];
+    const anterior = exibindo[i - 1];
 
     if (
       i === 0 ||
@@ -54,10 +86,10 @@ export default function ChatMessages({
   }
   if (grupoAtual.length > 0) grupos.push(grupoAtual);
 
-  /* ------------------------------------------
+  /* ===========================================================
      🎨 Renderização com separadores de dia
-  ------------------------------------------ */
-  const renderizarComSeparadores = () => {
+  ============================================================ */
+  const renderizarMensagens = () => {
     const elementos: React.ReactNode[] = [];
     let ultimoDia = "";
 
@@ -66,11 +98,10 @@ export default function ChatMessages({
       const primeiroMsg = grupo[0];
       const diaLabel = formatarDia(primeiroMsg.criadoEm);
 
-      // 📅 Adiciona separador de dia se mudou
       if (diaLabel !== ultimoDia) {
         elementos.push(
           <div key={`dia-${diaLabel}-${i}`} className="!text-center !my-4">
-            <span className="!bg-gray-300 !text-gray-700 !text-xs !px-3 !py-1 !rounded-full !shadow-sm">
+            <span className="!bg-gray-200 !text-gray-600 !text-xs !px-3 !py-1 !rounded-full">
               {diaLabel}
             </span>
           </div>
@@ -78,7 +109,6 @@ export default function ChatMessages({
         ultimoDia = diaLabel;
       }
 
-      // 💬 Renderiza grupo de mensagens
       const isMine = grupo[0].remetenteId === userId;
 
       elementos.push(
@@ -100,10 +130,8 @@ export default function ChatMessages({
               <div className="!whitespace-pre-wrap !break-words !text-[15px] !leading-relaxed">
                 {msg.conteudo}
               </div>
-
-              {/* ⏰ Horário da mensagem (canto inferior direito) */}
               <span
-                className={`!text-[11px] !self-end !flex-shrink-0 ${
+                className={`!text-[11px] !self-end ${
                   isMine ? "!text-gray-100/70" : "!text-gray-500/70"
                 }`}
               >
@@ -118,8 +146,12 @@ export default function ChatMessages({
     return elementos;
   };
 
+  /* ===========================================================
+     🧠 Render principal
+  ============================================================ */
   return (
     <div
+      ref={containerRef}
       className="
         !flex-1 
         !p-4 
@@ -129,12 +161,16 @@ export default function ChatMessages({
         !scroll-smooth
       "
     >
-      {messages.length === 0 ? (
+      {carregando ? (
+        <p className="!text-gray-400 !text-sm !text-center mt-5">
+          Carregando mensagens...
+        </p>
+      ) : exibindo.length === 0 ? (
         <p className="!text-gray-400 !text-sm !text-center mt-5">
           Nenhuma mensagem ainda. Inicie uma conversa 💬
         </p>
       ) : (
-        renderizarComSeparadores()
+        renderizarMensagens()
       )}
 
       {/* ✍️ Indicador de digitação */}
@@ -148,7 +184,7 @@ export default function ChatMessages({
         </div>
       )}
 
-      {/* Âncora invisível para scroll automático */}
+      {/* Âncora invisível */}
       <div ref={messagesEndRef} />
     </div>
   );

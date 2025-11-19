@@ -1,13 +1,27 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ChatMessages from "../ChatMessages";
 import ChatInput from "../ChatInput";
 import ChatList from "../ChatList";
 import ChatHeader from "../ChatHeader";
+import { socket } from "@/service/socket";
 import { useChatSocket } from "@/hooks/useChatSocket";
 import { getCorretorByProperty } from "@/service/propertyService";
 import useAuth from "@/hooks/auth/useAuth";
+
+/* ===========================================================
+   🌍 EXTENSÃO DO WINDOW
+=========================================================== */
+declare global {
+  interface Window {
+    openChatModal?: (
+      destinatarioId: number,
+      mensagemInicial?: string
+    ) => Promise<void>;
+    zerar_badge_chat?: () => void;
+  }
+}
 
 /* ===========================================================
    📦 Tipagem base
@@ -20,27 +34,31 @@ interface Contato {
   role?: "USER" | "CORRETOR" | "ADMIN";
 }
 
+interface ChatModalProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
 /**
  * 💬 ChatModal — conversa entre cliente e corretor
  */
-export default function ChatModal() {
-  const [open, setOpen] = useState(false);
-  const [contatoSelecionado, setContatoSelecionado] = useState<Contato | null>(
-    null
-  );
+export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = externalOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
+
+  const [contatoSelecionado, setContatoSelecionado] = useState<Contato | null>(null);
   const [mensagemInicial, setMensagemInicial] = useState("");
   const [modoLista, setModoLista] = useState(true);
   const [carregando, setCarregando] = useState(false);
   const [conversas, setConversas] = useState<Contato[]>([]);
 
-
-  // Obtém usuário logado via contexto de autenticação
+  // 👤 Usuário logado
   const { user } = useAuth();
-  
-  // ✅ Garante que usuarioLogadoId é sempre um número válido
   const usuarioLogadoId = user?.id ?? null;
   const usuarioLogadoRole = user?.role;
 
+  // 🔌 Hook principal do chat
   const {
     isConnected,
     messages,
@@ -49,51 +67,66 @@ export default function ChatModal() {
     listarConversas,
     digitandoPor,
     contadorNaoLidas,
-    setContadorNaoLidas, // 👈 NOVO: para resetar contador
-    onlineUsers, // 👈 NOVO: array de usuários online
+    setContadorNaoLidas,
+    onlineUsers,
   } = useChatSocket(usuarioLogadoId || undefined);
 
   /* ===========================================================
-     🧹 Função para zerar contador de não lidas localmente
-  ============================================================ */
-  const zerarContador = (contatoId: number, nomeContato: string) => {
-    if (contadorNaoLidas[contatoId] > 0) {
-      console.log(`🧹 Limpando contador local de não lidas para ${nomeContato} (ID: ${contatoId})`);
-      setContadorNaoLidas((prev) => ({ ...prev, [contatoId]: 0 }));
-    }
-  };
+     📌 Abrir conversa corretamente
+=========================================================== */
+  const abrirConversa = useCallback(
+    async (contato: Contato) => {
+      try {
+        setCarregando(true);
+
+        setContatoSelecionado(contato);
+        setModoLista(false);
+
+        // Zera contador do contato (local)
+        setContadorNaoLidas((prev) => ({ ...prev, [contato.id]: 0 }));
+
+        // 🔥 Zera badge global do botão flutuante
+        window.dispatchEvent(new CustomEvent("zerar_badge_chat"));
+
+        await carregarHistorico(contato.id);
+      } catch (err) {
+        console.error("❌ Erro ao abrir conversa:", err);
+      } finally {
+        setCarregando(false);
+      }
+    },
+    [carregarHistorico, setContadorNaoLidas]
+  );
 
   /* ===========================================================
-     🌍 Permite abrir o chat globalmente
-  ============================================================ */
+     🌍 window.openChatModal
+=========================================================== */
   useEffect(() => {
     window.openChatModal = async (
       destinatarioId: number,
-      mensagem?: string
-    ) => {
+      mensagemInicial?: string
+    ): Promise<void> => {
       try {
-        setMensagemInicial(mensagem || "");
+        setMensagemInicial(mensagemInicial || "");
         setOpen(true);
         setModoLista(false);
         setCarregando(true);
 
-        // 🔍 Busca informações do corretor (ou usuário destino)
         const corretor = await getCorretorByProperty(destinatarioId);
 
-        const contato = {
+        const contato: Contato = {
           id: corretor.id,
           nome: corretor.nome || "Contato",
-          avatar:
-            corretor.avatarUrl || `https://i.pravatar.cc/100?u=${corretor.id}`,
+          avatar: corretor.avatarUrl,
           role: corretor.role,
         };
 
         setContatoSelecionado(contato);
 
-        // 🔄 Carrega histórico logo após conectar
-        if (isConnected) {
-          await carregarHistorico(contato.id);
-        }
+        // 🔥 limpa badge global
+        window.dispatchEvent(new CustomEvent("zerar_badge_chat"));
+
+        await carregarHistorico(contato.id);
       } catch (error) {
         console.error("❌ Erro ao abrir chat:", error);
       } finally {
@@ -104,115 +137,96 @@ export default function ChatModal() {
     return () => {
       delete window.openChatModal;
     };
-  }, [carregarHistorico, isConnected]);
+  }, [carregarHistorico, setOpen]);
 
   /* ===========================================================
-     🔁 Recarrega histórico após reconexão do socket
-  ============================================================ */
+     🔁 Atualiza histórica ao reconectar
+=========================================================== */
   useEffect(() => {
     if (contatoSelecionado && isConnected) {
-      console.log("🔄 Recarregando histórico após reconexão...");
       carregarHistorico(contatoSelecionado.id);
     }
   }, [contatoSelecionado, isConnected, carregarHistorico]);
 
   /* ===========================================================
-     🧾 Carrega lista de conversas (modo WhatsApp)
-  ============================================================ */
+     🧾 Carrega lista ao entrar no modo lista
+=========================================================== */
   useEffect(() => {
-    if (modoLista && isConnected) {
-      listarConversas(setConversas);
-    }
-  }, [modoLista, isConnected, listarConversas]);
+    if (modoLista) listarConversas(setConversas);
+  }, [modoLista, listarConversas]);
 
   /* ===========================================================
-     🔙 Voltar para a lista de conversas
-  ============================================================ */
+     📡 Atualiza lista ao abrir modal
+=========================================================== */
+  useEffect(() => {
+    if (open && usuarioLogadoId && isConnected) {
+      socket.emit("listar_contatos", { userId: usuarioLogadoId });
+    }
+  }, [open, usuarioLogadoId, isConnected]);
+
+  /* ===========================================================
+     🔁 Atualização em tempo real via evento global
+=========================================================== */
+  useEffect(() => {
+    function atualizar() {
+      listarConversas(setConversas);
+    }
+
+    window.addEventListener("atualizar_conversas_chat", atualizar);
+    return () => window.removeEventListener("atualizar_conversas_chat", atualizar);
+  }, [listarConversas]);
+
+  /* ===========================================================
+     🔙 Voltar para lista
+=========================================================== */
   const voltarParaLista = () => {
     setModoLista(true);
     setContatoSelecionado(null);
   };
 
   /* ===========================================================
-     🎨 Função para obter avatar correto com fallback
-  ============================================================ */
+     🎨 Avatar
+=========================================================== */
   const obterAvatar = (avatar?: string, id?: number): string => {
-    // ✅ Prioridade 1: avatar como URL HTTP
-    if (avatar && avatar.startsWith("http")) {
-      return avatar;
-    }
-    
-    // ✅ Prioridade 2: avatar como caminho local
-    if (avatar && avatar.startsWith("/")) {
+    if (avatar?.startsWith("http")) return avatar;
+
+    if (avatar?.startsWith("/")) {
       return `${import.meta.env.VITE_API_URL || "http://localhost:3333"}${avatar}`;
     }
-    
-    // ✅ Fallback: Avatar genérico
+
     return `https://i.pravatar.cc/100?u=${id || 0}`;
   };
 
   /* ===========================================================
-     🧠 Render
-  ============================================================ */
-  
-  // ✅ Se não houver usuário logado, não renderiza o chat
-  if (!usuarioLogadoId) {
-    return null;
-  }
+     🚫 Usuário não autenticado
+=========================================================== */
+  if (!usuarioLogadoId) return null;
 
+  /* ===========================================================
+     🧠 Renderização
+=========================================================== */
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      {/* 🟢 Botão flutuante */}
-      <Dialog.Trigger asChild>
-        <button
-          onClick={() => {
-            setOpen(true);
-            setModoLista(true);
-          }}
-          className="
-            !fixed !bottom-6 !right-6 
-            !bg-green-600 hover:!bg-green-700 
-            !text-white !p-4 !rounded-full 
-            !shadow-lg !z-50 !cursor-pointer
-            !transition-all !duration-200
-          "
-          aria-label="Abrir chat"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="!w-6 !h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.83L3 20l1.38-3.24A7.58 7.58 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-            />
-          </svg>
-        </button>
-      </Dialog.Trigger>
-
-      {/* 💬 Janela principal */}
       <Dialog.Portal>
         <Dialog.Overlay className="!fixed !inset-0 !bg-transparent !z-40" />
+
         <Dialog.Content
           aria-describedby="chat-modal-description"
           aria-labelledby="chat-modal-title"
           className="
-            !fixed !z-50 !bottom-20 !right-8
-            !bg-white !rounded-3xl 
-            !shadow-2xl 
+            !fixed !z-[9999] !bottom-20 !right-8
+            !bg-white !rounded-3xl
+            !shadow-2xl
             !w-[380px] !h-[540px]
             !flex !flex-col
             !overflow-hidden
+            !transition-all !duration-300
           "
         >
           <Dialog.Title id="chat-modal-title" className="!sr-only">
             Chat com contato
           </Dialog.Title>
+
           <Dialog.Description id="chat-modal-description" className="!sr-only">
             Janela de conversa entre dois usuários.
           </Dialog.Description>
@@ -224,17 +238,11 @@ export default function ChatModal() {
             <X size={20} />
           </Dialog.Close>
 
-          {/* ======================= Corpo do chat ======================= */}
+          {/* ======================= CORPO ======================= */}
           {modoLista ? (
             <ChatList
               corretores={conversas}
-              onSelectCorretor={(c) => {
-                console.log(`✅ Selecionando contato: ${c.nome} (ID: ${c.id})`);
-                // 🧹 Zera contador de não lidas imediatamente
-                zerarContador(c.id, c.nome);
-                setContatoSelecionado(c);
-                setModoLista(false);
-              }}
+              onSelectCorretor={abrirConversa}
               userId={usuarioLogadoId}
               userRole={usuarioLogadoRole}
               digitandoPor={digitandoPor}
@@ -243,16 +251,15 @@ export default function ChatModal() {
             />
           ) : contatoSelecionado ? (
             <>
-              {/* Cabeçalho atualizado com status em tempo real */}
               <ChatHeader
                 nome={contatoSelecionado.nome}
                 avatar={obterAvatar(contatoSelecionado.avatar, contatoSelecionado.id)}
                 userId={contatoSelecionado.id}
                 onlineUsers={onlineUsers}
+                digitandoPor={digitandoPor}
                 onVoltar={voltarParaLista}
               />
 
-              {/* Conteúdo */}
               {carregando ? (
                 <div className="!flex !flex-1 !items-center !justify-center !text-gray-500">
                   Carregando conversa...
@@ -261,24 +268,18 @@ export default function ChatModal() {
                 <>
                   <ChatMessages
                     messages={messages}
-                    userId={usuarioLogadoId!}
+                    userId={usuarioLogadoId}
                     destinatarioId={contatoSelecionado.id}
                     digitandoPor={digitandoPor}
                   />
+
                   <ChatInput
                     defaultValue={mensagemInicial}
                     onSend={(texto) => {
-                      // Envia a mensagem via socket
                       sendMessage(contatoSelecionado.id, texto);
-
-                      // Se havia uma mensagem inicial pré-definida, removemos
-                      // ela após o primeiro envio para que não reapareça.
-                      if (mensagemInicial) {
-                        setMensagemInicial("");
-                      }
+                      if (mensagemInicial) setMensagemInicial("");
                     }}
-                    isConnected={isConnected}
-                    userId={usuarioLogadoId!}
+                    userId={usuarioLogadoId}
                     destinatarioId={contatoSelecionado.id}
                   />
                 </>
