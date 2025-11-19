@@ -10,9 +10,6 @@ import { useChatSocket } from "@/hooks/useChatSocket";
 import { getCorretorByProperty } from "@/service/propertyService";
 import useAuth from "@/hooks/auth/useAuth";
 
-/* ===========================================================
-   🌍 EXTENSÃO DO WINDOW
-=========================================================== */
 declare global {
   interface Window {
     openChatModal?: (
@@ -23,9 +20,6 @@ declare global {
   }
 }
 
-/* ===========================================================
-   📦 Tipagem base
-=========================================================== */
 interface Contato {
   id: number;
   nome: string;
@@ -39,9 +33,6 @@ interface ChatModalProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-/**
- * 💬 ChatModal — conversa entre cliente e corretor
- */
 export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModalProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = externalOpen ?? internalOpen;
@@ -53,12 +44,10 @@ export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModa
   const [carregando, setCarregando] = useState(false);
   const [conversas, setConversas] = useState<Contato[]>([]);
 
-  // 👤 Usuário logado
   const { user } = useAuth();
   const usuarioLogadoId = user?.id ?? null;
   const usuarioLogadoRole = user?.role;
 
-  // 🔌 Hook principal do chat
   const {
     isConnected,
     messages,
@@ -71,9 +60,6 @@ export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModa
     onlineUsers,
   } = useChatSocket(usuarioLogadoId || undefined);
 
-  /* ===========================================================
-     📌 Abrir conversa corretamente
-=========================================================== */
   const abrirConversa = useCallback(
     async (contato: Contato) => {
       try {
@@ -82,10 +68,8 @@ export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModa
         setContatoSelecionado(contato);
         setModoLista(false);
 
-        // Zera contador do contato (local)
         setContadorNaoLidas((prev) => ({ ...prev, [contato.id]: 0 }));
 
-        // 🔥 Zera badge global do botão flutuante
         window.dispatchEvent(new CustomEvent("zerar_badge_chat"));
 
         await carregarHistorico(contato.id);
@@ -98,14 +82,8 @@ export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModa
     [carregarHistorico, setContadorNaoLidas]
   );
 
-  /* ===========================================================
-     🌍 window.openChatModal
-=========================================================== */
   useEffect(() => {
-    window.openChatModal = async (
-      destinatarioId: number,
-      mensagemInicial?: string
-    ): Promise<void> => {
+    window.openChatModal = async (destinatarioId, mensagemInicial) => {
       try {
         setMensagemInicial(mensagemInicial || "");
         setOpen(true);
@@ -123,7 +101,6 @@ export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModa
 
         setContatoSelecionado(contato);
 
-        // 🔥 limpa badge global
         window.dispatchEvent(new CustomEvent("zerar_badge_chat"));
 
         await carregarHistorico(contato.id);
@@ -139,34 +116,22 @@ export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModa
     };
   }, [carregarHistorico, setOpen]);
 
-  /* ===========================================================
-     🔁 Atualiza histórica ao reconectar
-=========================================================== */
   useEffect(() => {
     if (contatoSelecionado && isConnected) {
       carregarHistorico(contatoSelecionado.id);
     }
   }, [contatoSelecionado, isConnected, carregarHistorico]);
 
-  /* ===========================================================
-     🧾 Carrega lista ao entrar no modo lista
-=========================================================== */
   useEffect(() => {
     if (modoLista) listarConversas(setConversas);
   }, [modoLista, listarConversas]);
 
-  /* ===========================================================
-     📡 Atualiza lista ao abrir modal
-=========================================================== */
   useEffect(() => {
     if (open && usuarioLogadoId && isConnected) {
       socket.emit("listar_contatos", { userId: usuarioLogadoId });
     }
   }, [open, usuarioLogadoId, isConnected]);
 
-  /* ===========================================================
-     🔁 Atualização em tempo real via evento global
-=========================================================== */
   useEffect(() => {
     function atualizar() {
       listarConversas(setConversas);
@@ -176,64 +141,49 @@ export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModa
     return () => window.removeEventListener("atualizar_conversas_chat", atualizar);
   }, [listarConversas]);
 
-  /* ===========================================================
-     🔙 Voltar para lista
-=========================================================== */
   const voltarParaLista = () => {
     setModoLista(true);
     setContatoSelecionado(null);
   };
 
-  /* ===========================================================
-     🎨 Avatar
-=========================================================== */
   const obterAvatar = (avatar?: string, id?: number): string => {
     if (avatar?.startsWith("http")) return avatar;
-
     if (avatar?.startsWith("/")) {
       return `${import.meta.env.VITE_API_URL || "http://localhost:3333"}${avatar}`;
     }
-
     return `https://i.pravatar.cc/100?u=${id || 0}`;
   };
 
-  /* ===========================================================
-     🚫 Usuário não autenticado
-=========================================================== */
   if (!usuarioLogadoId) return null;
 
-  /* ===========================================================
-     🧠 Renderização
-=========================================================== */
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Portal>
-        <Dialog.Overlay className="!fixed !inset-0 !bg-transparent !z-40" />
+        <Dialog.Overlay className="!fixed !inset-0 !bg-black/30 !z-40" />
 
         <Dialog.Content
-          aria-describedby="chat-modal-description"
-          aria-labelledby="chat-modal-title"
           className="
-            !fixed !z-[9999] !bottom-20 !right-8
-            !bg-white !rounded-3xl
-            !shadow-2xl
-            !w-[380px] !h-[540px]
-            !flex !flex-col
-            !overflow-hidden
-            !transition-all !duration-300
+            !fixed !z-[9999] 
+            !bg-white !shadow-2xl !flex !flex-col !overflow-hidden !transition-all !duration-300
+
+            /* ▼ DESKTOP (POSIÇÃO CORRIGIDA) ▼ */
+            md:!bottom-24 md:!right-8
+            md:!w-[380px] md:!h-[540px]
+            md:!left-auto md:!top-auto
+            md:!-translate-x-0 md:!-translate-y-0
+            md:!rounded-3xl
+
+            /* ▼ MOBILE 95% CENTRALIZADO ▼ */
+            !w-[95%] !h-[95%]
+            !left-1/2 !top-1/2 
+            !-translate-x-1/2 !-translate-y-1/2
+            !rounded-2xl
           "
         >
-          <Dialog.Title id="chat-modal-title" className="!sr-only">
-            Chat com contato
-          </Dialog.Title>
-
-          <Dialog.Description id="chat-modal-description" className="!sr-only">
-            Janela de conversa entre dois usuários.
-          </Dialog.Description>
+          <Dialog.Title className="!sr-only">Chat com contato</Dialog.Title>
 
           <Dialog.Close
             className="!absolute !top-3 !right-3 !text-gray-600 hover:!text-gray-800 !cursor-pointer"
-            aria-label="Fechar chat"
           >
             <X size={20} />
           </Dialog.Close>

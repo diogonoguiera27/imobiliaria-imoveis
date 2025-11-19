@@ -41,31 +41,13 @@ export default function ChatFloatingButton() {
   useEffect(() => {
     if (!usuarioLogadoId) return;
 
-    // Nota: não registramos listener para 'nova_mensagem_lista' aqui
-    // para evitar contabilizar duplicadamente — o hook `useChatSocket`
-    // já gerencia o estado global `contatosComMensagens` e emite
-    // `contatos_atualizados` / `atualizar_notificacao_global` que
-    // o botão escuta abaixo.
-
-    // Atualiza o badge com os dados globais quando o backend emite
-    // 'atualizar_notificacao_global' (totalContatos) — isso garante
-    // que o botão responda instantaneamente a mudanças feitas no server.
     const handleAtualizarNotificacaoGlobal = (data: { totalContatos?: number }) => {
       console.log("🔔 [BOTÃO] atualizar_notificacao_global recebida:", data);
-      // Se o backend enviar detalhes (via useChatSocket), ele já terá
-      // excluído o próprio usuário. Mas quando recebemos apenas
-      // 'totalContatos' sem detalhes, usamos o valor informado.
-      // Para segurança, se houver detalhes (payload maior), o provider
-      // é a fonte de verdade; caso contrário, usamos o total.
-      // Aqui aceitamos o `totalContatos` direto.
       setContador(data?.totalContatos || 0);
     };
 
     socket.on("atualizar_notificacao_global", handleAtualizarNotificacaoGlobal);
 
-    // Também atualiza o badge quando a lista de contatos chega — útil
-    // se o backend enviar o evento 'contatos_atualizados' com o número
-    // de não-lidas por contato.
     const handleContatosAtualizados = (lista: Contato[]) => {
       console.log("🔔 [BOTÃO] contatos_atualizados recebida:", lista);
       const total = Array.isArray(lista)
@@ -110,7 +92,7 @@ export default function ChatFloatingButton() {
   return (
     <>
       {/* BOTÃO FLUTUANTE */}
-      <div className="!fixed !bottom-6 !right-6 !z-[9999]">
+      <div className="hidden lg:block !fixed !right-6 !z-[9999] !bottom-24 md:!bottom-6 ">
         <button
           onClick={() => setOpen(true)}
           className="
