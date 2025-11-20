@@ -98,6 +98,7 @@ export function Home() {
         page: 1,
         take: ITEMS_PER_PAGE,
       });
+
       setImoveis(response.data);
       setTotalPages(response.pagination.totalPages);
       setFiltros(novosFiltros);
@@ -114,7 +115,7 @@ export function Home() {
   // 🔹 Skeleton de carregamento
   // =============================
   const GridSkeleton = () => (
-    <div className="!grid !grid-cols-1 sm:!grid-cols-2 md:!grid-cols-4 !gap-6 !mt-6">
+    <div className="!grid !grid-cols-1 sm:!grid-cols-2 md:!grid-cols-2 lg:!grid-cols-3 xl:!grid-cols-4 2xl:!grid-cols-5 !gap-6 !mt-6">
       {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
         <div
           key={i}
@@ -146,7 +147,6 @@ export function Home() {
 
           <div className="!relative !w-[95%] md:!w-[80%] !mx-auto !z-[10] !pt-[220px] md:!pt-[280px]">
             <div className="!relative !flex !flex-col md:!flex-row !items-start !gap-8 !z-[5]">
-
               {/* CARD DE FILTRO */}
               <div className="!relative !z-[20] !w-full md:!w-[420px] !max-w-[440px] !mt-10">
                 <div className="!bg-white !rounded-2xl !shadow-2xl !border !border-gray-100 !overflow-hidden">
@@ -192,17 +192,31 @@ export function Home() {
                   {/* DESKTOP */}
                   <div className="!hidden md:!block">
                     <div
-                      className={`!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-3 xl:!grid-cols-4 2xl:!grid-cols-5 !gap-6 !mt-6 ${
-                        totalPages <= 1 ? "!mb-12" : ""
-                      }`}
+                      className={`!grid 
+    w-full
+    !grid-cols-1 
+    sm:!grid-cols-2 
+    md:!grid-cols-2 
+    lg:!grid-cols-3 
+    xl:!grid-cols-4  
+    !gap-6 
+    !mt-6
+    ${totalPages <= 1 ? "!mb-12" : ""}
+  `}
                     >
                       {imoveis.map((item) => (
-                        <PropertyCard
+                        <div
                           key={item.id}
-                          item={item}
-                          size="default"
-                          isFavoritedInitially={item.isFavorito}
-                        />
+                          className="!w-full !flex !justify-center"
+                        >
+                          <div className="!w-[340px]">
+                            <PropertyCard
+                              item={item}
+                              size="default"
+                              isFavoritedInitially={item.isFavorito}
+                            />
+                          </div>
+                        </div>
                       ))}
                     </div>
 
@@ -234,7 +248,7 @@ export function Home() {
             </section>
           ) : (
             <section className="!w-full !mt-10 !pb-12">
-              <div className=" !mx-auto">
+              <div className="!mx-auto">
                 <FeaturedCarousel />
                 <div className="!mt-8">
                   <PopularProperties />
@@ -266,7 +280,10 @@ export function Home() {
         </div>
 
         {/* MODAIS */}
-        <Dialog open={showContactModal} onOpenChange={(o) => !o && closeModals()}>
+        <Dialog
+          open={showContactModal}
+          onOpenChange={(o) => !o && closeModals()}
+        >
           <MessageFormModal />
         </Dialog>
 

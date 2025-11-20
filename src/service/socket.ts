@@ -10,7 +10,7 @@ export const socket: Socket = io(URL, {
   reconnectionDelay: 1000,
 });
 
-// ✅ Função para conectar e registrar usuário
+
 export const connectSocket = (userId: number) => {
   if (!socket.connected) socket.connect();
 

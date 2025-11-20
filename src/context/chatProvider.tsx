@@ -11,7 +11,7 @@ interface ChatProviderProps {
 export function ChatProvider({ userId, children }: ChatProviderProps) {
   const chat = useChatSocket(userId);
 
-  // Garante registro imediato quando userId mudar
+  
   useEffect(() => {
     if (userId && socket.connected) {
       socket.emit("registrar_usuario", userId);

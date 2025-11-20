@@ -1,8 +1,6 @@
 import api from "./api";
 
-/* ===========================================================
-   📦 Tipos de apoio
-=========================================================== */
+
 export interface ChatContato {
   id: number;
   nome: string;
@@ -22,17 +20,14 @@ export interface ChatMensagem {
   criadoEm: string;
 }
 
-/* ===========================================================
-   🗨️ LISTAR CONVERSAS DO USUÁRIO
-   GET /chat/conversas/:userId
-=========================================================== */
+
 export async function listarConversasDoUsuario(
   userId: number
 ): Promise<ChatContato[]> {
   try {
     const { data } = await api.get(`/chat/conversas/${userId}`);
 
-    // ✅ O backend retorna um array simples, mas deixamos compatível com versões antigas
+    
     if (Array.isArray(data)) return data;
     if (data?.corretores) return data.corretores;
     return [];
@@ -42,10 +37,6 @@ export async function listarConversasDoUsuario(
   }
 }
 
-/* ===========================================================
-   💬 LISTAR HISTÓRICO DE MENSAGENS ENTRE DOIS USUÁRIOS
-   GET /chat/mensagens/:usuarioA/:usuarioB
-=========================================================== */
 export async function listarMensagensEntreUsuarios(
   usuarioA: number,
   usuarioB: number

@@ -6,9 +6,7 @@ import {
 } from "@/service/chatService";
 import toast from "react-hot-toast";
 
-/* ===========================================================
-   📦 Tipos principais
-=========================================================== */
+
 export interface ChatMessage {
   id?: number;
   remetenteId: number;
@@ -42,9 +40,7 @@ interface AtualizacaoGlobal {
   detalhes?: { remetenteId: number; _count: { _all: number } }[];
 }
 
-/* ===========================================================
-   💬 Hook principal — controla socket, mensagens e histórico
-=========================================================== */
+
 export function useChatSocket(usuarioId?: number) {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -55,13 +51,11 @@ export function useChatSocket(usuarioId?: number) {
   const [onlineUsers, setOnlineUsers] = useState<number[]>([]);
   const [contatosComMensagens, setContatosComMensagens] = useState(0);
 
-  /* ===========================================================
-     🔌 Conexão + registro do usuário
-=========================================================== */
+ 
   useEffect(() => {
     if (!usuarioId) return;
 
-    // --- Conexão ---
+    
     const handleConnect = () => {
       console.log("🟢 Socket conectado:", socket.id);
       setIsConnected(true);
@@ -84,7 +78,7 @@ export function useChatSocket(usuarioId?: number) {
       socket.connect();
     }
 
-    // --- Listeners de Eventos ---
+    
     const handleNovaMensagem = (msg: ChatMessage) => {
       console.log("📩 Mensagem recebida:", msg);
       setMessages((prev) => [...prev, msg]);
@@ -151,7 +145,7 @@ export function useChatSocket(usuarioId?: number) {
     socket.on("user_offline", handleUserOffline);
     socket.on("online_users_list", handleOnlineUsersList);
 
-    // --- Limpeza ---
+   
     return () => {
       console.log("🧹 Limpando listeners do socket…");
       socket.off("connect", handleConnect);
@@ -169,9 +163,7 @@ export function useChatSocket(usuarioId?: number) {
     };
   }, [usuarioId]);
 
-  /* ===========================================================
-     📤 Enviar mensagem
-=========================================================== */
+ 
   const sendMessage = useCallback(
     (destinatarioId: number, conteudo: string) => {
       if (!conteudo.trim() || !usuarioId) return;
@@ -189,9 +181,7 @@ export function useChatSocket(usuarioId?: number) {
     [usuarioId]
   );
 
-  /* ===========================================================
-     🕓 Carregar histórico e marcar como lidas
-=========================================================== */
+ 
   const carregarHistorico = useCallback(
     async (destinatarioId: number) => {
       if (!usuarioId) return;
@@ -210,7 +200,7 @@ export function useChatSocket(usuarioId?: number) {
             usuarioB: destinatarioId,
           });
 
-            // Zera o contador de não-lidas para esse contato e recalcula o total
+            
             setContadorNaoLidas((prev) => {
               const novo = { ...prev, [destinatarioId]: 0 };
               const total = Object.values(novo).filter((v) => (v || 0) > 0).length;
@@ -225,9 +215,7 @@ export function useChatSocket(usuarioId?: number) {
     [usuarioId]
   );
 
-  /* ===========================================================
-     🧾 Listar conversas
-=========================================================== */
+  
   const listarConversas = useCallback(
     async (setLista: (lista: Contato[]) => void) => {
       if (!usuarioId) return;
@@ -241,9 +229,7 @@ export function useChatSocket(usuarioId?: number) {
     [usuarioId]
   );
 
-  /* ===========================================================
-     🔚 Retorno do hook
-=========================================================== */
+  
   return {
     isConnected,
     messages,
