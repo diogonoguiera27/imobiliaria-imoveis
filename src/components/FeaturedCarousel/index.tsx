@@ -68,9 +68,8 @@ const FeaturedCarousel: React.FC = () => {
 
   return (
     <section className="!w-full !flex !justify-center !pt-2 !mt-0">
-      {/* Container travado dentro do limite da HOME */}
       <div className="!w-full !mx-auto">
-        {/* Título */}
+        
         <div className="!w-full !flex !justify-center !mt-6">
           <h2 className="!text-xl !font-bold !text-gray-900 !text-center !mb-4">
             Imóveis em Destaque
@@ -80,7 +79,7 @@ const FeaturedCarousel: React.FC = () => {
         {/* Desktop */}
         <div className="!hidden md:!flex !w-full !justify-center">
           <div className="!relative !w-full  !mx-auto">
-            {/* Botão esquerda */}
+
             <button
               onClick={() => scrollDesktop("left")}
               className="!absolute !left-[-24px] !top-1/2 -translate-y-1/2
@@ -89,7 +88,6 @@ const FeaturedCarousel: React.FC = () => {
               <ChevronLeft className="!w-5 !h-5" />
             </button>
 
-            {/* Lista de cards */}
             <div
               ref={containerRef}
               className="!flex !gap-4 !overflow-x-hidden !scroll-smooth !items-center !w-auto !max-w-full !mx-auto hide-scrollbar"
@@ -100,11 +98,14 @@ const FeaturedCarousel: React.FC = () => {
                     <MainCarouselPropertyCard key={i} loading />
                   ))
                 : imoveis.map((imovel) => (
-                    <MainCarouselPropertyCard key={imovel.id} imovel={imovel} />
+                    <MainCarouselPropertyCard
+                      key={imovel.id}
+                      imovel={imovel}
+                      isFavoritedInitially={imovel?.isFavorito}  // ✅ FAVORITO DESKTOP
+                    />
                   ))}
             </div>
 
-            {/* Botão direita */}
             <button
               onClick={() => scrollDesktop("right")}
               className="!absolute !right-[-24px] !top-1/2 -translate-y-1/2
@@ -130,7 +131,10 @@ const FeaturedCarousel: React.FC = () => {
                   onTouchEnd={handleTouchEnd}
                 >
                   <div className="!max-w-[380px] !w-full !mx-auto !flex !justify-center">
-                    <MainCarouselPropertyCard imovel={imoveis[currentIndex]} />
+                    <MainCarouselPropertyCard
+                      imovel={imoveis[currentIndex]}
+                      isFavoritedInitially={imoveis[currentIndex]?.isFavorito}  // ✅ FAVORITO MOBILE
+                    />
                   </div>
                 </div>
 
@@ -152,6 +156,7 @@ const FeaturedCarousel: React.FC = () => {
             )
           )}
         </div>
+
       </div>
     </section>
   );

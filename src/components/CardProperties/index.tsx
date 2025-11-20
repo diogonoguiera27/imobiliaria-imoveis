@@ -32,32 +32,34 @@ const PropertyCard = ({
   const navigate = useNavigate();
   const { openContactModal, openPhoneModal } = useContactContext();
 
-  // 🔥 Estado de favorito sincronizado com o backend
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially);
 
   const isFeatured = variant === "featured";
   const isMobile = size === "mobile";
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
-  // 🔥 Atualiza o estado quando o backend manda novo valor
   useEffect(() => {
     setIsFavorited(isFavoritedInitially);
   }, [isFavoritedInitially]);
 
+  // 🔥 FAVORITO → versão corrigida sem UUID inválido, sem ""
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     if (!token || !item) return;
 
     try {
-      const identifier =
-        item.uuid && /^[0-9a-fA-F-]{36}$/.test(item.uuid)
-          ? item.uuid
-          : item.id;
+      let identifier;
+
+      // 👉 Se tiver UUID válido e não vazio: usa ele
+      if (item.uuid && typeof item.uuid === "string" && item.uuid.trim() !== "") {
+        identifier = item.uuid;
+      } else {
+        // 👉 Caso contrário, usa o ID numérico
+        identifier = item.id;
+      }
 
       await toggleFavorite(identifier, isFavorited, token);
-
-      // Atualiza UI local
       setIsFavorited(!isFavorited);
     } catch (err) {
       console.error("❌ Erro ao favoritar imóvel:", err);
@@ -70,7 +72,7 @@ const PropertyCard = ({
   };
 
   // =====================
-  // 🦴 Skeleton (Carregando)
+  // 🦴 Skeleton
   // =====================
   if (loading) {
     return (
@@ -119,14 +121,12 @@ const PropertyCard = ({
         hover:!shadow-lg transition-all duration-200 !cursor-pointer
       `}
     >
-      {/* 🔖 selo destaque */}
       {isFeatured && (
         <div className="!absolute !top-2 !left-2 !bg-red-600 !text-white !text-xs !font-bold !px-2 !py-1 !rounded">
           Destaque
         </div>
       )}
 
-      {/* 🏠 imagem */}
       <div className="!w-full !h-[220px] !overflow-hidden">
         <img
           src={`${API_URL}${item.imagem}`}
@@ -135,15 +135,12 @@ const PropertyCard = ({
         />
       </div>
 
-      {/* 📝 conteúdo */}
       <div className="!p-4 !flex !flex-col !justify-between !flex-1">
         <div className="!flex !flex-col !gap-1 !text-left">
           <h3 className="!text-[15px] !font-semibold !text-gray-900 !line-clamp-1">
             {item.bairro}, {item.cidade}
           </h3>
-          <p className="!text-[13px] !text-gray-500 !line-clamp-1">
-            {item.endereco}
-          </p>
+          <p className="!text-[13px] !text-gray-500 !line-clamp-1">{item.endereco}</p>
           <p className="!text-[12px] !font-bold !uppercase !text-red-600 !mt-1">
             {item.tipoNegocio === "venda" ? "VENDA" : "ALUGA-SE"}
           </p>
@@ -154,7 +151,6 @@ const PropertyCard = ({
           )}
         </div>
 
-        {/* 🔹 infos */}
         <div className="!flex !flex-wrap !gap-x-3 !gap-y-1 !text-gray-600 !text-[13px] !mt-2">
           <div className="!flex !items-center !gap-1">
             <FaRulerCombined className="!text-[14px]" /> {item.metragem} m²
@@ -170,33 +166,22 @@ const PropertyCard = ({
           </div>
         </div>
 
-        {/* 🔹 preço + favorito */}
         <div className="!flex !justify-between !items-center !mt-3">
           <div>
-            <p className="!text-[12px] !text-gray-800 !font-semibold !mb-0.5">
-              {item.tipo}
-            </p>
+            <p className="!text-[12px] !text-gray-800 !font-semibold !mb-0.5">{item.tipo}</p>
             <p className="!text-[15px] !font-bold !text-gray-900">
-              R{" "}
-              {item.preco.toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-              })}
+              R {item.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
             </p>
           </div>
 
-          {/* ❤️ FAVORITO */}
           <button
             onClick={handleToggleFavorite}
             className="!text-red-500 hover:!text-red-600 !cursor-pointer"
           >
-            <Heart
-              strokeWidth={1.5}
-              className={isFavorited ? "fill-red-500" : ""}
-            />
+            <Heart strokeWidth={1.5} className={isFavorited ? "fill-red-500" : ""} />
           </button>
         </div>
 
-        {/* 🔹 botões */}
         <div className="!flex !justify-between !gap-2 !mt-3">
           <Button
             onClick={(e) => {

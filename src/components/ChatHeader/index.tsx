@@ -57,7 +57,7 @@ export default function ChatHeader({
               !text-white hover:!text-green-100 
               !transition-colors !duration-150
               focus:!outline-none focus:!ring-2 focus:!ring-white/40
-              !rounded-full !p-1
+              !rounded-full !p-1 !cursor-pointer
             "
           >
             <ArrowLeft size={20} />

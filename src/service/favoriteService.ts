@@ -1,10 +1,11 @@
 // ✅ src/service/favoriteService.ts
 import api from "./api";
 import { PaginatedProperties } from "./propertyService";
+import type { AxiosError } from "axios";
 
 export interface FavoriteIdentifier {
-  propertyId: number; // ID interno do imóvel
-  propertyUuid?: string; // UUID público do imóvel
+  propertyId: number;
+  propertyUuid?: string;
 }
 
 /* =========================================================
@@ -18,45 +19,40 @@ export const toggleFavorite = async (
   try {
     const headers = { Authorization: `Bearer ${token}` };
 
-    // 🔍 Detecta UUID válido (formato padrão 8-4-4-4-12)
+    // Detecta UUID válido
     const isUuid = (val: string): boolean =>
-      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-        val
-      );
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(val);
 
     if (isFavorited) {
-      // ✅ Remover favorito
+      // Remover favorito
       await api.delete(`/favorites/${identifier}`, { headers });
-    } else {
-      // ✅ Adicionar favorito
-      let body: Record<string, string | number>;
-
-      if (typeof identifier === "string") {
-        // Se for string numérica ex: "123" → trata como ID
-        if (/^\d+$/.test(identifier)) {
-          body = { propertyId: Number(identifier) };
-        }
-        // Se for UUID válido → envia propertyUuid
-        else if (isUuid(identifier)) {
-          body = { propertyUuid: identifier };
-        } else {
-          throw new Error("Identificador inválido (não é ID nem UUID)");
-        }
-      } else {
-        // Se vier número direto → propertyId
-        body = { propertyId: identifier };
-      }
-
-      await api.post("/favorites", body, { headers });
+      return;
     }
+
+    // Adicionar favorito
+    let body: Record<string, string | number>;
+
+    if (typeof identifier === "string") {
+      if (/^\d+$/.test(identifier)) {
+        body = { propertyId: Number(identifier) };
+      } else if (isUuid(identifier)) {
+        body = { propertyUuid: identifier };
+      } else {
+        throw new Error("Identificador inválido (não é ID nem UUID)");
+      }
+    } else {
+      body = { propertyId: identifier };
+    }
+
+    await api.post("/favorites", body, { headers });
   } catch (error) {
-    console.error("❌ Erro ao favoritar/desfavoritar imóvel:", error);
-    throw error;
+    const err = error as AxiosError;
+    throw err;
   }
 };
 
 /* =========================================================
-   🔹 Buscar apenas os identificadores (IDs/UUIDs) dos favoritos
+   🔹 Buscar apenas os identificadores (IDs/UUIDs)
    ========================================================= */
 export const getUserFavorites = async (
   token: string
@@ -73,20 +69,17 @@ export const getUserFavorites = async (
       ? response.data.data
       : [];
 
-    // ✅ Extrai corretamente os identificadores retornados do backend
     return favoritos.map((f) => ({
       propertyId: f.id ?? 0,
       propertyUuid: f.uuid ?? undefined,
     }));
-  } catch (error) {
-    console.error("❌ Erro ao buscar favoritos:", error);
+  } catch {
     return [];
   }
 };
 
 /* =========================================================
    🔹 Buscar imóveis favoritos completos (sem paginação)
-   ⚠️ Uso legado → em novas telas prefira buscarFavoritosPaginados
    ========================================================= */
 export const getFavoritedProperties = async (token: string) => {
   try {
@@ -102,15 +95,13 @@ export const getFavoritedProperties = async (token: string) => {
     );
 
     return response.data;
-  } catch (error) {
-    console.error("❌ Erro ao buscar imóveis favoritos completos:", error);
+  } catch {
     return [];
   }
 };
 
 /* =========================================================
-   🔹 Buscar imóveis favoritos completos com paginação
-   ✅ Use este em /imoveis-favoritos
+   🔹 Buscar imóveis favoritos com paginação
    ========================================================= */
 export const buscarFavoritosPaginados = async (
   token: string,
@@ -121,9 +112,9 @@ export const buscarFavoritosPaginados = async (
       params,
       headers: { Authorization: `Bearer ${token}` },
     });
+
     return data;
-  } catch (error) {
-    console.error("❌ Erro ao buscar favoritos paginados:", error);
+  } catch {
     return {
       data: [],
       pagination: {

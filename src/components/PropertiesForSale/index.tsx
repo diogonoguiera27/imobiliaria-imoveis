@@ -21,10 +21,15 @@ type PropertyListSectionProps = {
   onOpenPhoneModal: () => void;
 };
 
-// ✅ Mesmo tipo que o backend retorna em /favorites
-type FavoriteIdentifier = {
-  propertyId: number;
-  propertyUuid?: string | null;
+// ================================
+// 🔥 Tipagem correta para normalizeUUID
+// ================================
+const normalizeUUID = (val: string | null | undefined): string | null => {
+  if (!val || typeof val !== "string") return null;
+
+  const cleaned = val.trim().toLowerCase();
+
+  return cleaned.length === 36 ? cleaned : null;
 };
 
 const PropertyListSection: FC<PropertyListSectionProps> = ({
@@ -38,17 +43,27 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
   onOpenPhoneModal,
 }) => {
   const { token } = useAuth();
-  const [favoritedIds, setFavoritedIds] = useState<number[]>([]);
 
+  const [favoriteKeys, setFavoriteKeys] = useState<(number | string)[]>([]);
+
+  // ===========================================
+  // 🔥 CARREGA FAVORITOS DO BACKEND
+  // ===========================================
   useEffect(() => {
     async function carregarFavoritos() {
       if (!token) return;
+
       try {
-        const favoritos: FavoriteIdentifier[] = await getUserFavorites(token);
-        const ids = favoritos
-          .map((f) => f.propertyId)
-          .filter((id): id is number => typeof id === "number");
-        setFavoritedIds(ids);
+        const favoritos = await getUserFavorites(token);
+
+        const keys = favoritos
+          .flatMap((fav) => [
+            fav.propertyId,
+            fav.propertyUuid ? normalizeUUID(fav.propertyUuid) : null,
+          ])
+          .filter((v): v is number | string => v !== null);
+
+        setFavoriteKeys(keys);
       } catch (error) {
         console.error("Erro ao buscar favoritos:", error);
       }
@@ -59,14 +74,12 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
 
   return (
     <section className="!w-full !pt-4 !pb-10">
-      {/* 🔹 Cabeçalho da seção (centralizado mas sem largura fixa) */}
       <div className="!w-full !flex !justify-center">
         <h2 className="!text-black !text-xl !font-bold !text-center !mt-2 !mb-6">
           Todos os imóveis disponíveis
         </h2>
       </div>
 
-      {/* 🔹 Grid de imóveis - ocupa 100% do container pai */}
       <div
         className="
           !w-full
@@ -78,18 +91,25 @@ const PropertyListSection: FC<PropertyListSectionProps> = ({
           ? Array.from({ length: 8 }).map((_, i) => (
               <PropertyCardGridWrapper key={`skeleton-${i}`} loading />
             ))
-          : imoveisVenda.map((item) => (
-              <PropertyCardGridWrapper
-                key={item.id}
-                item={item}
-                isFavoritedInitially={favoritedIds.includes(item.id)}
-                onOpenContactModal={onOpenContactModal}
-                onOpenPhoneModal={onOpenPhoneModal}
-              />
-            ))}
+          : imoveisVenda.map((item) => {
+              const cleanUuid = normalizeUUID(item.uuid);
+
+              const isFav =
+                favoriteKeys.includes(item.id) ||
+                (cleanUuid && favoriteKeys.includes(cleanUuid));
+
+              return (
+                <PropertyCardGridWrapper
+                  key={item.id}
+                  item={item}
+                  isFavoritedInitially={!!isFav}
+                  onOpenContactModal={onOpenContactModal}
+                  onOpenPhoneModal={onOpenPhoneModal}
+                />
+              );
+            })}
       </div>
 
-      {/* 🔹 Modais de contato */}
       <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
         <MessageFormModal />
       </Dialog>

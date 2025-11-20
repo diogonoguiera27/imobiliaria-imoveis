@@ -105,6 +105,7 @@ export default function ChatFloatingButton() {
             hover:!scale-110
             active:!scale-95
             focus:!outline-none focus:!ring-2 focus:!ring-green-400
+            !cursor-pointer
           "
         >
           <MessageCircle className="!w-6 !h-6" />

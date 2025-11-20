@@ -222,6 +222,7 @@ export default function SearchFilter({
               hover:!from-red-600 hover:!to-red-800
               active:!scale-[0.98]
               !transition-all !duration-200
+              !cursor-pointer
               !shadow-[0_4px_12px_rgba(0,0,0,0.1)]
             "
           >
@@ -233,7 +234,7 @@ export default function SearchFilter({
               type="button"
               variant="outline"
               onClick={onLimparFiltro}
-              className="!mt-2 !w-full !border !border-gray-300 !bg-gray-100 hover:!bg-gray-200 !text-gray-700"
+              className="!mt-2 !w-full !border !border-gray-300 !bg-gray-100 hover:!bg-gray-200 !text-gray-700 !cursor-pointer"
             >
               Limpar filtro
             </Button>

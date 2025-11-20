@@ -159,7 +159,7 @@ export default function ChatModal({ open: externalOpen, onOpenChange }: ChatModa
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Portal>
-        <Dialog.Overlay className="!fixed !inset-0 !bg-black/30 !z-40" />
+        <Dialog.Overlay className="!fixed !inset-0 !bg-black/30 !z-40 " />
 
         <Dialog.Content
           className="
